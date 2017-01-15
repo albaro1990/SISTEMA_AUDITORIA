@@ -1,0 +1,13 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns:p="http://primefaces.org/ui"
+                xmlns:ui="http://java.sun.com/jsf/facelets">
+
+    <p:submenu label="Administración" icon="ui-icon-locked" rendered="#{indexBean.subject.hasRole('ADMINISTRADOR')}">
+        <p:menuitem value="Usuario" icon="ui-icon-person" outcome="/seguridad/ingresarUsuario"  />
+        <p:menuitem value="Proveedor" icon="ui-icon-person" outcome="/seguridad/ingresarProveedor"  />
+        <p:menuitem value="Ciudad" icon="ui-icon-person" outcome="/seguridad/ingresarCiudad"  />
+        <p:menuitem value="Artículo" icon="ui-icon-cart" outcome="/seguridad/ingresarArticulo"  />
+    </p:submenu>
+</ui:composition>

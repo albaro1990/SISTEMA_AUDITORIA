@@ -1,0 +1,221 @@
+html,body {
+    height: 100%;
+    /*    background-color:#CECECE;*/
+    font-size: 11px;
+}
+
+body {
+    background: url(../images/back.png) #B3B3B3 repeat;
+    background-attachment: fixed;
+    box-shadow: 10px 10px 45px rgba(0, 0, 0, 0.5);
+    -moz-box-shadow: 1px 2px 20px rgba(0, 0, 0, 0.5);
+    -webkit-box-shadow: 1px 2px 1px rgba(0, 0, 0, 0.5);
+}
+
+.full-width {
+
+}
+
+.select {
+    border: 2px solid #CECECE;
+    outline: 4px solid #F5F5F5;
+    padding: 5px;
+    margin-right: 11px;
+}
+
+.select.medio {
+    border: 2px solid #CECECE;
+    outline: 4px solid #F5F5F5;
+    padding: 5px;
+    width: 270px;
+    margin-right: 15px;
+}
+
+.select.grande {
+    border: 2px solid #CECECE;
+    outline: 4px solid #F5F5F5;
+    padding: 5px;
+    width: 435px;
+    margin-right: 11px;
+}
+
+.menu .ui-selectonemenu-label {
+    background: pink;
+}
+
+.panel .ui-selectonemenu-list {
+    background: pink;
+}
+
+.tituloEncabezado {
+    font-family: Verdana;
+    font-size: 24px;
+    font-weight: bold;
+    color: #000000;
+    text-align: center;
+}
+
+.logear {
+    background: url("../images/login.png") no-repeat;
+    width: 313px;
+    height: 182px;
+    color: #FFFFFF;
+    text-align: center;
+}
+
+.aceptar {
+    background: url("../images/aceptar.png") no-repeat;
+    width: 85px;
+    height: 30px;
+    border: 0;
+    text-align: center;
+}
+
+.limpiar {
+    background: url("../images/limpiar.png") no-repeat;
+    width: 85px;
+    height: 30px;
+    border: 0;
+}
+
+.principal {
+    padding: 0;
+    border-spacing: 0;
+    border-top: 2px solid #e9e9e9;
+    border-bottom: 2px solid black;
+    border-left: 2px solid #e9e9e9;
+    border-right: 2px solid black;
+    border-collapse: collapse;
+    background-color: #fcffff;
+    margin: 0 auto;
+    width: 100%;
+}
+
+.demo_fieldset {
+    margin: 20px;
+    border: 1px solid #ACBECE;
+}
+
+.demo_legend {
+    font-weight: bold;
+    margin: 0px 10px 0px 18px;
+    font-family: Verdana;
+}
+
+.onda {
+    display: block;
+    padding: 0px;
+    right: 0px;
+    top: 152px;
+    margin: 0;
+    z-index: 0;
+}
+
+.logo {
+    display: block;
+    padding: 0px;
+    margin: 0;
+    border-spacing: 0;
+    border-collapse: collapse;
+}
+
+.negrita {
+    font-weight: bold;
+}
+
+.alignLeft {
+    text-align: left;
+}
+
+.alignRight {
+    text-align: right;
+}
+
+.alignCenter {
+    text-align: center;
+}
+
+#menu {
+    position: relative;
+    background-color: #036fab;
+    color: white;
+    padding: 0px;
+    margin: 0px 15px 0px 15px;
+    border-left: black 2px ridge;
+    border-right: black 3px ridge;
+}
+
+#top {
+    position: relative;
+    background-color: #036fab;
+    color: white;
+    padding: 5px;
+    margin: 0px 15px 0px 15px;
+    border-top: black 2px ridge;
+    border-left: black 2px ridge;
+    border-right: black 3px ridge;
+    /*    border-bottom: black 1px ridge;*/
+    border-radius: 20px 20px 0px 0px;
+    -moz-border-radius: 20px 20px 0px 0px;
+    -webkit-border-radius: 20px 20px 0px 0px;
+}
+
+#bottom {
+    position: relative;
+    background-color: #c2dfef;
+    padding: 0px;
+    margin: 0px 15px 0px 15px;
+    border-left: black 2px ridge;
+    border-right: black 3px ridge;
+    border-bottom: black 3px ridge;
+    border-radius: 0px 0px 20px 20px;
+    -moz-border-radius: 0px 0px 20px 20px;
+    -webkit-border-radius: 0px 0px 20px 20px;
+}
+
+#left {
+    float: left;
+    background-color: #ece3a5;
+    padding: 5px;
+    width: 150px;
+}
+
+#right {
+    float: right;
+    background-color: #ece3a5;
+    padding: 5px;
+    width: 150px;
+}
+
+.center_content {
+    position: relative;
+    background-color: #dddddd;
+    padding: 0px;
+    margin: 0px 15px 0px 15px;
+    border-left: black 2px ridge;
+    border-right: black 3px ridge;
+}
+
+.left_content {
+    background-color: #dddddd;
+    padding: 5px;
+    margin-left: 170px;
+}
+
+.right_content {
+    background-color: #dddddd;
+    padding: 5px;
+    margin: 0px 170px 0px 170px;
+}
+
+#top a:link,#top a:visited {
+    color: white;
+    font-weight: bold;
+    text-decoration: none;
+}
+
+#top a:link:hover,#top a:visited:hover {
+    color: black;
+    font-weight: bold;
+    text-decoration: underline;
+}

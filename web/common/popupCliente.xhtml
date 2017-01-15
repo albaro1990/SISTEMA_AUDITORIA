@@ -1,0 +1,88 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"     
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core">
+
+
+    <h:body>	
+        <p:dialog modal="true" widgetVar="dlListaCliente" resizable="false"
+                  header="Cliente" dynamic="true" draggable="true" closeOnEscape="true" closable="true"
+                  appendTo="@(body)" showEffect="blind" hideEffect="blind">
+
+            <h:form id="formCliente">    
+                <h:panelGrid id="gridDatos" rendered="#{not empty request.getRemoteUser()}">
+                    <p:panel id="paneDatos" header="Ingresar Cliente">
+                        <h:panelGrid columns="3">
+                            
+                            <p:outputLabel value="Identificación" for="identificacion" />
+                            <p:inputText id="identificacion" required="true" maxlength="15"
+                                         requiredMessage="Ingrese la cédula o ruc"
+                                         value="#{facturaBean.clienteNuevo.cliIdentificacin}"/> 
+                            <p:tooltip for="identificacion"
+                                       value="Ingrese la cédula o ruc"
+                                       showEffect="clip" hideEffect="explode" />
+
+                            <p:outputLabel value="Nombres" for="nombre" />
+                            <p:inputText id="nombre" required="true"
+                                         requiredMessage="Campo requerido"
+                                         value="#{facturaBean.clienteNuevo.cliNombres}" />                             
+                            <p:tooltip for="nombre"
+                                       value="Campo requerido"
+                                       showEffect="clip" hideEffect="explode" />
+
+                            <p:outputLabel value="Apellidos" for="apellido" />
+                            <p:inputText id="apellido" required="true"
+                                         requiredMessage="Campo requerido"
+                                         value="#{facturaBean.clienteNuevo.cliApellidos}" />                             
+                            <p:tooltip for="apellido"
+                                       value="Campo requerido"
+                                       showEffect="clip" hideEffect="explode" />
+                            
+                             <p:outputLabel value="Razón social" for="razon" />
+                            <p:inputText id="razon"                                          
+                                         value="#{facturaBean.clienteNuevo.cliRazonSocial}" />                             
+                            <p:tooltip for="razon"
+                                       value="Ingrese razón social"
+                                       showEffect="clip" hideEffect="explode" />
+                            
+                            <p:outputLabel value="Telefono" for="telf" />
+                            <p:inputMask id="telf"
+                                         value="#{facturaBean.clienteNuevo.cliTelefono}" mask="(99) 9999-999"/>                             
+                            <p:tooltip for="telf"
+                                       value="Ingrese Telefono"
+                                       showEffect="clip" hideEffect="explode" />
+
+                            <p:outputLabel value="Correo" for="correo" />
+                            <p:inputText id="correo" validatorMessage="El correo ingresado es incorrecto"
+                                         value="#{facturaBean.clienteNuevo.cliCorreo}">
+                                <f:validateRegex
+                                    pattern="^[_A-Za-z0-9-\+]+(\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\.[A-Za-z0-9]+)*(\.[A-Za-z]{2,})$" />
+                            </p:inputText>                             
+                            <p:tooltip for="correo"
+                                       value="Ingrese correo Valido"
+                                       showEffect="clip" hideEffect="explode" />                            
+
+                            <p:outputLabel value="Dirección" for="dir" />
+                            <p:inputTextarea id="dir"
+                                             value="#{facturaBean.clienteNuevo.cliDireccion}" />                             
+                            <p:tooltip for="dir"
+                                       value="Ingrese Dirección"
+                                       showEffect="clip" hideEffect="explode" />                                                                                                                     
+
+                            <f:facet name="footer">
+                                <p:commandButton id="grabar" value="Guardar" validateClient="true" ajax="true" icon="ui-icon-disk"
+                                                 actionListener="#{facturaBean.createCliente}"
+                                                 update=":formCliente,:formLista,formDatos" process=":formCliente" />
+                                
+                            </f:facet>                             
+                        </h:panelGrid>                          
+                    </p:panel>
+                </h:panelGrid>
+
+            </h:form>
+        </p:dialog>      
+    </h:body>
+</html>

@@ -1,0 +1,211 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"     
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      >
+
+    <h:body>
+        <ui:composition template="./../WEB-INF/templates/cuerpo.xhtml">
+
+            <ui:define name="page-title">
+                Ingresar Usuario
+            </ui:define>
+
+            <ui:define name="datos">
+
+                <h:form id="formDatos">
+                    <p:focus context="formDatos" />                    
+                    <p:growl id="growl" showDetail="true"  life="1000" />
+                    <center>
+                        <h:panelGrid id="gridDatos" rendered="#{not empty request.getRemoteUser()}">
+                            <p:panel id="paneDatos" header="Ingresar Usuario">
+                                <h:panelGrid columns="6">
+                                    <p:outputLabel value="Cédula:" for="cedula" />
+                                    <p:inputText id="cedula" required="true" maxlength="10"
+                                                 requiredMessage="Campo requerido"
+                                                 value="#{usuarioBean.usuario.usuIdentificacion}"/> 
+                                        
+                                    
+                                    <p:tooltip for="cedula"
+                                               value="Campo requerido"
+                                               showEffect="clip" hideEffect="explode" />
+
+                                    <p:outputLabel value="Nombres:" for="nombre" />
+                                    <p:inputText id="nombre" required="true"
+                                                 requiredMessage="Campo requerido"
+                                                 value="#{usuarioBean.usuario.usuNombres}" />                             
+                                    <p:tooltip for="nombre"
+                                               value="Campo requerido"
+                                               showEffect="clip" hideEffect="explode" />
+
+                                    <p:outputLabel value="Apellidos:" for="apellido" />
+                                    <p:inputText id="apellido" required="true"
+                                                 requiredMessage="Campo requerido"
+                                                 value="#{usuarioBean.usuario.usuApellidos}" />                             
+                                    <p:tooltip for="apellido"
+                                               value="Campo requerido"
+                                               showEffect="clip" hideEffect="explode" />
+
+                                    <p:outputLabel value="Correo:" for="correo" />
+                                    <p:inputText id="correo" validatorMessage="El correo ingresado es incorrecto"
+                                                 value="#{usuarioBean.usuario.usuCorreo}">
+                                        <f:validateRegex
+                                            pattern="^[_A-Za-z0-9-\+]+(\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\.[A-Za-z0-9]+)*(\.[A-Za-z]{2,})$" />
+                                    </p:inputText>                             
+                                    <p:tooltip for="correo"
+                                               value="Ingrese correo Valido"
+                                               showEffect="clip" hideEffect="explode" />
+
+                                    <p:outputLabel value="Telefono:" for="telf" />
+                                    <p:inputMask id="telf"
+                                                 value="#{usuarioBean.usuario.usuTelefono}" mask="(99) 9999-999"/>                             
+                                    <p:tooltip for="telf"
+                                               value="Ingrese Telefono"
+                                               showEffect="clip" hideEffect="explode" />
+
+                                    <p:outputLabel value="Direccion:" for="dir" />
+                                    <p:inputText id="dir"
+                                                 value="#{usuarioBean.usuario.usuDireccion}" />                             
+                                    <p:tooltip for="dir"
+                                               value="Ingrese Direccion"
+                                               showEffect="clip" hideEffect="explode" />
+
+                                    <p:outputLabel for="rol" value="Rol:"  />
+                                    <p:selectOneMenu id="rol" label="rol" value="#{usuarioBean.codigoRol}" required="true" requiredMessage="Campo requerido">
+                                        <f:selectItem itemLabel="Seleccione..." noSelectionOption="true" />
+                                        <f:selectItems value="#{usuarioBean.roles}" var="item" itemLabel="#{item.rolNombre}" itemValue="#{item.rolCodigo}" />
+                                    </p:selectOneMenu>
+                                    <p:tooltip for="rol"
+                                               value="Campo requerido"
+                                               showEffect="clip" hideEffect="explode" />
+
+
+                                    <p:outputLabel for="username" value="Username: " />
+                                    <p:inputText id="username" required="true"
+                                                 requiredMessage="Campo requerido"
+                                                 value="#{usuarioBean.usuario.usuLogin}" />
+                                    <p:tooltip for="username"
+                                               value="Campo requerido"
+                                               showEffect="clip" hideEffect="explode" />
+
+                                    <p:outputLabel for="pssword" value="Clave:" />
+                                    <p:password id="pssword" required="true"
+                                                requiredMessage="Campo requerido"
+                                                value="#{usuarioBean.usuario.usuClave}" />
+                                    <p:tooltip for="pssword"
+                                               value="Campo requerido"
+                                               showEffect="clip" hideEffect="explode" />
+
+                                    <p:outputLabel for="confirmPssword" value="Confirmar Clave:" />
+                                    <p:password id="confirmPssword" required="true"
+                                                requiredMessage="Campo requerido"
+                                                value="#{usuarioBean.confirmarClave}" />
+                                    <p:tooltip for="confirmPssword"
+                                               value="Campo requerido"
+                                               showEffect="clip" hideEffect="explode" />
+
+                                    <p:outputLabel for="est" value="Estado:"  />
+                                    <p:selectOneMenu id="est" label="Estado" value="#{usuarioBean.usuario.usuEstado}" required="true" requiredMessage="Campo requerido">
+                                        <f:selectItem itemLabel="Seleccione..." noSelectionOption="true" />
+                                        <f:selectItem itemLabel="ACTIVO" itemValue="1"/>
+                                        <f:selectItem itemLabel="INACTIVO" itemValue="0"/>
+                                    </p:selectOneMenu>
+                                    <p:tooltip for="est"
+                                               value="Campo requerido"
+                                               showEffect="clip" hideEffect="explode" />                                                                                               
+
+                                    <f:facet name="footer">
+                                        <p:commandButton id="grabar" value="Guardar" validateClient="true" ajax="true" icon="ui-icon-disk"
+                                                         actionListener="#{usuarioBean.create}"
+                                                         update=":formLista,formDatos" process=":formDatos" />
+                                        <p:commandButton value="Nuevo" validateClient="true" ajax="true" icon="ui-icon-document"
+                                                         actionListener="#{usuarioBean.inicializar}" immediate="true"
+                                                         update=":formLista,formDatos" process=":formDatos"  />
+                                    </f:facet>                             
+                                </h:panelGrid>                          
+                            </p:panel>
+                        </h:panelGrid>
+                    </center>
+                </h:form>
+
+            </ui:define>
+
+            <ui:define name="lista">
+                <center>
+                    <h:panelGrid id="gridLista" rendered="#{not empty request.getRemoteUser()}">
+                        <h:form id="formLista">
+                            <p:dataTable id="listaSimple" value="#{usuarioBean.listaUsuarioAplicacion}"
+                                         var="item" paginator="true" rows="10" paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink}
+                                         {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                                         rowsPerPageTemplate="5,10,15" emptyMessage="Registro no encontrado.">
+                                <f:facet name="header">
+                                    <h:outputText value="Listado de Registros" />
+                                </f:facet>
+
+                                <p:column headerText="Editar" style="text-align: center">
+                                    <p:commandButton id="btnEditar" ajax="true" icon="ui-icon-pencil"
+                                                     actionListener="#{usuarioBean.edit}" update=":formDatos"                                                    
+                                                     title="Editar">
+                                        <f:attribute name="objetoEditar" value="#{item}" />
+                                    </p:commandButton>
+                                </p:column>
+
+                                <p:column headerText="Eliminar" style="text-align: center">                                          
+                                    <p:commandButton id="btnEliminar" ajax="true" icon="ui-icon-trash"
+                                                     actionListener="#{usuarioBean.remove}"
+                                                     title="Eliminar"
+                                                     update="listaSimple :formDatos:growl">
+                                        <p:confirm header="Eliminar"
+                                                   message="Esta seguro que desea eliminar? "
+                                                   icon="ui-icon-alert" />
+                                        <f:attribute name="objetoEliminar" value="#{item}" />
+                                    </p:commandButton>
+                                </p:column>
+
+                                <p:column headerText="Identificación" filterBy="#{item.usuCodigo.usuIdentificacion}" filterMatchMode="contains" footerText="Identificación">
+                                    <h:outputText value="#{item.usuCodigo.usuIdentificacion}" />
+                                </p:column>
+
+                                <p:column headerText="Username" filterBy="#{item.usuCodigo.usuLogin}" filterMatchMode="contains" footerText="Username">
+                                    <h:outputText value="#{item.usuCodigo.usuLogin}" />
+                                </p:column>
+
+                                <p:column headerText="Nombres" filterBy="#{item.usuCodigo.usuNombres}" filterMatchMode="contains" footerText="Nombres">
+                                    <h:outputText value="#{item.usuCodigo.usuNombres}" />
+                                </p:column>
+
+                                <p:column headerText="Apellidos" filterBy="#{item.usuCodigo.usuApellidos}" filterMatchMode="contains" footerText="Apellidos">
+                                    <h:outputText value="#{item.usuCodigo.usuApellidos}" />
+                                </p:column>
+
+                                <p:column headerText="Correo" filterBy="#{item.usuCodigo.usuCorreo}" filterMatchMode="contains" footerText="Correo">
+                                    <h:outputText value="#{item.usuCodigo.usuCorreo}" />
+                                </p:column>
+
+                                <p:column headerText="Fecha Creación" filterBy="#{item.usuCodigo.fechaCreacion}" filterMatchMode="contains" footerText="Fecha Creación">
+                                    <h:outputText value="#{item.usuCodigo.fechaCreacion}">
+                                        <f:convertDateTime pattern="dd/MM/yyyy" />
+                                    </h:outputText>
+                                </p:column>
+
+                                <p:column headerText="Rol" filterBy="#{item.rolCodigo.rolNombre}" filterMatchMode="contains" footerText="Rol">
+                                    <h:outputText value="#{item.rolCodigo.rolNombre}" />
+                                </p:column>
+
+                                <p:column headerText="Estado" filterBy="#{item.usuCodigo.usuEstado}" filterMatchMode="contains" footerText="Estado">
+                                    <h:outputText value="#{item.usuCodigo.usuEstado}" />
+                                </p:column>       
+                            </p:dataTable>
+                        </h:form>
+                        <ui:include src="/common/confirmaBorrar.xhtml" />
+                    </h:panelGrid>
+                </center>
+            </ui:define>
+        </ui:composition>
+
+    </h:body>
+</html>

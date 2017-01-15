@@ -1,0 +1,57 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"     
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core">
+
+
+    <h:body>	
+        <p:dialog modal="true" widgetVar="dlListaArticulo" resizable="false"
+                  header="Artículo" dynamic="true" draggable="true" closeOnEscape="true" closable="true"
+                  appendTo="@(body)" showEffect="blind" hideEffect="blind">
+
+            <h:form id="formListaArticulo">               
+                <p:dataTable id="dtListaArticulo" selectionMode="single" selection="#{facturaBean.articuloSeleccionado}"
+                             value="#{facturaBean.listaArticulos}" rowKey="#{item.artCodigo}"
+                             var="item" paginator="true" rows="10" paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink}
+                             {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                             rowsPerPageTemplate="5,10,15" emptyMessage="Registro no encontrado.">                 
+
+                    <p:ajax event="rowSelect" listener="#{facturaBean.onRowSelect}" update=":formDatos:growl, :formLista:listaSimple" />
+                    <p:ajax event="rowUnselect" listener="#{facturaBean.onRowUnselect}" update=":formDatos:growl, :formLista:listaSimple" />
+
+                    <p:column headerText="Código">
+                        <h:outputText value="#{item.artCodigoUnico}" />
+                    </p:column>
+
+                    <p:column headerText="Nombre">
+                        <h:outputText value="#{item.artDescripcion}" />
+                    </p:column>
+
+                    <p:column headerText="Valor">
+                        <h:outputText value="#{item.artValorUnitario}">
+                            <f:convertNumber type="currency" currencySymbol="$"/>
+                        </h:outputText>
+                    </p:column>
+
+                    <p:column headerText="Unidad">
+                        <h:outputText value="#{item.artUnidad}" />
+                    </p:column>
+
+                    <p:column headerText="Fecha Ingreso">
+                        <h:outputText value="#{item.artFechaIngreso}">
+                            <f:convertDateTime pattern="dd/MM/yyyy" />
+                        </h:outputText>
+                    </p:column>
+
+                    <p:column headerText="Cantidad">
+                        <h:outputText value="#{item.artCantidadIngresada}"/>
+                    </p:column>
+
+                </p:dataTable>               
+            </h:form>
+        </p:dialog>      
+    </h:body>
+</html>

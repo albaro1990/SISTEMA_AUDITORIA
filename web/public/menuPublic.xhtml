@@ -1,0 +1,18 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns:p="http://primefaces.org/ui"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:h="http://java.sun.com/jsf/html">
+
+    <p:menuitem value="Inicio" icon="ui-icon-home" outcome="/index" /> 
+    <f:facet name="options">
+        <h:panelGrid columns="2">
+            <p:link value="Iniciar Sesion" outcome="/login" rendered="#{empty request.getRemoteUser()}" />
+            <p:outputLabel value="#{request.getRemoteUser()} |" styleClass="negrita" />
+            <p:commandLink id="cerrar" value="Cerrar Sesion" ajax="false"
+                           action="#{shiroLoginBean.logout(event)}" rendered="#{not empty request.getRemoteUser()}" />
+        </h:panelGrid>
+    </f:facet>
+</ui:composition>

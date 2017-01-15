@@ -1,0 +1,58 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"     
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core">
+
+    <h:body>
+        <ui:composition template="./WEB-INF/templates/cuerpo.xhtml">
+
+            <ui:define name="page-title">
+              Ingreso al Sistema
+            </ui:define>
+
+            <ui:define name="datos">
+                <div align="center">
+                    <p:panel id="paneDatos" header="Ingreso al Sistema" footer="">
+                        <h:form id="formDatos">
+                            <p:focus context=":paneDatos" />
+                            <p:growl id="growl" sticky="true" showDetail="true" life="3000" />                           
+                            <h:panelGrid columns="2">
+                                <p:outputLabel for="username" value="Usuario" />
+                                <p:inputText id="username" 
+                                             value="#{shiroLoginBean.usuario.usuLogin}"
+                                             required="true" label="username" requiredMessage="Ingrese Usuario"
+                                             placeholder="Ingrese Usuario" />
+
+                                <p:outputLabel for="password" value="Contraseña" />
+                                <p:password id="password" 
+                                            value="#{shiroLoginBean.usuario.usuClave}"
+                                            required="true" label="password" requiredMessage="Ingrese Contrase&ntilde;a"
+                                            placeholder="Ingrese Contrase&ntilde;a" />
+
+                                <f:facet name="footer">
+                                    <p:commandButton id="validar"  value="Validar" update="growl" ajax="false"
+                                                     actionListener="#{shiroLoginBean.login}" />
+                                    <p:commandButton  id="limpiar" value="Limpiar" actionListener="#{shiroLoginBean.inicializar}"
+                                                      update="formDatos" process="@this" ajax="false" />
+                                </f:facet>
+                            </h:panelGrid>
+                        </h:form>
+                    </p:panel>
+                    <p:blockUI animate="true" block="paneDatos" trigger="formDatos:validar" />
+                </div>
+            </ui:define>
+
+            <ui:define name="lista">
+                <h:panelGrid columns="1">                    
+                    <p:spacer height="15" />
+                </h:panelGrid>
+            </ui:define>
+
+        </ui:composition>
+
+    </h:body>
+</html>

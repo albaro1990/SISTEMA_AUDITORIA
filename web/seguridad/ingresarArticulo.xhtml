@@ -1,0 +1,204 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"     
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core">
+
+    <h:body>
+        <ui:composition template="./../WEB-INF/templates/cuerpo.xhtml">
+
+            <ui:define name="page-title">
+                Ingresar Artículo
+            </ui:define>
+
+            <ui:define name="datos">
+                <h:form id="formBusqueda">
+                    <center>
+                        <p:growl id="growl1" showDetail="true"  life="1000" />
+                        <p:panel id="paneDatos" header="Ingresar Artículos" rendered="#{not empty request.getRemoteUser()}">
+                            <h:panelGrid columns="4">
+                                <p:outputLabel value="Código" for="codigo" />
+                                <p:inputText id="codigo" disabled="#{articuloBean.habilitarBusqueda}" 
+                                             required="true" 
+                                             requiredMessage="Campo requerido" 
+                                             value="#{articuloBean.articulo.artCodigoUnico}" />                             
+                                <p:tooltip for="codigo"
+                                           value="Campo requerido"
+                                           showEffect="clip" hideEffect="explode" /> 
+                                <p:commandButton id="buscar" value="Buscar" validateClient="true" ajax="true" icon="ui-icon-disk"
+                                                 actionListener="#{articuloBean.buscarArticulo}"
+                                                 update=":formDatos,growl1,formBusqueda" process="formBusqueda" />
+                            </h:panelGrid>
+                        </p:panel>
+                    </center>
+                </h:form>
+
+                <h:form id="formDatos">
+                    <p:focus context="formDatos" />                    
+                    <p:growl id="growl" showDetail="true"  life="1000" />
+                    <center>
+                        <h:panelGrid id="gridDatos" rendered="#{not empty request.getRemoteUser()}">
+                                <h:panelGrid columns="3">                                                             
+                                    <p:outputLabel for="proveedor" value="Proveedor"  />
+                                    <p:selectOneMenu id="proveedor" disabled="#{articuloBean.habilitar}" label="Proveedor" value="#{articuloBean.codigoProveedor}" required="true" requiredMessage="Campo requerido">
+                                        <f:selectItem itemLabel="Seleccione..." noSelectionOption="true" />
+                                        <f:selectItems value="#{articuloBean.listaProveedor}" var="item" itemLabel="#{item.proNombre}" itemValue="#{item.proCodigo}" />
+                                    </p:selectOneMenu>
+                                    <p:tooltip for="proveedor"
+                                               value="Campo requerido"
+                                               showEffect="clip" hideEffect="explode" /> 
+
+                                    <p:outputLabel value="Descripción" for="descripcion" />
+                                    <p:inputTextarea id="descripcion" required="true" disabled="#{articuloBean.habilitar}"
+                                                     requiredMessage="Campo requerido"
+                                                     value="#{articuloBean.articulo.artDescripcion}" />                             
+                                    <p:tooltip for="descripcion"
+                                               value="Campo requerido"
+                                               showEffect="clip" hideEffect="explode" />    
+
+                                    <p:outputLabel value="Cantidad Ingresada" for="cantidad" />
+                                    <p:inputNumber id="cantidad" required="true" disabled="#{articuloBean.habilitar}"
+                                                   requiredMessage="Campo requerido"
+                                                   value="#{articuloBean.articulo.artCantidadIngresada}" />                             
+                                    <p:tooltip for="cantidad"
+                                               value="Campo requerido"
+                                               showEffect="clip" hideEffect="explode" />    
+
+                                    <p:outputLabel value="Unidad" for="unidad" />
+                                    <p:inputText id="unidad" required="true" disabled="#{articuloBean.habilitar}"
+                                                 requiredMessage="Campo requerido"
+                                                 value="#{articuloBean.articulo.artUnidad}" />                             
+                                    <p:tooltip for="unidad"
+                                               value="Campo requerido"
+                                               showEffect="clip" hideEffect="explode" />  
+
+                                    <p:outputLabel value="Valor Unitario" for="valor" />
+                                    <p:inputNumber id="valor" required="true" disabled="#{articuloBean.habilitar}"
+                                                   requiredMessage="Campo requerido"
+                                                   value="#{articuloBean.articulo.artValorUnitario}" />                             
+                                    <p:tooltip for="valor"
+                                               value="Campo requerido"
+                                               showEffect="clip" hideEffect="explode" /> 
+
+                                    <p:outputLabel value="Aplica Iva" for="aplica" />
+                                    <p:selectBooleanCheckbox id="aplica" required="true" disabled="#{articuloBean.habilitar}"
+                                                             requiredMessage="Campo requerido"
+                                                             value="#{articuloBean.articulo.artAplicaIva}" />                             
+                                    <p:tooltip for="aplica"
+                                               value="Campo requerido"
+                                               showEffect="clip" hideEffect="explode" /> 
+
+                                    <p:outputLabel value="Porcentaje Iva" for="porcentaje" />
+                                    <p:selectOneRadio id="porcentaje" value="#{articuloBean.articulo.artPorcentajeIva}" disabled="#{articuloBean.habilitar}" 
+                                                      required="true" requiredMessage="Campo requerido">
+                                        <f:selectItem itemLabel="Iva 14" itemValue="14"  />                                       
+                                    </p:selectOneRadio>                             
+                                    <p:tooltip for="porcentaje"
+                                               value="Campo requerido"
+                                               showEffect="clip" hideEffect="explode" />  
+
+                                    <f:facet name="footer">
+                                        <p:commandButton id="grabar" value="Guardar" disabled="#{articuloBean.habilitar}" validateClient="true" ajax="true" icon="ui-icon-disk"
+                                                         actionListener="#{articuloBean.create}"
+                                                         update=":formLista,formDatos,formBusqueda" process=":formDatos" />
+                                        <p:commandButton value="Nuevo" validateClient="true" disabled="#{articuloBean.habilitar}" ajax="true" icon="ui-icon-document"
+                                                         actionListener="#{articuloBean.inicializar}" immediate="true"
+                                                         update=":formLista,formDatos,formBusqueda" process=":formDatos"  />
+                                    </f:facet>                             
+                                </h:panelGrid>                          
+                            
+                        </h:panelGrid>
+                    </center>
+                </h:form>
+            </ui:define>
+
+
+            <ui:define name="lista">  
+                <h:form id="formLista">
+                    <center>
+                        <h:panelGrid id="gridLista" rendered="#{not empty request.getRemoteUser()}">                          
+                            <p:dataTable id="listaSimple" value="#{articuloBean.listaProveedorArticulos}"
+                                         var="item" paginator="true" rows="10" paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink}
+                                         {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                                         rowsPerPageTemplate="5,10,15" emptyMessage="Registro no encontrado.">
+                                <f:facet name="header">
+                                    <h:outputText value="Listado de Registros" />
+                                </f:facet>
+
+                                <p:column headerText="Editar" style="text-align: center">
+                                    <p:commandButton id="btnEditar" ajax="true" icon="ui-icon-pencil"
+                                                     actionListener="#{articuloBean.edit}" update=":formDatos,formBusqueda"                                                    
+                                                     title="Editar">
+                                        <f:attribute name="objetoEditar" value="#{item}" />
+                                    </p:commandButton>
+                                </p:column>
+
+                                <p:column headerText="Eliminar" style="text-align: center">                                          
+                                    <p:commandButton id="btnEliminar" ajax="true" icon="ui-icon-trash"
+                                                     actionListener="#{articuloBean.remove}"
+                                                     title="Eliminar"
+                                                     update="listaSimple :formDatos:growl">
+                                        <p:confirm header="Eliminar"
+                                                   message="Esta seguro que desea eliminar? "
+                                                   icon="ui-icon-alert" />
+                                        <f:attribute name="objetoEliminar" value="#{item}" />
+                                    </p:commandButton>
+                                </p:column>
+
+                                <p:column headerText="Código" filterBy="#{item.facArticulo.artCodigoUnico}" filterMatchMode="contains" footerText="Código">
+                                    <h:outputText value="#{item.facArticulo.artCodigoUnico}" />
+                                </p:column>
+
+                                <p:column headerText="Nombre" filterBy="#{item.facArticulo.artDescripcion}" filterMatchMode="contains" footerText="Nombre">
+                                    <h:outputText value="#{item.facArticulo.artDescripcion}" />
+                                </p:column>
+
+                                <p:column headerText="Cantidad Ingresada" filterBy="#{item.facArticulo.artCantidadIngresada}" filterMatchMode="contains" footerText="Cantidad Ingresada">
+                                    <h:outputText value="#{item.facArticulo.artCantidadIngresada}" />
+                                </p:column>
+
+                                <p:column headerText="Fecha Ingreso" filterBy="#{item.facArticulo.artFechaIngreso}" filterMatchMode="contains" footerText="Fecha Ingreso">
+                                    <h:outputText value="#{item.facArticulo.artFechaIngreso}">
+                                        <f:convertDateTime pattern="dd/MM/yyyy" />
+                                    </h:outputText>
+                                </p:column>
+
+                                <p:column headerText="Fecha Actualización" filterBy="#{item.facArticulo.artFechaActualizacion}" filterMatchMode="contains" footerText="Fecha Actualización">
+                                    <h:outputText value="#{item.facArticulo.artFechaActualizacion}">
+                                        <f:convertDateTime pattern="dd/MM/yyyy" />
+                                    </h:outputText>
+                                </p:column>
+
+                                <p:column headerText="Unidad" filterBy="#{item.facArticulo.artUnidad}" filterMatchMode="contains" footerText="Unidad">
+                                    <h:outputText value="#{item.facArticulo.artUnidad}" />
+                                </p:column>
+
+                                <p:column headerText="Aplica Iva" filterBy="#{item.facArticulo.artAplicaIva}" filterMatchMode="contains" footerText="Aplica Iva">
+                                    <p:selectBooleanCheckbox value="#{item.facArticulo.artAplicaIva}" /> 
+                                </p:column>
+
+                                <p:column headerText="Porcentaje Iva" filterBy="#{item.facArticulo.artPorcentajeIva}" filterMatchMode="contains" footerText="Porcentaje Iva">
+                                    <h:outputText value="#{item.facArticulo.artPorcentajeIva}">
+                                        <f:convertNumber type="percent" />
+                                    </h:outputText>
+                                </p:column>
+
+                                <p:column headerText="Proveedor" filterBy="#{item.facProveedor.proNombre}" filterMatchMode="contains" footerText="Proveedor">
+                                    <h:outputText value="#{item.facProveedor.proNombre}" />                                      
+                                </p:column>
+
+                                <p:column headerText="Estado" filterBy="#{item.facArticulo.artEstado}" filterMatchMode="contains" footerText="Estado">
+                                    <h:outputText value="#{item.facArticulo.artEstado}" />
+                                </p:column>       
+                            </p:dataTable>                                                      
+                        </h:panelGrid>
+                    </center>
+                </h:form>
+                <ui:include src="/common/confirmaBorrar.xhtml" />
+            </ui:define>
+        </ui:composition>
+    </h:body>
+</html>

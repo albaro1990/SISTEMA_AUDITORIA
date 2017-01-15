@@ -1,0 +1,142 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"     
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core">
+
+    <h:body>
+        <ui:composition template="./../WEB-INF/templates/cuerpo.xhtml">
+
+            <ui:define name="page-title">
+                Ingresar Artículo
+            </ui:define>
+
+            <ui:define name="datos">
+                <h:form id="formBusqueda">
+                    <center>
+                        <p:growl id="growl1" showDetail="true"  life="1000" />
+                        <p:panel id="paneDatos" header="Ingresar Artículos" rendered="#{not empty request.getRemoteUser()}">
+                            <h:panelGrid columns="4" rendered="#{not empty request.getRemoteUser()}">
+                                <p:outputLabel value="Código" for="codigo" />
+                                <p:inputText id="codigo" 
+                                             required="true" 
+                                             requiredMessage="Campo requerido" 
+                                             value="#{cardexBean.articulo.artCodigoUnico}" />                             
+                                <p:tooltip for="codigo"
+                                           value="Campo requerido"
+                                           showEffect="clip" hideEffect="explode" /> 
+                                <p:commandButton id="buscar" value="Buscar" validateClient="true" ajax="true" icon="ui-icon-disk"
+                                                 actionListener="#{cardexBean.buscarArticulo}"
+                                                 update=":formBusqueda,formLista,growl1" process="formBusqueda" />
+                            </h:panelGrid>
+                        </p:panel>
+                    </center>
+                </h:form>
+            </ui:define>
+
+
+            <ui:define name="lista">  
+                <h:form id="formLista">
+                    <center>
+                        <h:panelGrid id="gridLista" rendered="#{not empty request.getRemoteUser()}">                          
+                            <p:dataTable id="listaSimple" value="#{cardexBean.listaArticulosDetalle}"
+                                         var="item" paginator="false" paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink}
+                                         {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                                         rowsPerPageTemplate="5,10,15" emptyMessage="Registro no encontrado.">
+                                <p:columnGroup type="header">
+                                    <p:row>
+                                        <p:column colspan="11" headerText="INVENTARIO" style="text-align: center" />
+                                    </p:row>
+                                    <p:row>
+                                        <p:column colspan="2" headerText="Artículo:" />
+                                        <p:column colspan="3" headerText="#{cardexBean.articulo.artDescripcion}" />
+                                        <p:column colspan="3" headerText="Existencia Mínima:" />
+                                        <p:column colspan="3" headerText="1" />
+                                    </p:row>
+                                    <p:row>
+                                        <p:column colspan="2" headerText="Método:" />
+                                        <p:column colspan="3" headerText="Promedio Ponderado" />
+                                        <p:column colspan="3" headerText="Existencia Máxima" />
+                                        <p:column colspan="3" headerText="10000" />
+                                    </p:row>
+                                    <p:row>
+                                        <p:column colspan="1" headerText="Fecha" />
+                                        <p:column rowspan="2" headerText="Detalle" />
+                                        <p:column colspan="3" headerText="Entradas" />
+                                        <p:column colspan="3" headerText="Salidas" />
+                                        <p:column colspan="3" headerText="Existencias" />
+                                    </p:row>
+                                    <p:row>
+                                        <p:column headerText="" />
+                                        <p:column headerText="Cantidad" />
+                                        <p:column headerText="V/Unitario" />
+                                        <p:column headerText="V/Total" />
+                                        <p:column headerText="Cantidad" />
+                                        <p:column headerText="V/Unitario" />
+                                        <p:column headerText="V/Total" />
+                                        <p:column headerText="Cantidad" />
+                                        <p:column headerText="V/Unitario" />
+                                        <p:column headerText="V/Total" />
+                                    </p:row>
+                                </p:columnGroup>
+                                <p:column headerText="Fecha">
+                                    <h:outputText value="#{item.artFechatransacccion}">
+                                        <f:convertDateTime pattern="dd/MM/yyyy" />
+                                    </h:outputText>
+                                </p:column>
+                                <p:column headerText="Detalle">
+                                    <h:outputText value="#{item.detalle}">
+                                    </h:outputText>
+                                </p:column>
+                                <p:column headerText="Cant">
+                                    <h:outputText value="#{item.artCantidadIgresada}">
+                                    </h:outputText>
+                                </p:column>
+                                <p:column headerText="V/Unitario">
+                                    <h:outputText value="#{item.artValorUnitarioIngresado}">
+                                    </h:outputText>
+                                </p:column>
+                                <p:column headerText="V/Total">
+                                    <h:outputText value="#{item.artValorTotal}">
+                                    </h:outputText>
+                                </p:column>
+                                <p:column headerText="Cant">
+                                    <h:outputText value="#{item.artCantidadSaliente}">
+                                    </h:outputText>
+                                </p:column>
+                                <p:column headerText="V/Unitario">
+                                    <h:outputText value="#{item.artValorUnitarioSaliente}">
+                                    </h:outputText>
+                                </p:column>
+                                <p:column headerText="V/Total">
+                                    <h:outputText value="#{item.artValorTotalSaliente}">
+                                    </h:outputText>
+                                </p:column>
+                                <p:column headerText="Cant">
+                                    <h:outputText value="#{item.artCantidadIgresadaInicio}">
+                                    </h:outputText>
+                                </p:column>
+                                <p:column headerText="V/Unitario">
+                                    <h:outputText value="#{item.artValorUnitarioInicio}">
+                                    </h:outputText>
+                                </p:column>
+                                <p:column headerText="V/Total">
+                                    <h:outputText value="#{item.artValorTotalInicio}">
+                                    </h:outputText>
+                                </p:column>
+                            </p:dataTable>  
+                            <h3>Exportar</h3>
+                            <h:commandLink>
+                                <p:graphicImage name="images/excel.png" />
+                                <p:dataExporter type="xls" target="listaSimple" fileName="kardex" pageOnly="true"/>
+                            </h:commandLink>
+                        </h:panelGrid>
+                    </center>
+                </h:form>
+            </ui:define>
+        </ui:composition>
+    </h:body>
+</html>
