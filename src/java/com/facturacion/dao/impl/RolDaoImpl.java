@@ -86,7 +86,7 @@ public class RolDaoImpl implements RolDao {
 
         try {
             conn = new ConexionDB().getConexion();
-            pstmt = conn.prepareStatement("SELECT * FROM FAC_ROL WHERE ROL_ESTADO=1");
+            pstmt = conn.prepareStatement("SELECT * FROM CIT_ROL WHERE ROL_ESTADO=1");
             rs = pstmt.executeQuery();
 
             while (rs.next()) {
@@ -108,7 +108,7 @@ public class RolDaoImpl implements RolDao {
         FacRol rol = null;
         try {
             conn = new ConexionDB().getConexion();
-            pstmt = conn.prepareStatement("SELECT * FROM FAC_ROL WHERE ROL_CODIGO = ?");
+            pstmt = conn.prepareStatement("SELECT * FROM CIT_ROL WHERE ROL_CODIGO = ?");
             pstmt.setInt(1, id);
             rs = pstmt.executeQuery();
 
