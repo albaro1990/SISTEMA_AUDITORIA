@@ -59,7 +59,7 @@ public class UsuarioDaoImpl implements UsuarioDao {
         try {
             conn = new ConexionDB().getConexion();
             pstmt = conn.prepareStatement("UPDATE CIT_USUARIO SET USU_LOGIN='" + usuario.getUsuLogin() + "',USU_CLAVE='" + usuario.getUsuClave() + "',"
-                    + "USU_NOMBRES='" + usuario.getUsuNombres() + "',USU_APELLIDOS='" + usuario.getUsuApellidos() + "',USU_CORREO='" + usuario.getUsuCorreo() + "',"
+                    + "USU_NOMBRE='" + usuario.getUsuNombres() + "',USU_APELLIDOS='" + usuario.getUsuApellidos() + "',USU_CORREO='" + usuario.getUsuCorreo() + "',"
                     + "USU_IDENTIFICACION='" + usuario.getUsuIdentificacion() + "',USU_DIRECCION='" + usuario.getUsuDireccion() + "',USU_TELEFONO='" + usuario.getUsuTelefono() + "',"
                     + "USU_ESTADO=" + usuario.getUsuEstado() + ", USU_FECHA_MODIFICACION= SYSDATE WHERE USU_CODIGO = " + usuario.getUsuCodigo() + " ");
 

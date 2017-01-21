@@ -1,0 +1,108 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"     
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      >
+
+    <h:body>
+        <ui:composition template="./../WEB-INF/templates/cuerpo.xhtml">
+
+            <ui:define name="page-title">
+                Ingresar Especialidad
+            </ui:define>
+
+            <ui:define name="datos">
+
+                <h:form id="formDatos">
+                    <p:focus context="formDatos" />                    
+                    <p:growl id="growl" showDetail="true"  life="800" />
+                    <center>
+                        <h:panelGrid id="gridDatos" rendered="#{not empty request.getRemoteUser()}">
+                            <p:panel id="paneDatos" header="Ingresar Especialidad">
+                                <h:panelGrid columns="3">
+                                    <p:outputLabel value="Descripción:" for="nombre" />
+                                    <p:inputText id="nombre" required="true"
+                                                 requiredMessage="Campo requerido"
+                                                 value="#{especialidadBean.especialidad.espDescripcion}" />                             
+                                    <p:tooltip for="nombre"
+                                               value="Campo requerido"
+                                               showEffect="clip" hideEffect="explode" />
+
+                                    <p:outputLabel for="est" value="Estado:"  />
+                                    <p:selectOneMenu id="est" label="est" required="true" requiredMessage="Campo requerido" value="#{especialidadBean.especialidad.espEstado}">
+                                        <f:selectItem itemLabel="Seleccione..." noSelectionOption="true" />
+                                        <f:selectItem itemLabel="ACTIVO" itemValue="1"/>
+                                        <f:selectItem itemLabel="INACTIVO" itemValue="0"/>
+                                    </p:selectOneMenu>
+                                    <p:tooltip for="est"
+                                               value="Campo requerido"
+                                               showEffect="clip" hideEffect="explode" />                                                                                               
+
+                                    <f:facet name="footer">
+                                        <p:commandButton id="grabar" value="Guardar" validateClient="true" ajax="true" icon="ui-icon-disk"
+                                                         actionListener="#{especialidadBean.create}"
+                                                         update=":formLista,formDatos, growl" process=":formDatos" />
+                                        <p:commandButton value="Nuevo" validateClient="true" ajax="true" icon="ui-icon-document"
+                                                         actionListener="#{especialidadBean.inicializar}" immediate="true"
+                                                         update=":formLista,formDatos, growl" process=":formDatos"  />
+                                    </f:facet>                             
+                                </h:panelGrid>                          
+                            </p:panel>
+                        </h:panelGrid>
+                    </center>
+                </h:form>
+
+            </ui:define>
+
+            <ui:define name="lista">
+                <center>
+                    <h:panelGrid id="gridLista" rendered="#{not empty request.getRemoteUser()}">
+                        <h:form id="formLista">
+                            <p:dataTable id="listaSimple" value="#{especialidadBean.listaEspecialidades}"
+                                         var="item" paginator="true" rows="10" paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink}
+                                         {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                                         rowsPerPageTemplate="5,10,15" emptyMessage="Registro no encontrado.">
+                                <f:facet name="header">
+                                    <h:outputText value="Listado de Registros" />
+                                </f:facet>
+                                
+                                  <p:column headerText="Editar" style="text-align: center">
+                                    <p:commandButton id="btnEditar" ajax="true" icon="ui-icon-pencil"
+                                                     actionListener="#{especialidadBean.edit}" update=":formDatos"                                                    
+                                                     title="Editar">
+                                        <f:attribute name="objetoEditar" value="#{item}" />
+                                    </p:commandButton>
+                                </p:column>
+
+                                <p:column headerText="Eliminar" style="text-align: center">                                          
+                                    <p:commandButton id="btnEliminar" ajax="true" icon="ui-icon-trash"
+                                                     actionListener="#{especialidadBean.remove}"
+                                                     title="Eliminar"
+                                                     update="listaSimple :formDatos:growl">
+                                        <p:confirm header="Eliminar"
+                                                   message="Esta seguro que desea eliminar? "
+                                                   icon="ui-icon-alert" />
+                                        <f:attribute name="objetoEliminar" value="#{item}" />
+                                    </p:commandButton>
+                                </p:column>
+
+                                <p:column headerText="Descripción" filterBy="#{item.espDescripcion}" filterMatchMode="contains" footerText="Descripción">
+                                    <h:outputText value="#{item.espDescripcion}" />
+                                </p:column>
+                                <p:column headerText="Estado" filterBy="#{item.espEstado}" filterMatchMode="contains" footerText="Estado">
+                                    <h:outputText value="#{item.espEstado}" />
+                                </p:column>
+                            </p:dataTable>
+                        </h:form>
+                        <ui:include src="/common/confirmaBorrar.xhtml" />
+                    </h:panelGrid>
+                </center>
+            </ui:define>
+        </ui:composition>
+
+    </h:body>
+</html>
