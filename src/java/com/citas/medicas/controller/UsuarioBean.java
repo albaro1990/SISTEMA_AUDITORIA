@@ -4,12 +4,15 @@
  */
 package com.citas.medicas.controller;
 
+import com.citas.medicas.dao.EspecialidadDao;
 import com.citas.medicas.dao.RolDao;
 import com.citas.medicas.dao.UsuarioAplicacionDao;
 import com.citas.medicas.dao.UsuarioDao;
+import com.citas.medicas.dao.impl.EspecialidadDaoImpl;
 import com.citas.medicas.dao.impl.RolDaoImpl;
 import com.citas.medicas.dao.impl.UsuarioAplicacionDaoImpl;
 import com.citas.medicas.dao.impl.UsuarioDaoImpl;
+import com.citas.medicas.entity.CitEspecialidad;
 import com.citas.medicas.entity.FacRol;
 import com.citas.medicas.entity.FacUsuario;
 import com.citas.medicas.entity.FacUsuarioAplicacion;
@@ -35,14 +38,18 @@ public class UsuarioBean extends GenericBean {
     private final Logger LOG = LoggerFactory.getLogger(UsuarioBean.class);
     private UsuarioDao usuarioDAO = new UsuarioDaoImpl();
     private RolDao rolDAO = new RolDaoImpl();
+    private EspecialidadDao especilidadDAO = new EspecialidadDaoImpl();
     private UsuarioAplicacionDao usuarioAplicacionDao = new UsuarioAplicacionDaoImpl();
     private List<FacRol> roles = new ArrayList<FacRol>();
+    private List<CitEspecialidad> especialidades = new ArrayList<CitEspecialidad>();
     private List<FacUsuarioAplicacion> listaUsuarioAplicacion = new ArrayList<FacUsuarioAplicacion>();
     private FacUsuario usuario;
     private FacUsuarioAplicacion usuarioAplicacion;
     private Integer codigoRol;
     private Integer codigoEstado;
     private String confirmarClave;
+    private boolean mostrarEspecialidad=false;
+    private Integer codigoEsp;
 
     /**
      * Creates a new instance of JsfManejadorUsuarioBean
@@ -61,9 +68,18 @@ public class UsuarioBean extends GenericBean {
         confirmarClave = null;
     }
 
-    private void cargarCombos() {
+    public void cargarCombos() {
         try {
             roles = rolDAO.findAll();
+            
+            if(codigoRol!=null && codigoRol==3){
+                mostrarEspecialidad=true;
+                especialidades = especilidadDAO.findAll();
+            }else{
+                especialidades = new ArrayList<CitEspecialidad>();
+                mostrarEspecialidad=false;
+                codigoEsp = null;
+            }
         } catch (SQLException ex) {
             LOG.error(ex.getMessage(), ex);
         }
@@ -87,6 +103,9 @@ public class UsuarioBean extends GenericBean {
                 if (!usuarioDAO.existePorCampo(usuario.getUsuLogin())) {
                     if (ValidadorCedulaRuc.isCedulaValido(usuario.getUsuIdentificacion())) {
                         if (usuario.getUsuClave().equals(confirmarClave)) {
+                            if(codigoEsp!=null && codigoEsp>0){
+                            usuario.setCitEspecialidad(especilidadDAO.find(codigoEsp));
+                            }
                             int idUsuario = usuarioDAO.save(usuario);
                             usuarioAplicacion.setUsuCodigo(usuarioDAO.find(idUsuario));
                             usuarioAplicacion.setRolCodigo(rolDAO.find(codigoRol));
@@ -204,6 +223,38 @@ public class UsuarioBean extends GenericBean {
 
     public void setListaUsuarioAplicacion(List<FacUsuarioAplicacion> listaUsuarioAplicacion) {
         this.listaUsuarioAplicacion = listaUsuarioAplicacion;
+    }
+
+    public List<CitEspecialidad> getEspecialidades() {
+        return especialidades;
+    }
+
+    public void setEspecialidades(List<CitEspecialidad> especialidades) {
+        this.especialidades = especialidades;
+    }
+
+    public EspecialidadDao getEspecilidadDAO() {
+        return especilidadDAO;
+    }
+
+    public void setEspecilidadDAO(EspecialidadDao especilidadDAO) {
+        this.especilidadDAO = especilidadDAO;
+    }
+
+    public boolean isMostrarEspecialidad() {
+        return mostrarEspecialidad;
+    }
+
+    public void setMostrarEspecialidad(boolean mostrarEspecialidad) {
+        this.mostrarEspecialidad = mostrarEspecialidad;
+    }
+
+    public Integer getCodigoEsp() {
+        return codigoEsp;
+    }
+
+    public void setCodigoEsp(Integer codigoEsp) {
+        this.codigoEsp = codigoEsp;
     }
 
 }

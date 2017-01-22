@@ -18,7 +18,7 @@ public class CitEspecialidad implements Serializable {
 
     private static final long serialVersionUID = 1L;
     
-    private BigDecimal espCodigo;
+    private Long espCodigo;
     
     private String espDescripcion;
     
@@ -29,21 +29,21 @@ public class CitEspecialidad implements Serializable {
     public CitEspecialidad() {
     }
 
-    public CitEspecialidad(BigDecimal espCodigo) {
+    public CitEspecialidad(Long espCodigo) {
         this.espCodigo = espCodigo;
     }
 
-    public CitEspecialidad(BigDecimal espCodigo, String espDescripcion, Integer espEstado) {
+    public CitEspecialidad(Long espCodigo, String espDescripcion, Integer espEstado) {
         this.espCodigo = espCodigo;
         this.espDescripcion = espDescripcion;
         this.espEstado = espEstado;
     }
 
-    public BigDecimal getEspCodigo() {
+    public Long getEspCodigo() {
         return espCodigo;
     }
 
-    public void setEspCodigo(BigDecimal espCodigo) {
+    public void setEspCodigo(Long espCodigo) {
         this.espCodigo = espCodigo;
     }
 

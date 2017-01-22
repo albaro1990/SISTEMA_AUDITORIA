@@ -95,7 +95,7 @@ public class EspecialidadDaoImpl implements EspecialidadDao {
 
             while (rs.next()) {
                 CitEspecialidad especialidad = new CitEspecialidad();
-                especialidad.setEspCodigo(rs.getBigDecimal(1));
+                especialidad.setEspCodigo(rs.getLong(1));
                 especialidad.setEspDescripcion(rs.getString(2));
                 especialidad.setEspEstado(rs.getInt(3));
                 especialidades.add(especialidad);
@@ -120,7 +120,7 @@ public class EspecialidadDaoImpl implements EspecialidadDao {
 
             while (rs.next()) {
                 especialidad= new CitEspecialidad();
-                especialidad.setEspCodigo(rs.getBigDecimal(1));
+                especialidad.setEspCodigo(rs.getLong(1));
                 especialidad.setEspDescripcion(rs.getString(2));
                 especialidad.setEspEstado(rs.getInt(3));
                

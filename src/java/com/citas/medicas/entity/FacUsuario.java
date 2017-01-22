@@ -40,6 +40,8 @@ public class FacUsuario implements Serializable {
     
     private Integer usuEstado;
     
+    private CitEspecialidad citEspecialidad;
+    
     private Date fechaCreacion;
     
     private Date fechaModificacion;
@@ -167,6 +169,14 @@ public class FacUsuario implements Serializable {
         this.fechaModificacion = fechaModificacion;
     }
 
+    public CitEspecialidad getCitEspecialidad() {
+        return citEspecialidad;
+    }
+
+    public void setCitEspecialidad(CitEspecialidad citEspecialidad) {
+        this.citEspecialidad = citEspecialidad;
+    }
+
     
     
     @Override
@@ -193,5 +203,8 @@ public class FacUsuario implements Serializable {
     public String toString() {
         return "com.facturacion.entity.FacUsuario[ usuCodigo=" + usuCodigo + " ]";
     }
+
+    
+    
     
 }
