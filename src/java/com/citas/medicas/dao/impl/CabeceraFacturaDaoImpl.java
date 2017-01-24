@@ -30,7 +30,7 @@ public class CabeceraFacturaDaoImpl implements CabeceraFacturaDao {
 
             pstmt = conn.prepareStatement(sql.toString(), new String[]{"CAB_CODIGO"});
             pstmt.setBigDecimal(1, factura.getUapCodigo().getUapCodigo());
-            pstmt.setBigDecimal(2, factura.getCliCodigo().getCodigo());
+            pstmt.setLong(2, factura.getCliCodigo().getPacCodigo());
             pstmt.setDate(3, new java.sql.Date(new java.util.Date().getTime()));
             pstmt.setInt(4, factura.getCabEstado());
             pstmt.setString(5, factura.getCabAutorizacion());
@@ -103,7 +103,7 @@ public class CabeceraFacturaDaoImpl implements CabeceraFacturaDao {
                 FacCitaFactura factura = new FacCitaFactura();
                 factura.setCabCodigo(rs.getBigDecimal(1));
                 factura.getUapCodigo().setUapCodigo(rs.getBigDecimal(2));
-                factura.getCliCodigo().setCliCodigo(rs.getBigDecimal(3));
+                factura.getCliCodigo().setPacCodigo(rs.getLong(3));
                 factura.setCabFechaCreacion(rs.getDate(4));
                 factura.setCabEstado(rs.getInt(5));
                 factura.setCabAutorizacion(rs.getString(6));
@@ -141,7 +141,7 @@ public class CabeceraFacturaDaoImpl implements CabeceraFacturaDao {
                 
                 factura.setCabCodigo(rs.getBigDecimal(1));
                 factura.getUapCodigo().setUapCodigo(rs.getBigDecimal(2));
-                factura.getCliCodigo().setCliCodigo(rs.getBigDecimal(3));
+                factura.getCliCodigo().setPacCodigo(rs.getLong(3));
                 factura.setCabFechaCreacion(rs.getDate(4));
                 factura.setCabEstado(rs.getInt(5));
                 factura.setCabAutorizacion(rs.getString(6));

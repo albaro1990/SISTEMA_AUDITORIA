@@ -25,7 +25,7 @@
                                 <h:panelGrid columns="12"> 
 
                                     <p:outputLabel value="Identificación" for="ruc" />
-                                    <p:inputText id="ruc" value="#{citasBean.cliente.cliIdentificacin}" required="true" 
+                                    <p:inputText id="ruc" value="#{citasBean.paciente.pacIdentificacin}" required="true" 
                                                  requiredMessage="Campo requerido" maxlength="15" />                                       
 
                                     <p:tooltip for="ruc"
@@ -34,7 +34,7 @@
 
                                     <p:outputLabel value="Cliente" for="cliente" />
                                     <p:inputText id="cliente" disabled="true"                                                 
-                                                 value="#{citasBean.cliente.cliNombres} #{citasBean.cliente.cliApellidos}" />                             
+                                                 value="#{citasBean.paciente.pacNombres} #{citasBean.paciente.pacApellidos}" />                             
                                     <p:tooltip for="cliente"
                                                value="Buscar por cliente"
                                                showEffect="clip" hideEffect="explode" /> 
@@ -51,13 +51,13 @@
                                     <f:verbatim/><f:verbatim/>
 
                                     <p:outputLabel value="Teléfono" for="telefono" />
-                                    <p:inputText id="telefono" value="#{citasBean.cliente.cliTelefono}" disabled="true" />                             
+                                    <p:inputText id="telefono" value="#{citasBean.paciente.pacTelefono}" disabled="true" />                             
                                     <p:tooltip for="telefono"
                                                value="Teléfono"
                                                showEffect="clip" hideEffect="explode" />  
 
                                     <p:outputLabel value="Dirección" for="direccion" />
-                                    <p:inputText id="direccion" value="#{citasBean.cliente.cliDireccion}" disabled="true" />                             
+                                    <p:inputText id="direccion" value="#{citasBean.paciente.pacDireccion}" disabled="true" />                             
                                     <p:tooltip for="direccion"
                                                value="Dirección"
                                                showEffect="clip" hideEffect="explode" />  

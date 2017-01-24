@@ -5,164 +5,183 @@
       xmlns:p="http://primefaces.org/ui"
       xmlns:h="http://java.sun.com/jsf/html"
       xmlns:ui="http://java.sun.com/jsf/facelets"
-      xmlns:f="http://java.sun.com/jsf/core">
+      xmlns:f="http://java.sun.com/jsf/core"
+      >
 
     <h:body>
         <ui:composition template="./../WEB-INF/templates/cuerpo.xhtml">
 
             <ui:define name="page-title">
-                Ingresar Factura
+                Ingresar Usuario
             </ui:define>
 
             <ui:define name="datos">
+
                 <h:form id="formDatos">
                     <p:focus context="formDatos" />                    
-                    <p:growl id="growl" showDetail="true"  life="5000" />
+                    <p:growl id="growl" showDetail="true"  life="1000" />
                     <center>
                         <h:panelGrid id="gridDatos" rendered="#{not empty request.getRemoteUser()}">
-                            <p:panel id="paneDatos" header="Ingresar Factura">
-
-                                <h:panelGrid columns="12"> 
-
-                                    <p:outputLabel value="Identificación" for="ruc" />
-                                    <p:inputText id="ruc" value="#{facturaBean.cliente.cliIdentificacin}" required="true" 
-                                                 requiredMessage="Campo requerido" maxlength="15" />                                       
-
-                                    <p:tooltip for="ruc"
-                                               value="Buscar por ruc o cédula"
-                                               showEffect="clip" hideEffect="explode" />  
-
-                                    <p:outputLabel value="Cliente" for="cliente" />
-                                    <p:inputText id="cliente" disabled="true"                                                 
-                                                 value="#{facturaBean.cliente.cliNombres} #{facturaBean.cliente.cliApellidos}" />                             
-                                    <p:tooltip for="cliente"
-                                               value="Buscar por cliente"
-                                               showEffect="clip" hideEffect="explode" /> 
-
-
-                                    <p:commandButton id="buscar" value="Buscar" validateClient="true" ajax="true" icon="ui-icon-search"
-                                                     actionListener="#{facturaBean.findCliente}"
-                                                     update=":formLista,formDatos" process=":formDatos" />
-                                    <f:verbatim/><f:verbatim/>
-
-                                    <p:commandButton id="ingresar" value="Ingresar" validateClient="true" ajax="true" icon="ui-icon-disk"
-                                                     actionListener="#{facturaBean.addCliente}" immediate="true" process=":formDatos"
-                                                     update=":formDatos" />
-                                    <f:verbatim/><f:verbatim/>
-
-                                    <p:outputLabel value="Teléfono" for="telefono" />
-                                    <p:inputText id="telefono" value="#{facturaBean.cliente.cliTelefono}" disabled="true" />                             
-                                    <p:tooltip for="telefono"
-                                               value="Teléfono"
-                                               showEffect="clip" hideEffect="explode" />  
-
-                                    <p:outputLabel value="Dirección" for="direccion" />
-                                    <p:inputText id="direccion" value="#{facturaBean.cliente.cliDireccion}" disabled="true" />                             
-                                    <p:tooltip for="direccion"
-                                               value="Dirección"
-                                               showEffect="clip" hideEffect="explode" />  
-
-                                    <f:verbatim/><f:verbatim/><f:verbatim/> <f:verbatim/><f:verbatim/><f:verbatim/>
+                            <p:panel id="paneDatos" header="Ingresar Usuario">
+                                <h:panelGrid columns="6">
+                                    <p:outputLabel value="Cédula:" for="cedula" />
+                                    <p:inputText id="cedula" required="true" maxlength="10"
+                                                 requiredMessage="Campo requerido"
+                                                 value="#{pacienteBean.paciente.pacIdentificacin}"/> 
+                                        
                                     
-                                    <p:outputLabel value="Autorización" for="autorizacion" />
-                                    <p:inputText id="autorizacion" value="#{facturaBean.cabeceraFactura.cabAutorizacion}" disabled="true" />                                                                                                     
-                                    <p:tooltip for="autorizacion"
-                                               value="Autorización"
+                                    <p:tooltip for="cedula"
+                                               value="Campo requerido"
                                                showEffect="clip" hideEffect="explode" />
 
-                                    <p:outputLabel value="Fecha" for="fecha" />
-                                    <p:inputText id="fecha" value="#{facturaBean.cabeceraFactura.cabFechaCreacion}" disabled="true">
-                                        <f:convertDateTime pattern="dd/MM/yyyy" />
+                                    <p:outputLabel value="Nombres:" for="nombre" />
+                                    <p:inputText id="nombre" required="true"
+                                                 requiredMessage="Campo requerido"
+                                                 value="#{pacienteBean.paciente.usuNombres}" />                             
+                                    <p:tooltip for="nombre"
+                                               value="Campo requerido"
+                                               showEffect="clip" hideEffect="explode" />
+
+                                    <p:outputLabel value="Apellidos:" for="apellido" />
+                                    <p:inputText id="apellido" required="true"
+                                                 requiredMessage="Campo requerido"
+                                                 value="#{pacienteBean.paciente.usuApellidos}" />                             
+                                    <p:tooltip for="apellido"
+                                               value="Campo requerido"
+                                               showEffect="clip" hideEffect="explode" />
+
+                                    <p:outputLabel value="Correo:" for="correo" />
+                                    <p:inputText id="correo" validatorMessage="El correo ingresado es incorrecto"
+                                                 value="#{pacienteBean.paciente.usuCorreo}">
+                                        <f:validateRegex
+                                            pattern="^[_A-Za-z0-9-\+]+(\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\.[A-Za-z0-9]+)*(\.[A-Za-z]{2,})$" />
                                     </p:inputText>                             
-                                    <p:tooltip for="fecha"
-                                               value="Fecha"
+                                    <p:tooltip for="correo"
+                                               value="Ingrese correo Valido"
+                                               showEffect="clip" hideEffect="explode" />
+
+                                    <p:outputLabel value="Telefono:" for="telf" />
+                                    <p:inputMask id="telf"
+                                                 value="#{pacienteBean.usuario.usuTelefono}" mask="(99) 9999-999"/>                             
+                                    <p:tooltip for="telf"
+                                               value="Ingrese Telefono"
+                                               showEffect="clip" hideEffect="explode" />
+
+                                    <p:outputLabel value="Direccion:" for="dir" />
+                                    <p:inputText id="dir"
+                                                 value="#{pacienteBean.usuario.usuDireccion}" />                             
+                                    <p:tooltip for="dir"
+                                               value="Ingrese Direccion"
+                                               showEffect="clip" hideEffect="explode" />
+
+                                    <p:outputLabel for="ciudad" value="Ciudad:"  />
+                                    <p:selectOneMenu id="ciudad" label="ciudad" value="#{pacienteBean.codigoCiudad}"    
+                                                     required="true" requiredMessage="Campo requerido">
+                                        <f:selectItem itemLabel="Seleccione..." noSelectionOption="true" />
+                                        <f:selectItems value="#{pacienteBean.ciudades}" var="item" itemLabel="#{item.ciuNombre}" itemValue="#{item.ciuCodigo}" />
+                                    </p:selectOneMenu>
+                                    <p:tooltip for="ciudad"
+                                               value="Campo requerido"
+                                               showEffect="clip" hideEffect="explode" />
+                                    
+                                    <p:outputLabel for="est" value="Estado:"  />
+                                    <p:selectOneMenu id="est" label="Estado" value="#{pacienteBean.usuario.usuEstado}" required="true" requiredMessage="Campo requerido">
+                                        <f:selectItem itemLabel="Seleccione..." noSelectionOption="true" />
+                                        <f:selectItem itemLabel="ACTIVO" itemValue="1"/>
+                                        <f:selectItem itemLabel="INACTIVO" itemValue="0"/>
+                                    </p:selectOneMenu>
+                                    <p:tooltip for="est"
+                                               value="Campo requerido"
                                                showEffect="clip" hideEffect="explode" />  
-
-
+                                    
                                     <f:facet name="footer">
                                         <p:commandButton id="grabar" value="Guardar" validateClient="true" ajax="true" icon="ui-icon-disk"
-                                                         actionListener="#{facturaBean.create}"
-                                                         update=":formLista,formDatos" process=":formLista,formDatos" />
-                                        
+                                                         actionListener="#{pacienteBean.create}"
+                                                         update=":formLista,formDatos" process=":formDatos" />
                                         <p:commandButton value="Nuevo" validateClient="true" ajax="true" icon="ui-icon-document"
-                                                         actionListener="#{facturaBean.inicializar}" immediate="true"
+                                                         actionListener="#{pacienteBean.inicializar}" immediate="true"
                                                          update=":formLista,formDatos" process=":formDatos"  />
                                     </f:facet>                             
-                                </h:panelGrid>                                      
+                                </h:panelGrid>                          
                             </p:panel>
                         </h:panelGrid>
                     </center>
                 </h:form>
+
             </ui:define>
 
-            <ui:define name="lista">  
-                <h:form id="formLista">
-                    <p:commandButton id="agregar" value="Agregar" validateClient="true" ajax="true" icon="ui-icon-cart"
-                                     actionListener="#{facturaBean.addArticulo}" rendered="#{not empty request.getRemoteUser()}"
-                                     update=":formLista, :formDatos:growl, :formListaArticulo:dtListaArticulo" process=":formLista" />
-                    <center>
-                        <h:panelGrid id="gridLista" rendered="#{not empty request.getRemoteUser()}">                          
-                            <p:dataTable id="listaSimple" value="#{facturaBean.listaDetalleFacturas}"
-                                         var="item" paginator="false" rows="10" paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink}
+            <ui:define name="lista">
+                <center>
+                    <h:panelGrid id="gridLista" rendered="#{not empty request.getRemoteUser()}">
+                        <h:form id="formLista">
+                            <p:dataTable id="listaSimple" value="#{pacienteBean.pacientes}"
+                                         var="item" paginator="true" rows="10" paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink}
                                          {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
-                                         rowsPerPageTemplate="5,10,15" emptyMessage="Registro no encontrado.">                                                          
+                                         rowsPerPageTemplate="5,10,15" emptyMessage="Registro no encontrado.">
+                                <f:facet name="header">
+                                    <h:outputText value="Listado de Registros" />
+                                </f:facet>
+
+                                <p:column headerText="Editar" style="text-align: center">
+                                    <p:commandButton id="btnEditar" ajax="true" icon="ui-icon-pencil"
+                                                     actionListener="#{usuarioBean.edit}" update=":formDatos"                                                    
+                                                     title="Editar">
+                                        <f:attribute name="objetoEditar" value="#{item}" />
+                                    </p:commandButton>
+                                </p:column>
 
                                 <p:column headerText="Eliminar" style="text-align: center">                                          
                                     <p:commandButton id="btnEliminar" ajax="true" icon="ui-icon-trash"
-                                                     actionListener="#{facturaBean.remove}"
+                                                     actionListener="#{usuarioBean.remove}"
                                                      title="Eliminar"
                                                      update="listaSimple :formDatos:growl">
                                         <p:confirm header="Eliminar"
                                                    message="Esta seguro que desea eliminar? "
                                                    icon="ui-icon-alert" />
-                                        <f:attribute name="objetoRemover" value="#{item}" />
+                                        <f:attribute name="objetoEliminar" value="#{item}" />
                                     </p:commandButton>
                                 </p:column>
 
-                                <p:column headerText="Cantidad" style="text-align: center">
-                                    <p:inputNumber thousandSeparator="" decimalSeparator="" decimalPlaces="0" value="#{item.detCatidad}">
-                                        <p:ajax event="change" listener="#{facturaBean.procesarArticulo}" update="listaSimple,:formDatos:growl" />                                        
-                                    </p:inputNumber>
+                                <p:column headerText="Identificación" filterBy="#{item.usuCodigo.usuIdentificacion}" filterMatchMode="contains" footerText="Identificación">
+                                    <h:outputText value="#{item.usuCodigo.usuIdentificacion}" />
                                 </p:column>
 
-                                <p:column headerText="Concepto">
-                                    <h:outputText value="#{item.artCodigo.artCodigoUnico} #{item.artCodigo.artDescripcion}" />
+                                <p:column headerText="Username" filterBy="#{item.usuCodigo.usuLogin}" filterMatchMode="contains" footerText="Username">
+                                    <h:outputText value="#{item.usuCodigo.usuLogin}" />
                                 </p:column>
 
-                                <p:column headerText="Valor Unitario">                                    
-                                    <p:inputNumber value="#{item.detValorUnitario}">
-                                        <p:ajax event="change" listener="#{facturaBean.procesarArticulo}" update="listaSimple,:formDatos:growl" />                                        
-                                    </p:inputNumber>
-                                </p:column>   
+                                <p:column headerText="Nombres" filterBy="#{item.usuCodigo.usuNombres}" filterMatchMode="contains" footerText="Nombres">
+                                    <h:outputText value="#{item.usuCodigo.usuNombres}" />
+                                </p:column>
 
-                                <p:column id="total" headerText="Valor Total">
-                                    <h:outputText value="#{item.detSubtotal}">
-                                        <f:convertNumber type="currency" currencySymbol="$"/>
+                                <p:column headerText="Apellidos" filterBy="#{item.usuCodigo.usuApellidos}" filterMatchMode="contains" footerText="Apellidos">
+                                    <h:outputText value="#{item.usuCodigo.usuApellidos}" />
+                                </p:column>
+
+                                <p:column headerText="Correo" filterBy="#{item.usuCodigo.usuCorreo}" filterMatchMode="contains" footerText="Correo">
+                                    <h:outputText value="#{item.usuCodigo.usuCorreo}" />
+                                </p:column>
+
+                                <p:column headerText="Fecha Creación" filterBy="#{item.usuCodigo.fechaCreacion}" filterMatchMode="contains" footerText="Fecha Creación">
+                                    <h:outputText value="#{item.usuCodigo.fechaCreacion}">
+                                        <f:convertDateTime pattern="dd/MM/yyyy" />
                                     </h:outputText>
-                                </p:column>   
+                                </p:column>
 
-                                <p:columnGroup type="footer">
-                                    <p:row>
-                                        <p:column colspan="4" style="text-align:right" footerText="Subtotal" />
-                                        <p:column footerText="$#{facturaBean.cabeceraFactura.cabSubtotal}" style="text-align:left" />                                       
-                                    </p:row>
-                                    <p:row>
-                                        <p:column colspan="4" style="text-align:right" footerText="Iva 14%" />
-                                        <p:column footerText="$#{facturaBean.cabeceraFactura.cabIva}" style="text-align:left" />                                       
-                                    </p:row>
-                                    <p:row>
-                                        <p:column colspan="4" style="text-align:right" footerText="Total" />
-                                        <p:column footerText="$#{facturaBean.cabeceraFactura.cabTotal}" style="text-align:left" />                                       
-                                    </p:row>
-                                </p:columnGroup>
-                            </p:dataTable>                                                      
-                        </h:panelGrid>
-                    </center>
-                </h:form>
-                <ui:include src="/common/confirmaBorrar.xhtml" />
-                <ui:include src="/common/popupArticulo.xhtml" />
-                <ui:include src="/common/popupCliente.xhtml" />
+                                <p:column headerText="Rol" filterBy="#{item.rolCodigo.rolNombre}" filterMatchMode="contains" footerText="Rol">
+                                    <h:outputText value="#{item.rolCodigo.rolNombre}" />
+                                </p:column>
+
+                                <p:column headerText="Estado" filterBy="#{item.usuCodigo.usuEstado}" filterMatchMode="contains" footerText="Estado">
+                                    <h:outputText value="#{item.usuCodigo.usuEstado}" />
+                                </p:column>       
+                            </p:dataTable>
+                        </h:form>
+                        <ui:include src="/common/confirmaBorrar.xhtml" />
+                    </h:panelGrid>
+                </center>
             </ui:define>
         </ui:composition>
+
     </h:body>
 </html>

@@ -23,7 +23,7 @@ public class CitPaciente implements Serializable {
 
     
     private Long pacCodigo;
-    private FacCiudad facCiudad;
+    private FacCiudad codigoCiudad;
     private String pacNombres;
     private String pacApellidos;
     private String pacTelefono;
@@ -34,7 +34,7 @@ public class CitPaciente implements Serializable {
     private String pacGenero;
     
     
-    private List<FacCitaFactura> facCitaFacturaList;
+   // private List<FacCitaFactura> facCitaFacturaList;
 
     public CitPaciente() {
     }
@@ -57,13 +57,15 @@ public class CitPaciente implements Serializable {
         this.pacCodigo = pacCodigo;
     }
 
-    public FacCiudad getFacCiudad() {
-        return facCiudad;
+    public FacCiudad getCodigoCiudad() {
+        return codigoCiudad;
     }
 
-    public void setFacCiudad(FacCiudad facCiudad) {
-        this.facCiudad = facCiudad;
+    public void setCodigoCiudad(FacCiudad codigoCiudad) {
+        this.codigoCiudad = codigoCiudad;
     }
+
+   
 
     public String getPacNombres() {
         return pacNombres;
@@ -128,18 +130,6 @@ public class CitPaciente implements Serializable {
     public void setPacGenero(String pacGenero) {
         this.pacGenero = pacGenero;
     }
-
-    public List<FacCitaFactura> getFacCitaFacturaList() {
-        return facCitaFacturaList;
-    }
-
-    public void setFacCitaFacturaList(List<FacCitaFactura> facCitaFacturaList) {
-        this.facCitaFacturaList = facCitaFacturaList;
-    }
-
-    
-
-    
 
     @Override
     public int hashCode() {

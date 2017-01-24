@@ -51,7 +51,7 @@ public class CitaBean extends GenericBean {
     private static final long serialVersionUID = 1L;
     private final Logger LOG = LoggerFactory.getLogger(CitaBean.class);
 
-    private CitPaciente cliente;
+    private CitPaciente paciente;
     private CitPaciente clienteNuevo;
     private FacArticuloDetalle articuloDetalle;
     private FacCitaFactura cabeceraFactura;
@@ -70,7 +70,7 @@ public class CitaBean extends GenericBean {
     public CitaBean() {
         try {
             ciudades = ciudadDAO.findAll();
-            cliente = new CitPaciente();
+            paciente = new CitPaciente();
             clienteNuevo = new CitPaciente();
             articuloDetalle = new FacArticuloDetalle();
             detalleFactura = new FacDetalleFactura();
@@ -94,7 +94,7 @@ public class CitaBean extends GenericBean {
 
     public void inicializar(ActionEvent actionEvent) {
         try {
-            cliente = new CitPaciente();
+            paciente = new CitPaciente();
             cabeceraFactura = new FacCitaFactura();
             cabeceraFactura.setCabFechaCreacion(new Date());
             cabeceraFactura.setCabAutorizacion(String.valueOf(Random.class.newInstance().nextInt()));
@@ -155,7 +155,7 @@ public class CitaBean extends GenericBean {
         listaArticulos = new ArrayList<>();
         RequestContext requestContext = RequestContext.getCurrentInstance();
         try {
-            if (cliente.getPacIdentificacin() != null) {
+            if (paciente.getPacIdentificacin() != null) {
                 cargarCombos();
                 requestContext.execute("PF('dlListaArticulo').show()");
             } else {
@@ -221,7 +221,7 @@ public class CitaBean extends GenericBean {
         try {
             if (cabeceraFactura.getCabTotal().intValue() > 0) {
                 if (cabeceraFactura.getCabCodigo() == null) {
-                    cabeceraFactura.setCliCodigo(cliente);
+                    cabeceraFactura.setCliCodigo(paciente);
                     cabeceraFactura.setCabEstado(1);
                     int idc = cabeceraFacturaDao.save(cabeceraFactura);
                     if (idc > 0) {
@@ -271,16 +271,17 @@ public class CitaBean extends GenericBean {
                 if (!clienteDao.existePorCampo(clienteNuevo.getPacIdentificacin())) {
                     if (ValidadorCedulaRuc.isRucCedulaValido(clienteNuevo.getPacIdentificacin())) {
                         clienteNuevo.setPacEstado(1);
+                        clienteNuevo.setCodigoCiudad(ciudadDAO.find(codigoCiudad));
                         int idc = clienteDao.save(clienteNuevo);
                         if (idc > 0) {
-                            saveMessageInfoDetail("Cliente", "Cliente " + clienteNuevo.getPacIdentificacin() + " creado correctamente");
+                            saveMessageInfoDetail("Paciente", "Paciente " + clienteNuevo.getPacIdentificacin() + " creado correctamente");
                             requestContext.execute("PF('dlListaCliente').hide()");
                         }
                     } else {
-                        saveMessageErrorDetail("Cliente", "La cédula o ruc es incorrecta");
+                        saveMessageErrorDetail("Paciente", "La cédula o ruc es incorrecta");
                     }
                 } else {
-                    saveMessageErrorDetail("Cliente", "Cliente " + clienteNuevo.getPacIdentificacin() + " ya existe");
+                    saveMessageErrorDetail("Paciente", "Paciente " + clienteNuevo.getPacIdentificacin() + " ya existe");
                 }
             }
 
@@ -292,18 +293,18 @@ public class CitaBean extends GenericBean {
 
     public void findCliente(ActionEvent actionEvent) {
         try {
-            if (cliente.getPacIdentificacin() != null) {
-                if (ValidadorCedulaRuc.isRucCedulaValido(cliente.getPacIdentificacin().trim())) {
-                    cliente = clienteDao.find(cliente.getPacIdentificacin());
-                    if (cliente != null) {
-                        saveMessageInfoDetail("Cliente", "Cliente encontrado con exito");
+            if (paciente.getPacIdentificacin() != null) {
+                if (ValidadorCedulaRuc.isRucCedulaValido(paciente.getPacIdentificacin().trim())) {
+                    paciente = clienteDao.find(paciente.getPacIdentificacin());
+                    if (paciente != null) {
+                        saveMessageInfoDetail("Paciente", "Paciente encontrado con exito");
                     } else {
-                        cliente = new CitPaciente();
-                        saveMessageWarnDetail("Cliente", "El cliente no existe");
+                        paciente = new CitPaciente();
+                        saveMessageWarnDetail("Paciente", "El cliente no existe");
                     }
                 } else {
-                    cliente = new CitPaciente();
-                    saveMessageWarnDetail("Cliente", "El ruc o la cédula es incorrecta");
+                    paciente = new CitPaciente();
+                    saveMessageWarnDetail("Paciente", "El ruc o la cédula es incorrecta");
                 }
             }
         } catch (Exception e) {
@@ -328,12 +329,12 @@ public class CitaBean extends GenericBean {
 
     }
 
-    public CitPaciente getCliente() {
-        return cliente;
+    public CitPaciente getPaciente() {
+        return paciente;
     }
 
-    public void setCliente(CitPaciente cliente) {
-        this.cliente = cliente;
+    public void setPaciente(CitPaciente cliente) {
+        this.paciente = cliente;
     }
 
     public FacCitaFactura getCabeceraFactura() {

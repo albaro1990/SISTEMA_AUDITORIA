@@ -18,25 +18,26 @@ public class ClienteDaoImpl implements ClienteDao {
     private PreparedStatement pstmt;
 
     @Override
-    public int save(CitPaciente cliente) throws SQLException {
+    public int save(CitPaciente paciente) throws SQLException {
         int idInserted = 0;
         StringBuilder sql = new StringBuilder();
         try {
             conn = new ConexionDB().getConexion();
-            sql.append("INSERT INTO FAC_CLIENTE(CLI_CODIGO, CLI_NOMBRES, CLI_RAZON_SOCIAL, CLI_TELEFONO, CLI_DIRECCION, CLI_IDENTIFICACIN, CLI_CORREO, CLI_ESTADO, CLI_APELLIDOS) VALUES (FAC_SEQ_CLIENTE.NEXTVAL, ?, ?, ?, ?, ?, ?, ?, ?)");
-            pstmt = conn.prepareStatement(sql.toString(), new String[]{"CLI_CODIGO"});
-            pstmt.setString(1, cliente.getCliNombres());
-            pstmt.setString(2, cliente.getCliRazonSocial());
-            pstmt.setString(3, cliente.getCliTelefono());
-            pstmt.setString(4, cliente.getCliDireccion());
-            pstmt.setString(5, cliente.getCliIdentificacin());
-            pstmt.setString(6, cliente.getCliCorreo());
-            pstmt.setInt(7, cliente.getCliEstado());
-            pstmt.setString(8, cliente.getCliApellidos());
+            sql.append("INSERT INTO CIT_PACIENTE(PAC_CODIGO,CIU_CODIGO,PAC_NOMBRES,PAC_APELLIDOS,PAC_TELEFONO,PAC_DIRECCION,PAC_CEDULA,PAC_CORREO,PAC_ESTADO, PAC_GENERO) VALUES (CIT_SEQ_PACIENTE.NEXTVAL, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+            pstmt = conn.prepareStatement(sql.toString(), new String[]{"PAC_CODIGO"});
+            pstmt.setBigDecimal(1, paciente.getCodigoCiudad().getCiuCodigo());
+            pstmt.setString(2, paciente.getPacNombres());
+            pstmt.setString(3, paciente.getPacApellidos());
+            pstmt.setString(4, paciente.getPacTelefono());
+            pstmt.setString(5, paciente.getPacDireccion());
+            pstmt.setString(6, paciente.getPacIdentificacin());
+            pstmt.setString(7, paciente.getPacCorreo());
+            pstmt.setInt(8, paciente.getPacEstado());
+            pstmt.setString(9, paciente.getPacGenero());
 
             int affectedRows = pstmt.executeUpdate();
             if (affectedRows == 0) {
-                throw new SQLException("Error al crear el cliente");
+                throw new SQLException("Error al crear el paciente");
             }
 
             rs = pstmt.getGeneratedKeys();
@@ -53,14 +54,15 @@ public class ClienteDaoImpl implements ClienteDao {
     }
 
     @Override
-    public int update(CitPaciente cliente) throws SQLException {
+    public int update(CitPaciente paciente) throws SQLException {
         int nup = 0;
         try {
+
             conn = new ConexionDB().getConexion();
-            pstmt = conn.prepareStatement("UPDATE FAC_CLIENTE SET CLI_NOMBRES='" + cliente.getCliNombres() + "',CLI_RAZON_SOCIAL='" + cliente.getCliRazonSocial() + "',"
-                    + "CLI_TELEFONO='" + cliente.getCliTelefono() + "',CLI_DIRECCION='" + cliente.getCliDireccion() + "',CLI_IDENTIFICACIN='" + cliente.getCliIdentificacin() + "',"
-                    + "CLI_CORREO='" + cliente.getCliCorreo() + "',CLI_ESTADO=" + cliente.getCliEstado() + ",CLI_APELLIDOS='" + cliente.getCliApellidos() + "'"
-                    + " WHERE CLI_CODIGO = " + cliente.getCliCodigo() + " ");
+            pstmt = conn.prepareStatement("UPDATE CIT_PACIENTE SET CIU_CODIGO='" + paciente.getPacNombres() + "',PAC_NOMBRES='" + paciente.getPacGenero() + "',"
+                    + "PAC_APELLIDOS='" + paciente.getPacTelefono() + "',PAC_TELEFONO='" + paciente.getPacDireccion() + "',PAC_DIRECCION='" + paciente.getPacIdentificacin() + "',"
+                    + "PAC_CEDULA='" + paciente.getPacCorreo() + "',PAC_CORREO=" + paciente.getPacEstado() + ",PAC_ESTADO='" + paciente.getPacApellidos() + "'"
+                    + ",PAC_GENERO='"+paciente.getPacGenero()+"'  WHERE PAC_CODIGO = " + paciente.getPacCodigo() + " ");
 
             nup = pstmt.executeUpdate();
         } catch (SQLException e) {
@@ -77,7 +79,7 @@ public class ClienteDaoImpl implements ClienteDao {
         int ndel = 0;
         try {
             conn = new ConexionDB().getConexion();
-            pstmt = conn.prepareStatement("DELETE FROM FAC_CLIENTE WHERE CLI_CODIGO = " + id + "");
+            pstmt = conn.prepareStatement("DELETE FROM CIT_PACIENTE WHERE PAC_CODIGO = " + id + "");
             ndel = pstmt.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -94,20 +96,20 @@ public class ClienteDaoImpl implements ClienteDao {
 
         try {
             conn = new ConexionDB().getConexion();
-            pstmt = conn.prepareStatement("SELECT * FROM FAC_CLIENTE ");
+            pstmt = conn.prepareStatement("SELECT * FROM CIT_PACIENTE ");
             rs = pstmt.executeQuery();
 
             while (rs.next()) {
                 CitPaciente cliente = new CitPaciente();
-                cliente.setCliCodigo(rs.getBigDecimal(1));
-                cliente.setCliNombres(rs.getString(2));
-                cliente.setCliRazonSocial(rs.getString(3));
-                cliente.setCliTelefono(rs.getString(4));
-                cliente.setCliDireccion(rs.getString(5));
-                cliente.setCliIdentificacin(rs.getString(6));
-                cliente.setCliCorreo(rs.getString(7));
-                cliente.setCliEstado(rs.getInt(8));
-                cliente.setCliApellidos(rs.getString(9));
+                cliente.setPacCodigo(rs.getLong(1));
+                cliente.setPacNombres(rs.getString(2));
+                cliente.setPacGenero(rs.getString(3));
+                cliente.setPacTelefono(rs.getString(4));
+                cliente.setPacDireccion(rs.getString(5));
+                cliente.setPacIdentificacin(rs.getString(6));
+                cliente.setPacCorreo(rs.getString(7));
+                cliente.setPacEstado(rs.getInt(8));
+                cliente.setPacApellidos(rs.getString(9));
                 clientes.add(cliente);
             }
         } catch (SQLException e) {
@@ -127,21 +129,21 @@ public class ClienteDaoImpl implements ClienteDao {
 
         try {
             conn = new ConexionDB().getConexion();
-            pstmt = conn.prepareStatement("SELECT * FROM FAC_CLIENTE WHERE CLI_IDENTIFICACIN = ? AND CLI_ESTADO = 1");
+            pstmt = conn.prepareStatement("SELECT * FROM CIT_PACIENTE WHERE PAC_CEDULA = ? AND PAC_ESTADO = 1");
             pstmt.setString(1, id);
             rs = pstmt.executeQuery();
 
             while (rs.next()) {
                 cliente = new CitPaciente();
-                cliente.setCliCodigo(rs.getBigDecimal(1));
-                cliente.setCliNombres(rs.getString(2));
-                cliente.setCliRazonSocial(rs.getString(3));
-                cliente.setCliTelefono(rs.getString(4));
-                cliente.setCliDireccion(rs.getString(5));
-                cliente.setCliIdentificacin(rs.getString(6));
-                cliente.setCliCorreo(rs.getString(7));
-                cliente.setCliEstado(rs.getInt(8));
-                cliente.setCliApellidos(rs.getString(9));
+                cliente.setPacCodigo(rs.getLong(1));
+                cliente.setPacNombres(rs.getString(2));
+                cliente.setPacGenero(rs.getString(3));
+                cliente.setPacTelefono(rs.getString(4));
+                cliente.setPacDireccion(rs.getString(5));
+                cliente.setPacIdentificacin(rs.getString(6));
+                cliente.setPacCorreo(rs.getString(7));
+                cliente.setPacEstado(rs.getInt(8));
+                cliente.setPacApellidos(rs.getString(9));
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -158,7 +160,7 @@ public class ClienteDaoImpl implements ClienteDao {
         try {
             Integer rowCount = 0;
             conn = new ConexionDB().getConexion();
-            pstmt = conn.prepareStatement("SELECT COUNT(*) AS CONTADOR FROM FAC_CLIENTE WHERE CLI_IDENTIFICACIN='" + identificacion + "'");
+            pstmt = conn.prepareStatement("SELECT COUNT(*) AS CONTADOR FROM CIT_PACIENTE WHERE PAC_CEDULA='" + identificacion + "'");
             rs = pstmt.executeQuery();
             while (rs.next()) {
                 rowCount = rs.getInt("CONTADOR");
