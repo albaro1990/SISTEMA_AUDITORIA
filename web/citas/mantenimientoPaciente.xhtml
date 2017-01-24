@@ -37,7 +37,7 @@
                                     <p:outputLabel value="Nombres:" for="nombre" />
                                     <p:inputText id="nombre" required="true"
                                                  requiredMessage="Campo requerido"
-                                                 value="#{pacienteBean.paciente.usuNombres}" />                             
+                                                 value="#{pacienteBean.paciente.pacNombres}" />                             
                                     <p:tooltip for="nombre"
                                                value="Campo requerido"
                                                showEffect="clip" hideEffect="explode" />
@@ -45,14 +45,14 @@
                                     <p:outputLabel value="Apellidos:" for="apellido" />
                                     <p:inputText id="apellido" required="true"
                                                  requiredMessage="Campo requerido"
-                                                 value="#{pacienteBean.paciente.usuApellidos}" />                             
+                                                 value="#{pacienteBean.paciente.pacApellidos}" />                             
                                     <p:tooltip for="apellido"
                                                value="Campo requerido"
                                                showEffect="clip" hideEffect="explode" />
 
                                     <p:outputLabel value="Correo:" for="correo" />
                                     <p:inputText id="correo" validatorMessage="El correo ingresado es incorrecto"
-                                                 value="#{pacienteBean.paciente.usuCorreo}">
+                                                 value="#{pacienteBean.paciente.pacCorreo}">
                                         <f:validateRegex
                                             pattern="^[_A-Za-z0-9-\+]+(\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\.[A-Za-z0-9]+)*(\.[A-Za-z]{2,})$" />
                                     </p:inputText>                             
@@ -62,14 +62,14 @@
 
                                     <p:outputLabel value="Telefono:" for="telf" />
                                     <p:inputMask id="telf"
-                                                 value="#{pacienteBean.usuario.usuTelefono}" mask="(99) 9999-999"/>                             
+                                                 value="#{pacienteBean.paciente.pacTelefono}" mask="(99) 9999-999"/>                             
                                     <p:tooltip for="telf"
                                                value="Ingrese Telefono"
                                                showEffect="clip" hideEffect="explode" />
 
                                     <p:outputLabel value="Direccion:" for="dir" />
                                     <p:inputText id="dir"
-                                                 value="#{pacienteBean.usuario.usuDireccion}" />                             
+                                                 value="#{pacienteBean.paciente.pacDireccion}" />                             
                                     <p:tooltip for="dir"
                                                value="Ingrese Direccion"
                                                showEffect="clip" hideEffect="explode" />
@@ -85,10 +85,11 @@
                                                showEffect="clip" hideEffect="explode" />
                                     
                                     <p:outputLabel for="est" value="Estado:"  />
-                                    <p:selectOneMenu id="est" label="Estado" value="#{pacienteBean.usuario.usuEstado}" required="true" requiredMessage="Campo requerido">
+                                    <p:selectOneMenu id="est" label="Estado" value="#{pacienteBean.paciente.pacGenero}" required="true" requiredMessage="Campo requerido">
                                         <f:selectItem itemLabel="Seleccione..." noSelectionOption="true" />
-                                        <f:selectItem itemLabel="ACTIVO" itemValue="1"/>
-                                        <f:selectItem itemLabel="INACTIVO" itemValue="0"/>
+                                        <f:selectItem itemLabel="MASCULINO" itemValue="MASCULINO"/>
+                                        <f:selectItem itemLabel="FEMENINO" itemValue="FEMENINO"/>
+                                        <f:selectItem itemLabel="OTRO" itemValue="OTRO"/>
                                     </p:selectOneMenu>
                                     <p:tooltip for="est"
                                                value="Campo requerido"
@@ -124,7 +125,7 @@
 
                                 <p:column headerText="Editar" style="text-align: center">
                                     <p:commandButton id="btnEditar" ajax="true" icon="ui-icon-pencil"
-                                                     actionListener="#{usuarioBean.edit}" update=":formDatos"                                                    
+                                                     actionListener="#{pacienteBean.edit}" update=":formDatos"                                                    
                                                      title="Editar">
                                         <f:attribute name="objetoEditar" value="#{item}" />
                                     </p:commandButton>
@@ -132,7 +133,7 @@
 
                                 <p:column headerText="Eliminar" style="text-align: center">                                          
                                     <p:commandButton id="btnEliminar" ajax="true" icon="ui-icon-trash"
-                                                     actionListener="#{usuarioBean.remove}"
+                                                     actionListener="#{pacienteBean.remove}"
                                                      title="Eliminar"
                                                      update="listaSimple :formDatos:growl">
                                         <p:confirm header="Eliminar"
@@ -142,38 +143,36 @@
                                     </p:commandButton>
                                 </p:column>
 
-                                <p:column headerText="Identificación" filterBy="#{item.usuCodigo.usuIdentificacion}" filterMatchMode="contains" footerText="Identificación">
-                                    <h:outputText value="#{item.usuCodigo.usuIdentificacion}" />
+                                <p:column headerText="Identificación" filterBy="#{item.pacIdentificacin}" filterMatchMode="contains" footerText="Identificación">
+                                    <h:outputText value="#{item.pacIdentificacin}" />
                                 </p:column>
 
-                                <p:column headerText="Username" filterBy="#{item.usuCodigo.usuLogin}" filterMatchMode="contains" footerText="Username">
-                                    <h:outputText value="#{item.usuCodigo.usuLogin}" />
+                                <p:column headerText="Username" filterBy="#{item.pacNombres}" filterMatchMode="contains" footerText="Username">
+                                    <h:outputText value="#{item.pacNombres}" />
                                 </p:column>
 
-                                <p:column headerText="Nombres" filterBy="#{item.usuCodigo.usuNombres}" filterMatchMode="contains" footerText="Nombres">
-                                    <h:outputText value="#{item.usuCodigo.usuNombres}" />
+                                <p:column headerText="Nombres" filterBy="#{item.pacApellidos}" filterMatchMode="contains" footerText="Nombres">
+                                    <h:outputText value="#{item.pacApellidos}" />
                                 </p:column>
 
-                                <p:column headerText="Apellidos" filterBy="#{item.usuCodigo.usuApellidos}" filterMatchMode="contains" footerText="Apellidos">
-                                    <h:outputText value="#{item.usuCodigo.usuApellidos}" />
+                                <p:column headerText="Apellidos" filterBy="#{item.codigoCiudad.ciuNombre}" filterMatchMode="contains" footerText="Apellidos">
+                                    <h:outputText value="#{item.codigoCiudad.ciuNombre}" />
                                 </p:column>
 
-                                <p:column headerText="Correo" filterBy="#{item.usuCodigo.usuCorreo}" filterMatchMode="contains" footerText="Correo">
-                                    <h:outputText value="#{item.usuCodigo.usuCorreo}" />
+                                <p:column headerText="Correo" filterBy="#{item.pacCorreo}" filterMatchMode="contains" footerText="Correo">
+                                    <h:outputText value="#{item.pacCorreo}" />
                                 </p:column>
 
-                                <p:column headerText="Fecha Creación" filterBy="#{item.usuCodigo.fechaCreacion}" filterMatchMode="contains" footerText="Fecha Creación">
-                                    <h:outputText value="#{item.usuCodigo.fechaCreacion}">
-                                        <f:convertDateTime pattern="dd/MM/yyyy" />
-                                    </h:outputText>
+                                <p:column headerText="Genero" filterBy="#{item.pacGenero}" filterMatchMode="contains" footerText="Genero">
+                                    <h:outputText value="#{item.pacGenero}" />
+                                </p:column>
+                                
+                                <p:column headerText="Apellidos" filterBy="#{item.pacTelefono}" filterMatchMode="contains" footerText="Apellidos">
+                                    <h:outputText value="#{item.pacTelefono}" />
                                 </p:column>
 
-                                <p:column headerText="Rol" filterBy="#{item.rolCodigo.rolNombre}" filterMatchMode="contains" footerText="Rol">
-                                    <h:outputText value="#{item.rolCodigo.rolNombre}" />
-                                </p:column>
-
-                                <p:column headerText="Estado" filterBy="#{item.usuCodigo.usuEstado}" filterMatchMode="contains" footerText="Estado">
-                                    <h:outputText value="#{item.usuCodigo.usuEstado}" />
+                                <p:column headerText="Estado" filterBy="#{item.pacEstado}" filterMatchMode="contains" footerText="Estado">
+                                    <h:outputText value="#{item.pacEstado}" />
                                 </p:column>       
                             </p:dataTable>
                         </h:form>
