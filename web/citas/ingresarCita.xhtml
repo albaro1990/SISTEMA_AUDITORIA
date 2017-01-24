@@ -11,7 +11,7 @@
         <ui:composition template="./../WEB-INF/templates/cuerpo.xhtml">
 
             <ui:define name="page-title">
-                Ingresar Factura
+                Ingresar Citas
             </ui:define>
 
             <ui:define name="datos">
@@ -25,7 +25,7 @@
                                 <h:panelGrid columns="12"> 
 
                                     <p:outputLabel value="Identificación" for="ruc" />
-                                    <p:inputText id="ruc" value="#{facturaBean.cliente.cliIdentificacin}" required="true" 
+                                    <p:inputText id="ruc" value="#{citasBean.cliente.cliIdentificacin}" required="true" 
                                                  requiredMessage="Campo requerido" maxlength="15" />                                       
 
                                     <p:tooltip for="ruc"
@@ -34,30 +34,30 @@
 
                                     <p:outputLabel value="Cliente" for="cliente" />
                                     <p:inputText id="cliente" disabled="true"                                                 
-                                                 value="#{facturaBean.cliente.cliNombres} #{facturaBean.cliente.cliApellidos}" />                             
+                                                 value="#{citasBean.cliente.cliNombres} #{citasBean.cliente.cliApellidos}" />                             
                                     <p:tooltip for="cliente"
                                                value="Buscar por cliente"
                                                showEffect="clip" hideEffect="explode" /> 
 
 
                                     <p:commandButton id="buscar" value="Buscar" validateClient="true" ajax="true" icon="ui-icon-search"
-                                                     actionListener="#{facturaBean.findCliente}"
+                                                     actionListener="#{citasBean.findCliente}"
                                                      update=":formLista,formDatos" process=":formDatos" />
                                     <f:verbatim/><f:verbatim/>
 
                                     <p:commandButton id="ingresar" value="Ingresar" validateClient="true" ajax="true" icon="ui-icon-disk"
-                                                     actionListener="#{facturaBean.addCliente}" immediate="true" process=":formDatos"
+                                                     actionListener="#{citasBean.addCliente}" immediate="true" process=":formDatos"
                                                      update=":formDatos" />
                                     <f:verbatim/><f:verbatim/>
 
                                     <p:outputLabel value="Teléfono" for="telefono" />
-                                    <p:inputText id="telefono" value="#{facturaBean.cliente.cliTelefono}" disabled="true" />                             
+                                    <p:inputText id="telefono" value="#{citasBean.cliente.cliTelefono}" disabled="true" />                             
                                     <p:tooltip for="telefono"
                                                value="Teléfono"
                                                showEffect="clip" hideEffect="explode" />  
 
                                     <p:outputLabel value="Dirección" for="direccion" />
-                                    <p:inputText id="direccion" value="#{facturaBean.cliente.cliDireccion}" disabled="true" />                             
+                                    <p:inputText id="direccion" value="#{citasBean.cliente.cliDireccion}" disabled="true" />                             
                                     <p:tooltip for="direccion"
                                                value="Dirección"
                                                showEffect="clip" hideEffect="explode" />  
@@ -65,13 +65,13 @@
                                     <f:verbatim/><f:verbatim/><f:verbatim/> <f:verbatim/><f:verbatim/><f:verbatim/>
                                     
                                     <p:outputLabel value="Autorización" for="autorizacion" />
-                                    <p:inputText id="autorizacion" value="#{facturaBean.cabeceraFactura.cabAutorizacion}" disabled="true" />                                                                                                     
+                                    <p:inputText id="autorizacion" value="#{citasBean.cabeceraFactura.cabAutorizacion}" disabled="true" />                                                                                                     
                                     <p:tooltip for="autorizacion"
                                                value="Autorización"
                                                showEffect="clip" hideEffect="explode" />
 
                                     <p:outputLabel value="Fecha" for="fecha" />
-                                    <p:inputText id="fecha" value="#{facturaBean.cabeceraFactura.cabFechaCreacion}" disabled="true">
+                                    <p:inputText id="fecha" value="#{citasBean.cabeceraFactura.cabFechaCreacion}" disabled="true">
                                         <f:convertDateTime pattern="dd/MM/yyyy" />
                                     </p:inputText>                             
                                     <p:tooltip for="fecha"
@@ -81,11 +81,11 @@
 
                                     <f:facet name="footer">
                                         <p:commandButton id="grabar" value="Guardar" validateClient="true" ajax="true" icon="ui-icon-disk"
-                                                         actionListener="#{facturaBean.create}"
+                                                         actionListener="#{citasBean.create}"
                                                          update=":formLista,formDatos" process=":formLista,formDatos" />
                                         
                                         <p:commandButton value="Nuevo" validateClient="true" ajax="true" icon="ui-icon-document"
-                                                         actionListener="#{facturaBean.inicializar}" immediate="true"
+                                                         actionListener="#{citasBean.inicializar}" immediate="true"
                                                          update=":formLista,formDatos" process=":formDatos"  />
                                     </f:facet>                             
                                 </h:panelGrid>                                      
@@ -98,18 +98,18 @@
             <ui:define name="lista">  
                 <h:form id="formLista">
                     <p:commandButton id="agregar" value="Agregar" validateClient="true" ajax="true" icon="ui-icon-cart"
-                                     actionListener="#{facturaBean.addArticulo}" rendered="#{not empty request.getRemoteUser()}"
+                                     actionListener="#{citasBean.addArticulo}" rendered="#{not empty request.getRemoteUser()}"
                                      update=":formLista, :formDatos:growl, :formListaArticulo:dtListaArticulo" process=":formLista" />
                     <center>
                         <h:panelGrid id="gridLista" rendered="#{not empty request.getRemoteUser()}">                          
-                            <p:dataTable id="listaSimple" value="#{facturaBean.listaDetalleFacturas}"
+                            <p:dataTable id="listaSimple" value="#{citasBean.listaDetalleFacturas}"
                                          var="item" paginator="false" rows="10" paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink}
                                          {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
                                          rowsPerPageTemplate="5,10,15" emptyMessage="Registro no encontrado.">                                                          
 
                                 <p:column headerText="Eliminar" style="text-align: center">                                          
                                     <p:commandButton id="btnEliminar" ajax="true" icon="ui-icon-trash"
-                                                     actionListener="#{facturaBean.remove}"
+                                                     actionListener="#{citasBean.remove}"
                                                      title="Eliminar"
                                                      update="listaSimple :formDatos:growl">
                                         <p:confirm header="Eliminar"
@@ -121,7 +121,7 @@
 
                                 <p:column headerText="Cantidad" style="text-align: center">
                                     <p:inputNumber thousandSeparator="" decimalSeparator="" decimalPlaces="0" value="#{item.detCatidad}">
-                                        <p:ajax event="change" listener="#{facturaBean.procesarArticulo}" update="listaSimple,:formDatos:growl" />                                        
+                                        <p:ajax event="change" listener="#{citasBean.procesarArticulo}" update="listaSimple,:formDatos:growl" />                                        
                                     </p:inputNumber>
                                 </p:column>
 
@@ -131,7 +131,7 @@
 
                                 <p:column headerText="Valor Unitario">                                    
                                     <p:inputNumber value="#{item.detValorUnitario}">
-                                        <p:ajax event="change" listener="#{facturaBean.procesarArticulo}" update="listaSimple,:formDatos:growl" />                                        
+                                        <p:ajax event="change" listener="#{citasBean.procesarArticulo}" update="listaSimple,:formDatos:growl" />                                        
                                     </p:inputNumber>
                                 </p:column>   
 
@@ -144,15 +144,15 @@
                                 <p:columnGroup type="footer">
                                     <p:row>
                                         <p:column colspan="4" style="text-align:right" footerText="Subtotal" />
-                                        <p:column footerText="$#{facturaBean.cabeceraFactura.cabSubtotal}" style="text-align:left" />                                       
+                                        <p:column footerText="$#{citasBean.cabeceraFactura.cabSubtotal}" style="text-align:left" />                                       
                                     </p:row>
                                     <p:row>
                                         <p:column colspan="4" style="text-align:right" footerText="Iva 14%" />
-                                        <p:column footerText="$#{facturaBean.cabeceraFactura.cabIva}" style="text-align:left" />                                       
+                                        <p:column footerText="$#{citasBean.cabeceraFactura.cabIva}" style="text-align:left" />                                       
                                     </p:row>
                                     <p:row>
                                         <p:column colspan="4" style="text-align:right" footerText="Total" />
-                                        <p:column footerText="$#{facturaBean.cabeceraFactura.cabTotal}" style="text-align:left" />                                       
+                                        <p:column footerText="$#{citasBean.cabeceraFactura.cabTotal}" style="text-align:left" />                                       
                                     </p:row>
                                 </p:columnGroup>
                             </p:dataTable>                                                      
@@ -161,7 +161,7 @@
                 </h:form>
                 <ui:include src="/common/confirmaBorrar.xhtml" />
                 <ui:include src="/common/popupArticulo.xhtml" />
-                <ui:include src="/common/popupCliente.xhtml" />
+                <ui:include src="/common/popupPaciente.xhtml" />
             </ui:define>
         </ui:composition>
     </h:body>

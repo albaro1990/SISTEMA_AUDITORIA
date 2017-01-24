@@ -1,20 +1,20 @@
 package com.citas.medicas.dao;
 
-import com.citas.medicas.entity.FacCliente;
+import com.citas.medicas.entity.CitPaciente;
 import java.sql.SQLException;
 import java.util.List;
 
 public interface ClienteDao {
 
-    public int save(FacCliente cliente) throws SQLException;
+    public int save(CitPaciente cliente) throws SQLException;
 
-    public int update(FacCliente usuario) throws SQLException;
+    public int update(CitPaciente usuario) throws SQLException;
 
     public int delete(int id) throws SQLException;
 
-    public List<FacCliente> findAll() throws SQLException;
+    public List<CitPaciente> findAll() throws SQLException;
 
-    public FacCliente find(String id) throws SQLException;
+    public CitPaciente find(String id) throws SQLException;
     
     public boolean existePorCampo(String identificacion) throws SQLException;
 }

@@ -33,7 +33,7 @@ public class FacUsuarioAplicacion implements Serializable {
     
     private FacUsuario usuCodigo;
     
-    private List<FacCabeceraFactura> facCabeceraFacturaList;
+    private List<FacCitaFactura> facCabeceraFacturaList;
 
     public FacUsuarioAplicacion() {
     }
@@ -95,11 +95,11 @@ public class FacUsuarioAplicacion implements Serializable {
         this.usuCodigo = usuCodigo;
     }
 
-    public List<FacCabeceraFactura> getFacCabeceraFacturaList() {
+    public List<FacCitaFactura> getFacCabeceraFacturaList() {
         return facCabeceraFacturaList;
     }
 
-    public void setFacCabeceraFacturaList(List<FacCabeceraFactura> facCabeceraFacturaList) {
+    public void setFacCabeceraFacturaList(List<FacCitaFactura> facCabeceraFacturaList) {
         this.facCabeceraFacturaList = facCabeceraFacturaList;
     }
 

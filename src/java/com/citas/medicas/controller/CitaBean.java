@@ -7,18 +7,22 @@ package com.citas.medicas.controller;
 import com.citas.medicas.dao.ArticuloDao;
 import com.citas.medicas.dao.ArticuloDetalleDao;
 import com.citas.medicas.dao.CabeceraFacturaDao;
+import com.citas.medicas.dao.CiudadDao;
 import com.citas.medicas.dao.ClienteDao;
 import com.citas.medicas.dao.DetalleFacturaDao;
 import com.citas.medicas.dao.impl.ArticuloDaoImpl;
 import com.citas.medicas.dao.impl.ArticuloDetalleDaoImpl;
 import com.citas.medicas.dao.impl.CabeceraFacturaDaoImpl;
+import com.citas.medicas.dao.impl.CiudadDaoImpl;
 import com.citas.medicas.dao.impl.ClienteDaoImpl;
 import com.citas.medicas.dao.impl.DetalleFacturaDaoImpl;
 import com.citas.medicas.entity.FacArticulo;
 import com.citas.medicas.entity.FacArticuloDetalle;
-import com.citas.medicas.entity.FacCabeceraFactura;
-import com.citas.medicas.entity.FacCliente;
+import com.citas.medicas.entity.FacCitaFactura;
+import com.citas.medicas.entity.CitPaciente;
+import com.citas.medicas.entity.FacCiudad;
 import com.citas.medicas.entity.FacDetalleFactura;
+import com.citas.medicas.entity.FacRol;
 import com.citas.medicas.utilitarios.Utils;
 import com.citas.medicas.utilitarios.ValidadorCedulaRuc;
 import java.math.BigDecimal;
@@ -40,17 +44,17 @@ import org.primefaces.event.UnselectEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-@ManagedBean(name = "facturaBean")
+@ManagedBean(name = "citasBean")
 @ViewScoped
-public class FacturaBean extends GenericBean {
+public class CitaBean extends GenericBean {
 
     private static final long serialVersionUID = 1L;
-    private final Logger LOG = LoggerFactory.getLogger(FacturaBean.class);
+    private final Logger LOG = LoggerFactory.getLogger(CitaBean.class);
 
-    private FacCliente cliente;
-    private FacCliente clienteNuevo;
+    private CitPaciente cliente;
+    private CitPaciente clienteNuevo;
     private FacArticuloDetalle articuloDetalle;
-    private FacCabeceraFactura cabeceraFactura;
+    private FacCitaFactura cabeceraFactura;
     private List<FacDetalleFactura> listaDetalleFacturas;
     private List<FacArticulo> listaArticulos;
     private ClienteDao clienteDao = new ClienteDaoImpl();
@@ -60,21 +64,26 @@ public class FacturaBean extends GenericBean {
     private ArticuloDetalleDao articuloDetalleDao = new ArticuloDetalleDaoImpl();
     private FacArticulo articuloSeleccionado;
     private FacDetalleFactura detalleFactura;
-
-    public FacturaBean() {
+    private List<FacCiudad> ciudades = new ArrayList<FacCiudad>();
+    private Integer codigoCiudad;
+    private CiudadDao ciudadDAO = new CiudadDaoImpl();
+    public CitaBean() {
         try {
-            cliente = new FacCliente();
-            clienteNuevo = new FacCliente();
+            ciudades = ciudadDAO.findAll();
+            cliente = new CitPaciente();
+            clienteNuevo = new CitPaciente();
             articuloDetalle = new FacArticuloDetalle();
             detalleFactura = new FacDetalleFactura();
             articuloSeleccionado = new FacArticulo();
-            cabeceraFactura = new FacCabeceraFactura();
+            cabeceraFactura = new FacCitaFactura();
             cabeceraFactura.setCabSubtotal(BigDecimal.ZERO);
             cabeceraFactura.setCabTotal(BigDecimal.ZERO);
             cabeceraFactura.setCabIva(BigDecimal.ZERO);
             cabeceraFactura.setCabFechaCreacion(new Date());
             cabeceraFactura.setCabAutorizacion(String.valueOf(Random.class.newInstance().nextInt()));
         } catch (InstantiationException | IllegalAccessException ex) {
+            LOG.error(ex.getMessage(), ex);
+        }catch (SQLException ex) {
             LOG.error(ex.getMessage(), ex);
         }
 
@@ -85,8 +94,8 @@ public class FacturaBean extends GenericBean {
 
     public void inicializar(ActionEvent actionEvent) {
         try {
-            cliente = new FacCliente();
-            cabeceraFactura = new FacCabeceraFactura();
+            cliente = new CitPaciente();
+            cabeceraFactura = new FacCitaFactura();
             cabeceraFactura.setCabFechaCreacion(new Date());
             cabeceraFactura.setCabAutorizacion(String.valueOf(Random.class.newInstance().nextInt()));
             detalleFactura = new FacDetalleFactura();
@@ -146,7 +155,7 @@ public class FacturaBean extends GenericBean {
         listaArticulos = new ArrayList<>();
         RequestContext requestContext = RequestContext.getCurrentInstance();
         try {
-            if (cliente.getCliIdentificacin() != null) {
+            if (cliente.getPacIdentificacin() != null) {
                 cargarCombos();
                 requestContext.execute("PF('dlListaArticulo').show()");
             } else {
@@ -158,7 +167,7 @@ public class FacturaBean extends GenericBean {
     }
 
     public void addCliente(ActionEvent actionEvent) {
-        clienteNuevo = new FacCliente();
+        clienteNuevo = new CitPaciente();
         RequestContext requestContext = RequestContext.getCurrentInstance();
         try {
             requestContext.execute("PF('dlListaCliente').show()");
@@ -255,23 +264,23 @@ public class FacturaBean extends GenericBean {
         }
     }
 
-    private void createCliente(ActionEvent actionEvent) {
+    public void createCliente(ActionEvent actionEvent) {
         RequestContext requestContext = RequestContext.getCurrentInstance();
         try {
-            if (clienteNuevo.getCliCodigo() == null) {
-                if (!clienteDao.existePorCampo(clienteNuevo.getCliIdentificacin())) {
-                    if (ValidadorCedulaRuc.isRucCedulaValido(clienteNuevo.getCliIdentificacin())) {
-                        clienteNuevo.setCliEstado(1);
+            if (clienteNuevo.getPacCodigo() == null) {
+                if (!clienteDao.existePorCampo(clienteNuevo.getPacIdentificacin())) {
+                    if (ValidadorCedulaRuc.isRucCedulaValido(clienteNuevo.getPacIdentificacin())) {
+                        clienteNuevo.setPacEstado(1);
                         int idc = clienteDao.save(clienteNuevo);
                         if (idc > 0) {
-                            saveMessageInfoDetail("Cliente", "Cliente " + clienteNuevo.getCliIdentificacin() + " creado correctamente");
+                            saveMessageInfoDetail("Cliente", "Cliente " + clienteNuevo.getPacIdentificacin() + " creado correctamente");
                             requestContext.execute("PF('dlListaCliente').hide()");
                         }
                     } else {
                         saveMessageErrorDetail("Cliente", "La cédula o ruc es incorrecta");
                     }
                 } else {
-                    saveMessageErrorDetail("Cliente", "Cliente " + clienteNuevo.getCliIdentificacin() + " ya existe");
+                    saveMessageErrorDetail("Cliente", "Cliente " + clienteNuevo.getPacIdentificacin() + " ya existe");
                 }
             }
 
@@ -283,17 +292,17 @@ public class FacturaBean extends GenericBean {
 
     public void findCliente(ActionEvent actionEvent) {
         try {
-            if (cliente.getCliIdentificacin() != null) {
-                if (ValidadorCedulaRuc.isRucCedulaValido(cliente.getCliIdentificacin().trim())) {
-                    cliente = clienteDao.find(cliente.getCliIdentificacin());
+            if (cliente.getPacIdentificacin() != null) {
+                if (ValidadorCedulaRuc.isRucCedulaValido(cliente.getPacIdentificacin().trim())) {
+                    cliente = clienteDao.find(cliente.getPacIdentificacin());
                     if (cliente != null) {
                         saveMessageInfoDetail("Cliente", "Cliente encontrado con exito");
                     } else {
-                        cliente = new FacCliente();
+                        cliente = new CitPaciente();
                         saveMessageWarnDetail("Cliente", "El cliente no existe");
                     }
                 } else {
-                    cliente = new FacCliente();
+                    cliente = new CitPaciente();
                     saveMessageWarnDetail("Cliente", "El ruc o la cédula es incorrecta");
                 }
             }
@@ -319,19 +328,19 @@ public class FacturaBean extends GenericBean {
 
     }
 
-    public FacCliente getCliente() {
+    public CitPaciente getCliente() {
         return cliente;
     }
 
-    public void setCliente(FacCliente cliente) {
+    public void setCliente(CitPaciente cliente) {
         this.cliente = cliente;
     }
 
-    public FacCabeceraFactura getCabeceraFactura() {
+    public FacCitaFactura getCabeceraFactura() {
         return cabeceraFactura;
     }
 
-    public void setCabeceraFactura(FacCabeceraFactura cabeceraFactura) {
+    public void setCabeceraFactura(FacCitaFactura cabeceraFactura) {
         this.cabeceraFactura = cabeceraFactura;
     }
 
@@ -367,12 +376,36 @@ public class FacturaBean extends GenericBean {
         this.articuloSeleccionado = articuloSeleccionado;
     }
 
-    public FacCliente getClienteNuevo() {
+    public CitPaciente getClienteNuevo() {
         return clienteNuevo;
     }
 
-    public void setClienteNuevo(FacCliente clienteNuevo) {
+    public void setClienteNuevo(CitPaciente clienteNuevo) {
         this.clienteNuevo = clienteNuevo;
+    }
+
+    public List<FacCiudad> getCiudades() {
+        return ciudades;
+    }
+
+    public void setCiudades(List<FacCiudad> ciudades) {
+        this.ciudades = ciudades;
+    }
+
+    public Integer getCodigoCiudad() {
+        return codigoCiudad;
+    }
+
+    public void setCodigoCiudad(Integer codigoCiudad) {
+        this.codigoCiudad = codigoCiudad;
+    }
+
+    public CiudadDao getCiudadDAO() {
+        return ciudadDAO;
+    }
+
+    public void setCiudadDAO(CiudadDao ciudadDAO) {
+        this.ciudadDAO = ciudadDAO;
     }
 
 }

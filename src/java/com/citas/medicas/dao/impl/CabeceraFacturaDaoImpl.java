@@ -2,8 +2,8 @@ package com.citas.medicas.dao.impl;
 
 import com.citas.medicas.conexion.ConexionDB;
 import com.citas.medicas.dao.CabeceraFacturaDao;
-import com.citas.medicas.entity.FacCabeceraFactura;
-import com.citas.medicas.entity.FacCliente;
+import com.citas.medicas.entity.FacCitaFactura;
+import com.citas.medicas.entity.CitPaciente;
 import com.citas.medicas.entity.FacUsuarioAplicacion;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -20,7 +20,7 @@ public class CabeceraFacturaDaoImpl implements CabeceraFacturaDao {
     private PreparedStatement pstmt;
 
     @Override
-    public int save(FacCabeceraFactura factura) throws SQLException {
+    public int save(FacCitaFactura factura) throws SQLException {
         int idInserted = 0;
         StringBuilder sql = new StringBuilder();
         try {
@@ -30,7 +30,7 @@ public class CabeceraFacturaDaoImpl implements CabeceraFacturaDao {
 
             pstmt = conn.prepareStatement(sql.toString(), new String[]{"CAB_CODIGO"});
             pstmt.setBigDecimal(1, factura.getUapCodigo().getUapCodigo());
-            pstmt.setBigDecimal(2, factura.getCliCodigo().getCliCodigo());
+            pstmt.setBigDecimal(2, factura.getCliCodigo().getCodigo());
             pstmt.setDate(3, new java.sql.Date(new java.util.Date().getTime()));
             pstmt.setInt(4, factura.getCabEstado());
             pstmt.setString(5, factura.getCabAutorizacion());
@@ -58,7 +58,7 @@ public class CabeceraFacturaDaoImpl implements CabeceraFacturaDao {
     }
 
     @Override
-    public int update(FacCabeceraFactura factura) throws SQLException {
+    public int update(FacCitaFactura factura) throws SQLException {
         int nup = 0;
         try {
             conn = new ConexionDB().getConexion();
@@ -91,8 +91,8 @@ public class CabeceraFacturaDaoImpl implements CabeceraFacturaDao {
     }
 
     @Override
-    public List<FacCabeceraFactura> findAll() throws SQLException {
-        List<FacCabeceraFactura> facturas = new ArrayList<FacCabeceraFactura>();
+    public List<FacCitaFactura> findAll() throws SQLException {
+        List<FacCitaFactura> facturas = new ArrayList<FacCitaFactura>();
 
         try {
             conn = new ConexionDB().getConexion();
@@ -100,7 +100,7 @@ public class CabeceraFacturaDaoImpl implements CabeceraFacturaDao {
             rs = pstmt.executeQuery();
 
             while (rs.next()) {
-                FacCabeceraFactura factura = new FacCabeceraFactura();
+                FacCitaFactura factura = new FacCitaFactura();
                 factura.setCabCodigo(rs.getBigDecimal(1));
                 factura.getUapCodigo().setUapCodigo(rs.getBigDecimal(2));
                 factura.getCliCodigo().setCliCodigo(rs.getBigDecimal(3));
@@ -124,9 +124,9 @@ public class CabeceraFacturaDaoImpl implements CabeceraFacturaDao {
     }
 
     @Override
-    public FacCabeceraFactura find(int id) throws SQLException {
+    public FacCitaFactura find(int id) throws SQLException {
 
-        FacCabeceraFactura factura = null;
+        FacCitaFactura factura = null;
 
         try {
             conn = new ConexionDB().getConexion();
@@ -135,9 +135,9 @@ public class CabeceraFacturaDaoImpl implements CabeceraFacturaDao {
             rs = pstmt.executeQuery();
 
             while (rs.next()) {
-                factura = new FacCabeceraFactura();
+                factura = new FacCitaFactura();
                 factura.setUapCodigo(new FacUsuarioAplicacion());
-                factura.setCliCodigo(new FacCliente());
+                factura.setCliCodigo(new CitPaciente());
                 
                 factura.setCabCodigo(rs.getBigDecimal(1));
                 factura.getUapCodigo().setUapCodigo(rs.getBigDecimal(2));

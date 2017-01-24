@@ -2,7 +2,7 @@ package com.citas.medicas.dao.impl;
 
 import com.citas.medicas.conexion.ConexionDB;
 import com.citas.medicas.dao.ClienteDao;
-import com.citas.medicas.entity.FacCliente;
+import com.citas.medicas.entity.CitPaciente;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -18,7 +18,7 @@ public class ClienteDaoImpl implements ClienteDao {
     private PreparedStatement pstmt;
 
     @Override
-    public int save(FacCliente cliente) throws SQLException {
+    public int save(CitPaciente cliente) throws SQLException {
         int idInserted = 0;
         StringBuilder sql = new StringBuilder();
         try {
@@ -53,7 +53,7 @@ public class ClienteDaoImpl implements ClienteDao {
     }
 
     @Override
-    public int update(FacCliente cliente) throws SQLException {
+    public int update(CitPaciente cliente) throws SQLException {
         int nup = 0;
         try {
             conn = new ConexionDB().getConexion();
@@ -89,8 +89,8 @@ public class ClienteDaoImpl implements ClienteDao {
     }
 
     @Override
-    public List<FacCliente> findAll() throws SQLException {
-        List<FacCliente> clientes = new ArrayList<FacCliente>();
+    public List<CitPaciente> findAll() throws SQLException {
+        List<CitPaciente> clientes = new ArrayList<CitPaciente>();
 
         try {
             conn = new ConexionDB().getConexion();
@@ -98,7 +98,7 @@ public class ClienteDaoImpl implements ClienteDao {
             rs = pstmt.executeQuery();
 
             while (rs.next()) {
-                FacCliente cliente = new FacCliente();
+                CitPaciente cliente = new CitPaciente();
                 cliente.setCliCodigo(rs.getBigDecimal(1));
                 cliente.setCliNombres(rs.getString(2));
                 cliente.setCliRazonSocial(rs.getString(3));
@@ -121,9 +121,9 @@ public class ClienteDaoImpl implements ClienteDao {
     }
 
     @Override
-    public FacCliente find(String id) throws SQLException {
+    public CitPaciente find(String id) throws SQLException {
 
-        FacCliente cliente = null;
+        CitPaciente cliente = null;
 
         try {
             conn = new ConexionDB().getConexion();
@@ -132,7 +132,7 @@ public class ClienteDaoImpl implements ClienteDao {
             rs = pstmt.executeQuery();
 
             while (rs.next()) {
-                cliente = new FacCliente();
+                cliente = new CitPaciente();
                 cliente.setCliCodigo(rs.getBigDecimal(1));
                 cliente.setCliNombres(rs.getString(2));
                 cliente.setCliRazonSocial(rs.getString(3));

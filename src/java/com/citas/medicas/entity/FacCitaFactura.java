@@ -15,7 +15,7 @@ import java.util.List;
  * @author
  */
 
-public class FacCabeceraFactura implements Serializable {
+public class FacCitaFactura implements Serializable {
 
     private static final long serialVersionUID = 1L;
     
@@ -37,18 +37,18 @@ public class FacCabeceraFactura implements Serializable {
     
     private List<FacDetalleFactura> facDetalleFacturaList;
     
-    private FacCliente cliCodigo;
+    private CitPaciente cliCodigo;
     
     private FacUsuarioAplicacion uapCodigo;
 
-    public FacCabeceraFactura() {
+    public FacCitaFactura() {
     }
 
-    public FacCabeceraFactura(BigDecimal cabCodigo) {
+    public FacCitaFactura(BigDecimal cabCodigo) {
         this.cabCodigo = cabCodigo;
     }
 
-    public FacCabeceraFactura(BigDecimal cabCodigo, Date cabFechaCreacion, Integer cabEstado, BigDecimal cabTotal, BigDecimal cabIva, BigDecimal cabSubtotal) {
+    public FacCitaFactura(BigDecimal cabCodigo, Date cabFechaCreacion, Integer cabEstado, BigDecimal cabTotal, BigDecimal cabIva, BigDecimal cabSubtotal) {
         this.cabCodigo = cabCodigo;
         this.cabFechaCreacion = cabFechaCreacion;
         this.cabEstado = cabEstado;
@@ -129,11 +129,11 @@ public class FacCabeceraFactura implements Serializable {
         this.facDetalleFacturaList = facDetalleFacturaList;
     }
 
-    public FacCliente getCliCodigo() {
+    public CitPaciente getCliCodigo() {
         return cliCodigo;
     }
 
-    public void setCliCodigo(FacCliente cliCodigo) {
+    public void setCliCodigo(CitPaciente cliCodigo) {
         this.cliCodigo = cliCodigo;
     }
 
@@ -155,10 +155,10 @@ public class FacCabeceraFactura implements Serializable {
     @Override
     public boolean equals(Object object) {
         // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof FacCabeceraFactura)) {
+        if (!(object instanceof FacCitaFactura)) {
             return false;
         }
-        FacCabeceraFactura other = (FacCabeceraFactura) object;
+        FacCitaFactura other = (FacCitaFactura) object;
         if ((this.cabCodigo == null && other.cabCodigo != null) || (this.cabCodigo != null && !this.cabCodigo.equals(other.cabCodigo))) {
             return false;
         }

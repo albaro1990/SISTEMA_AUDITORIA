@@ -33,7 +33,7 @@ public class FacDetalleFactura implements Serializable {
     
     private FacArticulo artCodigo;
     
-    private FacCabeceraFactura cabCodigo;
+    private FacCitaFactura cabCodigo;
 
     public FacDetalleFactura() {
     }
@@ -116,11 +116,11 @@ public class FacDetalleFactura implements Serializable {
         this.artCodigo = artCodigo;
     }
 
-    public FacCabeceraFactura getCabCodigo() {
+    public FacCitaFactura getCabCodigo() {
         return cabCodigo;
     }
 
-    public void setCabCodigo(FacCabeceraFactura cabCodigo) {
+    public void setCabCodigo(FacCitaFactura cabCodigo) {
         this.cabCodigo = cabCodigo;
     }
 

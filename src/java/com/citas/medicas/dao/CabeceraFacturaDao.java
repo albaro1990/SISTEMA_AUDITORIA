@@ -1,18 +1,18 @@
 package com.citas.medicas.dao;
 
-import com.citas.medicas.entity.FacCabeceraFactura;
+import com.citas.medicas.entity.FacCitaFactura;
 import java.sql.SQLException;
 import java.util.List;
 
 public interface CabeceraFacturaDao {
 
-    public int save(FacCabeceraFactura factura) throws SQLException;
+    public int save(FacCitaFactura factura) throws SQLException;
 
-    public int update(FacCabeceraFactura usuario) throws SQLException;
+    public int update(FacCitaFactura usuario) throws SQLException;
 
     public int delete(int id) throws SQLException;
 
-    public List<FacCabeceraFactura> findAll() throws SQLException;
+    public List<FacCitaFactura> findAll() throws SQLException;
 
-    public FacCabeceraFactura find(int id) throws SQLException;
+    public FacCitaFactura find(int id) throws SQLException;
 }
