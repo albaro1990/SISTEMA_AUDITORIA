@@ -85,6 +85,9 @@ public class PacienteBean extends GenericBean {
         try {
             ciudades = ciudadDAO.findAll();
             pacientes = clienteDAO.findAll();
+            for (CitPaciente item : pacientes) {
+                item.setCodigoCiudad(ciudadDAO.find(item.getCodigoCiudad().getCiuCodigo().intValue()));
+            }
         } catch (SQLException ex) {
             LOG.error(ex.getMessage(), ex);
         }
@@ -109,9 +112,19 @@ public class PacienteBean extends GenericBean {
                 } else {
                     saveMessageErrorDetail("Paciente", "Paciente " + paciente.getPacIdentificacin() + " ya existe");
                 }
+            }else if (paciente.getPacCodigo() != null) {
+                paciente.setCodigoCiudad(ciudadDAO.find(codigoCiudad));
+                clienteDAO.update(paciente);
+               /* usuarioAplicacion.setUsuCodigo(usuarioDAO.find(usuario.getUsuCodigo().intValue()));
+                usuarioAplicacion.setRolCodigo(rolDAO.find(codigoRol));
+                usuarioAplicacion.setUapEstado(usuario.getUsuEstado());
+                usuarioAplicacionDao.update(usuarioAplicacion);*/
+                cargarDependencias();
+                saveMessageInfoDetail("Paciente", "Paciente " + paciente.getPacNombres() + " modificado correctamente");
+                this.inicializar(actionEvent);
             }
         } catch (SQLException e) {
-            saveMessageErrorDetail("Usuario", e.getMessage());
+            saveMessageErrorDetail("Paciente", e.getMessage());
             LOG.error(e.getMessage(), e);
         }
 

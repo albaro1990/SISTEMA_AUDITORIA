@@ -3,6 +3,8 @@ package com.citas.medicas.dao.impl;
 import com.citas.medicas.conexion.ConexionDB;
 import com.citas.medicas.dao.ClienteDao;
 import com.citas.medicas.entity.CitPaciente;
+import com.citas.medicas.entity.FacCiudad;
+import com.citas.medicas.entity.FacUsuario;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -59,10 +61,10 @@ public class ClienteDaoImpl implements ClienteDao {
         try {
 
             conn = new ConexionDB().getConexion();
-            pstmt = conn.prepareStatement("UPDATE CIT_PACIENTE SET CIU_CODIGO='" + paciente.getPacNombres() + "',PAC_NOMBRES='" + paciente.getPacGenero() + "',"
-                    + "PAC_APELLIDOS='" + paciente.getPacTelefono() + "',PAC_TELEFONO='" + paciente.getPacDireccion() + "',PAC_DIRECCION='" + paciente.getPacIdentificacin() + "',"
-                    + "PAC_CEDULA='" + paciente.getPacCorreo() + "',PAC_CORREO=" + paciente.getPacEstado() + ",PAC_ESTADO='" + paciente.getPacApellidos() + "'"
-                    + ",PAC_GENERO='"+paciente.getPacGenero()+"'  WHERE PAC_CODIGO = " + paciente.getPacCodigo() + " ");
+            pstmt = conn.prepareStatement("UPDATE CIT_PACIENTE SET CIU_CODIGO=" + paciente.getCodigoCiudad().getCiuCodigo() + ", PAC_NOMBRES='" + paciente.getPacNombres() + "',"
+                    + "PAC_APELLIDOS='" + paciente.getPacApellidos() + "',PAC_TELEFONO='" + paciente.getPacTelefono()+ "',PAC_DIRECCION='" + paciente.getPacDireccion() + "',"
+                    + "PAC_CEDULA='" + paciente.getPacIdentificacin() + "', PAC_CORREO='" + paciente.getPacCorreo() + "',PAC_ESTADO=" + paciente.getPacEstado() + ","
+                    + "PAC_GENERO='"+paciente.getPacGenero()+"' WHERE PAC_CODIGO = "+ paciente.getPacCodigo() +" ");
 
             nup = pstmt.executeUpdate();
         } catch (SQLException e) {
@@ -102,14 +104,16 @@ public class ClienteDaoImpl implements ClienteDao {
             while (rs.next()) {
                 CitPaciente cliente = new CitPaciente();
                 cliente.setPacCodigo(rs.getLong(1));
-                cliente.setPacNombres(rs.getString(2));
-                cliente.setPacGenero(rs.getString(3));
-                cliente.setPacTelefono(rs.getString(4));
-                cliente.setPacDireccion(rs.getString(5));
-                cliente.setPacIdentificacin(rs.getString(6));
-                cliente.setPacCorreo(rs.getString(7));
-                cliente.setPacEstado(rs.getInt(8));
-                cliente.setPacApellidos(rs.getString(9));
+                cliente.setCodigoCiudad(new FacCiudad());
+                cliente.getCodigoCiudad().setCiuCodigo(rs.getBigDecimal(2));
+                cliente.setPacNombres(rs.getString(3));
+                cliente.setPacApellidos(rs.getString(4));
+                cliente.setPacTelefono(rs.getString(5));
+                cliente.setPacDireccion(rs.getString(6));
+                cliente.setPacIdentificacin(rs.getString(7));
+                cliente.setPacCorreo(rs.getString(8));
+                cliente.setPacEstado(rs.getInt(9));
+                cliente.setPacGenero(rs.getString(10));
                 clientes.add(cliente);
             }
         } catch (SQLException e) {
@@ -136,14 +140,16 @@ public class ClienteDaoImpl implements ClienteDao {
             while (rs.next()) {
                 cliente = new CitPaciente();
                 cliente.setPacCodigo(rs.getLong(1));
-                cliente.setPacNombres(rs.getString(2));
-                cliente.setPacGenero(rs.getString(3));
-                cliente.setPacTelefono(rs.getString(4));
-                cliente.setPacDireccion(rs.getString(5));
-                cliente.setPacIdentificacin(rs.getString(6));
-                cliente.setPacCorreo(rs.getString(7));
-                cliente.setPacEstado(rs.getInt(8));
-                cliente.setPacApellidos(rs.getString(9));
+                cliente.setCodigoCiudad(new FacCiudad());
+                cliente.getCodigoCiudad().setCiuCodigo(rs.getBigDecimal(2));
+                cliente.setPacNombres(rs.getString(3));
+                cliente.setPacApellidos(rs.getString(4));
+                cliente.setPacTelefono(rs.getString(5));
+                cliente.setPacDireccion(rs.getString(6));
+                cliente.setPacIdentificacin(rs.getString(7));
+                cliente.setPacCorreo(rs.getString(8));
+                cliente.setPacEstado(rs.getInt(9));
+                cliente.setPacGenero(rs.getString(10));
             }
         } catch (SQLException e) {
             e.printStackTrace();
