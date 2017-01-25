@@ -15,7 +15,7 @@ import java.util.List;
  * @author
  */
 
-public class FacCitaFactura implements Serializable {
+public class CitCita implements Serializable {
 
     private static final long serialVersionUID = 1L;
     
@@ -41,14 +41,14 @@ public class FacCitaFactura implements Serializable {
     
     private FacUsuarioAplicacion uapCodigo;
 
-    public FacCitaFactura() {
+    public CitCita() {
     }
 
-    public FacCitaFactura(BigDecimal cabCodigo) {
+    public CitCita(BigDecimal cabCodigo) {
         this.cabCodigo = cabCodigo;
     }
 
-    public FacCitaFactura(BigDecimal cabCodigo, Date cabFechaCreacion, Integer cabEstado, BigDecimal cabTotal, BigDecimal cabIva, BigDecimal cabSubtotal) {
+    public CitCita(BigDecimal cabCodigo, Date cabFechaCreacion, Integer cabEstado, BigDecimal cabTotal, BigDecimal cabIva, BigDecimal cabSubtotal) {
         this.cabCodigo = cabCodigo;
         this.cabFechaCreacion = cabFechaCreacion;
         this.cabEstado = cabEstado;
@@ -155,10 +155,10 @@ public class FacCitaFactura implements Serializable {
     @Override
     public boolean equals(Object object) {
         // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof FacCitaFactura)) {
+        if (!(object instanceof CitCita)) {
             return false;
         }
-        FacCitaFactura other = (FacCitaFactura) object;
+        CitCita other = (CitCita) object;
         if ((this.cabCodigo == null && other.cabCodigo != null) || (this.cabCodigo != null && !this.cabCodigo.equals(other.cabCodigo))) {
             return false;
         }

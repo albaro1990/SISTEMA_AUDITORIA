@@ -122,7 +122,7 @@
                                                showEffect="clip" hideEffect="explode" />  
                                    
                                     <h:panelGrid id="idEspecialidad">
-                                       <p:outputLabel for="especilidad" value="Especialidad:"  rendered="#{usuarioBean.mostrarEspecialidad}"/>
+                                    <p:outputLabel for="especilidad" value="Especialidad:"  rendered="#{usuarioBean.mostrarEspecialidad}"/>
                                     <p:selectOneMenu id="especilidad" label="especilidad" value="#{usuarioBean.codigoEsp}" 
                                                      required="true" requiredMessage="Campo requerido" rendered="#{usuarioBean.mostrarEspecialidad}">
                                         <f:selectItem itemLabel="Seleccione..." noSelectionOption="true" />
@@ -131,7 +131,6 @@
                                     <p:tooltip for="especilidad"
                                                value="Campo requerido"
                                                showEffect="clip" hideEffect="explode" />
-                                        
                                     </h:panelGrid>
                                     
                                     <f:facet name="footer">

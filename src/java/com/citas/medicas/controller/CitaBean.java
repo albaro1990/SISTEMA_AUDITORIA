@@ -10,19 +10,24 @@ import com.citas.medicas.dao.CabeceraFacturaDao;
 import com.citas.medicas.dao.CiudadDao;
 import com.citas.medicas.dao.ClienteDao;
 import com.citas.medicas.dao.DetalleFacturaDao;
+import com.citas.medicas.dao.EspecialidadDao;
+import com.citas.medicas.dao.UsuarioDao;
 import com.citas.medicas.dao.impl.ArticuloDaoImpl;
 import com.citas.medicas.dao.impl.ArticuloDetalleDaoImpl;
 import com.citas.medicas.dao.impl.CabeceraFacturaDaoImpl;
 import com.citas.medicas.dao.impl.CiudadDaoImpl;
 import com.citas.medicas.dao.impl.ClienteDaoImpl;
 import com.citas.medicas.dao.impl.DetalleFacturaDaoImpl;
+import com.citas.medicas.dao.impl.EspecialidadDaoImpl;
+import com.citas.medicas.dao.impl.UsuarioDaoImpl;
 import com.citas.medicas.entity.FacArticulo;
 import com.citas.medicas.entity.FacArticuloDetalle;
-import com.citas.medicas.entity.FacCitaFactura;
+import com.citas.medicas.entity.CitCita;
+import com.citas.medicas.entity.CitEspecialidad;
 import com.citas.medicas.entity.CitPaciente;
 import com.citas.medicas.entity.FacCiudad;
 import com.citas.medicas.entity.FacDetalleFactura;
-import com.citas.medicas.entity.FacRol;
+import com.citas.medicas.entity.FacUsuario;
 import com.citas.medicas.utilitarios.Utils;
 import com.citas.medicas.utilitarios.ValidadorCedulaRuc;
 import java.math.BigDecimal;
@@ -54,19 +59,26 @@ public class CitaBean extends GenericBean {
     private CitPaciente paciente;
     private CitPaciente clienteNuevo;
     private FacArticuloDetalle articuloDetalle;
-    private FacCitaFactura cabeceraFactura;
+    private CitCita cita;
     private List<FacDetalleFactura> listaDetalleFacturas;
     private List<FacArticulo> listaArticulos;
+    private List<FacUsuario> listaUsuMedicos;
+    private List<FacCiudad> ciudades = new ArrayList<FacCiudad>();
+    private List<CitEspecialidad> especialidades = new ArrayList<CitEspecialidad>();
     private ClienteDao clienteDao = new ClienteDaoImpl();
+    private CiudadDao ciudadDAO = new CiudadDaoImpl();
     private CabeceraFacturaDao cabeceraFacturaDao = new CabeceraFacturaDaoImpl();
     private DetalleFacturaDao detalleFacturaDao = new DetalleFacturaDaoImpl();
     private ArticuloDao articuloDao = new ArticuloDaoImpl();
+    private UsuarioDao usuarioDao = new UsuarioDaoImpl();
+    private EspecialidadDao especilidadDAO = new EspecialidadDaoImpl();
     private ArticuloDetalleDao articuloDetalleDao = new ArticuloDetalleDaoImpl();
     private FacArticulo articuloSeleccionado;
     private FacDetalleFactura detalleFactura;
-    private List<FacCiudad> ciudades = new ArrayList<FacCiudad>();
     private Integer codigoCiudad;
-    private CiudadDao ciudadDAO = new CiudadDaoImpl();
+    private Integer codigoEsp;
+    private Integer codigoMedico;
+    
     public CitaBean() {
         try {
             ciudades = ciudadDAO.findAll();
@@ -75,12 +87,14 @@ public class CitaBean extends GenericBean {
             articuloDetalle = new FacArticuloDetalle();
             detalleFactura = new FacDetalleFactura();
             articuloSeleccionado = new FacArticulo();
-            cabeceraFactura = new FacCitaFactura();
-            cabeceraFactura.setCabSubtotal(BigDecimal.ZERO);
-            cabeceraFactura.setCabTotal(BigDecimal.ZERO);
-            cabeceraFactura.setCabIva(BigDecimal.ZERO);
-            cabeceraFactura.setCabFechaCreacion(new Date());
-            cabeceraFactura.setCabAutorizacion(String.valueOf(Random.class.newInstance().nextInt()));
+            cita = new CitCita();
+            cita.setCabSubtotal(BigDecimal.ZERO);
+            cita.setCabTotal(BigDecimal.ZERO);
+            cita.setCabIva(BigDecimal.ZERO);
+            cita.setCabFechaCreacion(new Date());
+            cita.setCabAutorizacion(String.valueOf(Random.class.newInstance().nextInt()));
+            
+            
         } catch (InstantiationException | IllegalAccessException ex) {
             LOG.error(ex.getMessage(), ex);
         }catch (SQLException ex) {
@@ -89,15 +103,16 @@ public class CitaBean extends GenericBean {
 
         listaDetalleFacturas = new ArrayList<>();
         listaArticulos = new ArrayList<>();
+        listaUsuMedicos = new ArrayList<>();
         cargarCombos();
     }
 
     public void inicializar(ActionEvent actionEvent) {
         try {
             paciente = new CitPaciente();
-            cabeceraFactura = new FacCitaFactura();
-            cabeceraFactura.setCabFechaCreacion(new Date());
-            cabeceraFactura.setCabAutorizacion(String.valueOf(Random.class.newInstance().nextInt()));
+            cita = new CitCita();
+            cita.setCabFechaCreacion(new Date());
+            cita.setCabAutorizacion(String.valueOf(Random.class.newInstance().nextInt()));
             detalleFactura = new FacDetalleFactura();
             listaDetalleFacturas = new ArrayList<>();
             listaArticulos = new ArrayList<>();
@@ -107,9 +122,9 @@ public class CitaBean extends GenericBean {
     }
 
     public void procesarArticulo() {
-        cabeceraFactura.setCabSubtotal(BigDecimal.ZERO);
-        cabeceraFactura.setCabTotal(BigDecimal.ZERO);
-        cabeceraFactura.setCabIva(BigDecimal.ZERO);
+        cita.setCabSubtotal(BigDecimal.ZERO);
+        cita.setCabTotal(BigDecimal.ZERO);
+        cita.setCabIva(BigDecimal.ZERO);
         Double subtotal = new Double(0);
         try {
             if (!listaDetalleFacturas.isEmpty()) {
@@ -133,18 +148,23 @@ public class CitaBean extends GenericBean {
                     } else {
                     }
                 }
-                cabeceraFactura.setCabSubtotal(BigDecimal.valueOf(Utils.redondearNumero(BigDecimal.valueOf(subtotal).divide(BigDecimal.valueOf(1.14), 2, BigDecimal.ROUND_HALF_UP), 2, true)));
-                cabeceraFactura.setCabIva(BigDecimal.valueOf(Utils.redondearNumero(cabeceraFactura.getCabSubtotal().multiply(BigDecimal.valueOf(0.14)), 2, true)));
-                cabeceraFactura.setCabTotal(cabeceraFactura.getCabSubtotal().add(cabeceraFactura.getCabIva()));
+                cita.setCabSubtotal(BigDecimal.valueOf(Utils.redondearNumero(BigDecimal.valueOf(subtotal).divide(BigDecimal.valueOf(1.14), 2, BigDecimal.ROUND_HALF_UP), 2, true)));
+                cita.setCabIva(BigDecimal.valueOf(Utils.redondearNumero(cita.getCabSubtotal().multiply(BigDecimal.valueOf(0.14)), 2, true)));
+                cita.setCabTotal(cita.getCabSubtotal().add(cita.getCabIva()));
             }
         } catch (SQLException ex) {
             LOG.error(ex.getMessage(), ex);
         }
     }
 
-    private void cargarCombos() {
+    public void cargarCombos() {
         try {
-            listaArticulos = articuloDao.findAll();
+            especialidades = especilidadDAO.findAll();
+            if(codigoEsp==null){
+                codigoEsp=0;
+            }
+            listaUsuMedicos = usuarioDao.findDoctoresXEsp(codigoEsp);
+            //listaArticulos = articuloDao.findAll();
         } catch (SQLException ex) {
             LOG.error(ex.getMessage(), ex);
         }
@@ -219,11 +239,11 @@ public class CitaBean extends GenericBean {
 
     public void create(ActionEvent actionEvent) {
         try {
-            if (cabeceraFactura.getCabTotal().intValue() > 0) {
-                if (cabeceraFactura.getCabCodigo() == null) {
-                    cabeceraFactura.setCliCodigo(paciente);
-                    cabeceraFactura.setCabEstado(1);
-                    int idc = cabeceraFacturaDao.save(cabeceraFactura);
+            if (cita.getCabTotal().intValue() > 0) {
+                if (cita.getCabCodigo() == null) {
+                    cita.setCliCodigo(paciente);
+                    cita.setCabEstado(1);
+                    int idc = cabeceraFacturaDao.save(cita);
                     if (idc > 0) {
                         for (FacDetalleFactura item : listaDetalleFacturas) {
                             item.setDetAplicaIva(1);
@@ -337,13 +357,15 @@ public class CitaBean extends GenericBean {
         this.paciente = cliente;
     }
 
-    public FacCitaFactura getCabeceraFactura() {
-        return cabeceraFactura;
+    public CitCita getCita() {
+        return cita;
     }
 
-    public void setCabeceraFactura(FacCitaFactura cabeceraFactura) {
-        this.cabeceraFactura = cabeceraFactura;
+    public void setCita(CitCita cita) {
+        this.cita = cita;
     }
+
+  
 
     public List<FacDetalleFactura> getListaDetalleFacturas() {
         return listaDetalleFacturas;
@@ -407,6 +429,78 @@ public class CitaBean extends GenericBean {
 
     public void setCiudadDAO(CiudadDao ciudadDAO) {
         this.ciudadDAO = ciudadDAO;
+    }
+
+    public List<FacUsuario> getListaUsuMedicos() {
+        return listaUsuMedicos;
+    }
+
+    public void setListaUsuMedicos(List<FacUsuario> listaUsuMedicos) {
+        this.listaUsuMedicos = listaUsuMedicos;
+    }
+
+    public CabeceraFacturaDao getCabeceraFacturaDao() {
+        return cabeceraFacturaDao;
+    }
+
+    public void setCabeceraFacturaDao(CabeceraFacturaDao cabeceraFacturaDao) {
+        this.cabeceraFacturaDao = cabeceraFacturaDao;
+    }
+
+    public DetalleFacturaDao getDetalleFacturaDao() {
+        return detalleFacturaDao;
+    }
+
+    public void setDetalleFacturaDao(DetalleFacturaDao detalleFacturaDao) {
+        this.detalleFacturaDao = detalleFacturaDao;
+    }
+
+    public UsuarioDao getUsuarioDao() {
+        return usuarioDao;
+    }
+
+    public void setUsuarioDao(UsuarioDao usuarioDao) {
+        this.usuarioDao = usuarioDao;
+    }
+
+    public FacDetalleFactura getDetalleFactura() {
+        return detalleFactura;
+    }
+
+    public void setDetalleFactura(FacDetalleFactura detalleFactura) {
+        this.detalleFactura = detalleFactura;
+    }
+
+    public Integer getCodigoMedico() {
+        return codigoMedico;
+    }
+
+    public void setCodigoMedico(Integer codigoMedico) {
+        this.codigoMedico = codigoMedico;
+    }
+
+    public List<CitEspecialidad> getEspecialidades() {
+        return especialidades;
+    }
+
+    public void setEspecialidades(List<CitEspecialidad> especialidades) {
+        this.especialidades = especialidades;
+    }
+
+    public EspecialidadDao getEspecilidadDAO() {
+        return especilidadDAO;
+    }
+
+    public void setEspecilidadDAO(EspecialidadDao especilidadDAO) {
+        this.especilidadDAO = especilidadDAO;
+    }
+
+    public Integer getCodigoEsp() {
+        return codigoEsp;
+    }
+
+    public void setCodigoEsp(Integer codigoEsp) {
+        this.codigoEsp = codigoEsp;
     }
 
 }

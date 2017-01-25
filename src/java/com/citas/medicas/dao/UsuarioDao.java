@@ -20,4 +20,6 @@ public interface UsuarioDao extends Serializable{
     public boolean existePorCampo(String username) throws SQLException;
     
     public Long nuevoCodigo() throws SQLException;
+    
+    public List<FacUsuario> findDoctoresXEsp(int codEspecialidad) throws SQLException; 
 }

@@ -20,9 +20,9 @@
                     <p:growl id="growl" showDetail="true"  life="5000" />
                     <center>
                         <h:panelGrid id="gridDatos" rendered="#{not empty request.getRemoteUser()}">
-                            <p:panel id="paneDatos" header="Ingresar Factura">
+                            <p:panel id="paneDatos" header="Ingresar Cita">
 
-                                <h:panelGrid columns="12"> 
+                                <h:panelGrid columns="10" > 
 
                                     <p:outputLabel value="Identificación" for="ruc" />
                                     <p:inputText id="ruc" value="#{citasBean.paciente.pacIdentificacin}" required="true" 
@@ -32,7 +32,7 @@
                                                value="Buscar por ruc o cédula"
                                                showEffect="clip" hideEffect="explode" />  
 
-                                    <p:outputLabel value="Cliente" for="cliente" />
+                                    <p:outputLabel value="Paciente" for="cliente" />
                                     <p:inputText id="cliente" disabled="true"                                                 
                                                  value="#{citasBean.paciente.pacNombres} #{citasBean.paciente.pacApellidos}" />                             
                                     <p:tooltip for="cliente"
@@ -43,13 +43,13 @@
                                     <p:commandButton id="buscar" value="Buscar" validateClient="true" ajax="true" icon="ui-icon-search"
                                                      actionListener="#{citasBean.findCliente}"
                                                      update=":formLista,formDatos" process=":formDatos" />
-                                    <f:verbatim/><f:verbatim/>
+                                    <f:verbatim/>
 
                                     <p:commandButton id="ingresar" value="Ingresar" validateClient="true" ajax="true" icon="ui-icon-disk"
                                                      actionListener="#{citasBean.addCliente}" immediate="true" process=":formDatos"
                                                      update=":formDatos" />
-                                    <f:verbatim/><f:verbatim/>
-
+                                    <f:verbatim/>
+                                    
                                     <p:outputLabel value="Teléfono" for="telefono" />
                                     <p:inputText id="telefono" value="#{citasBean.paciente.pacTelefono}" disabled="true" />                             
                                     <p:tooltip for="telefono"
@@ -62,28 +62,54 @@
                                                value="Dirección"
                                                showEffect="clip" hideEffect="explode" />  
 
-                                    <f:verbatim/><f:verbatim/><f:verbatim/> <f:verbatim/><f:verbatim/><f:verbatim/>
-                                    
-                                    <p:outputLabel value="Autorización" for="autorizacion" />
-                                    <p:inputText id="autorizacion" value="#{citasBean.cabeceraFactura.cabAutorizacion}" disabled="true" />                                                                                                     
+                                    <f:verbatim/><f:verbatim/><f:verbatim/><f:verbatim/>
+
+                                    <p:outputLabel value="Num Cita" for="autorizacion" />
+                                    <p:inputText id="autorizacion" value="#{citasBean.cita.cabAutorizacion}" disabled="true" />                                                                                                     
                                     <p:tooltip for="autorizacion"
                                                value="Autorización"
                                                showEffect="clip" hideEffect="explode" />
 
-                                    <p:outputLabel value="Fecha" for="fecha" />
-                                    <p:inputText id="fecha" value="#{citasBean.cabeceraFactura.cabFechaCreacion}" disabled="true">
-                                        <f:convertDateTime pattern="dd/MM/yyyy" />
-                                    </p:inputText>                             
+                                    <p:outputLabel for="especilidad" value="Especialidad:"/>
+                                    <p:selectOneMenu id="especilidad" label="especilidad" value="#{citasBean.codigoEsp}">
+                                        <f:selectItem itemLabel="TODAS" noSelectionOption="true" />
+                                        <f:selectItems value="#{citasBean.especialidades}" var="item" itemLabel="#{item.espDescripcion}" itemValue="#{item.espCodigo}" />
+                                        <p:ajax event="valueChange" update="idDoctor"  listener="#{citasBean.cargarCombos()}" />
+                                    </p:selectOneMenu>
+                                    <p:tooltip for="especilidad"
+                                               value="Campo requerido"
+                                               showEffect="clip" hideEffect="explode" />
+
+                                    <h:panelGrid id="idDoctor">
+                                        <p:outputLabel for="doctor" value="Elejir Doctor:"  />
+                                        <p:selectOneMenu id="doctor" label="doctor" value="#{citasBean.codigoMedico}"    
+                                                         required="true" requiredMessage="Campo requerido">
+                                            <f:selectItem itemLabel="Seleccione..." noSelectionOption="true" />
+                                            <f:selectItems value="#{citasBean.listaUsuMedicos}" var="item" itemLabel="#{item.usuNombres}" itemValue="#{item.usuCodigo}" />
+                                        </p:selectOneMenu>
+                                        <p:tooltip for="doctor"
+                                                   value="Campo requerido"
+                                                   showEffect="clip" hideEffect="explode" />
+                                    </h:panelGrid>
+                                    <f:verbatim/><f:verbatim/><f:verbatim/>
+
+                                    <p:outputLabel for="fecha" value="Fecha Cita:" />
+                                    <p:calendar id="fecha" value="#{calendarView.date9}" pattern="dd-MM-yyyy" mask="true" />
                                     <p:tooltip for="fecha"
                                                value="Fecha"
-                                               showEffect="clip" hideEffect="explode" />  
+                                               showEffect="clip" hideEffect="explode" /> 
 
+                                    <p:outputLabel for="hora" value="Hora:" />
+                                    <p:calendar id="hora" value="#{citasBean.cita.cabFechaCreacion}" pattern="HH:mm" timeOnly="true"  />
+                                    <p:tooltip for="hora"
+                                               value="hora"
+                                               showEffect="clip" hideEffect="explode" /> 
 
                                     <f:facet name="footer">
                                         <p:commandButton id="grabar" value="Guardar" validateClient="true" ajax="true" icon="ui-icon-disk"
                                                          actionListener="#{citasBean.create}"
                                                          update=":formLista,formDatos" process=":formLista,formDatos" />
-                                        
+
                                         <p:commandButton value="Nuevo" validateClient="true" ajax="true" icon="ui-icon-document"
                                                          actionListener="#{citasBean.inicializar}" immediate="true"
                                                          update=":formLista,formDatos" process=":formDatos"  />
@@ -141,20 +167,6 @@
                                     </h:outputText>
                                 </p:column>   
 
-                                <p:columnGroup type="footer">
-                                    <p:row>
-                                        <p:column colspan="4" style="text-align:right" footerText="Subtotal" />
-                                        <p:column footerText="$#{citasBean.cabeceraFactura.cabSubtotal}" style="text-align:left" />                                       
-                                    </p:row>
-                                    <p:row>
-                                        <p:column colspan="4" style="text-align:right" footerText="Iva 14%" />
-                                        <p:column footerText="$#{citasBean.cabeceraFactura.cabIva}" style="text-align:left" />                                       
-                                    </p:row>
-                                    <p:row>
-                                        <p:column colspan="4" style="text-align:right" footerText="Total" />
-                                        <p:column footerText="$#{citasBean.cabeceraFactura.cabTotal}" style="text-align:left" />                                       
-                                    </p:row>
-                                </p:columnGroup>
                             </p:dataTable>                                                      
                         </h:panelGrid>
                     </center>

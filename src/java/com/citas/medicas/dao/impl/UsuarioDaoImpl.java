@@ -112,7 +112,7 @@ public class UsuarioDaoImpl implements UsuarioDao {
 
             while (rs.next()) {
                 FacUsuario usuario = new FacUsuario();
-                //usuario.setUsuCodigo(rs.getBigDecimal(1));
+                usuario.setUsuCodigo(rs.getLong(1));
                 usuario.setUsuLogin(rs.getString(2));
                 usuario.setUsuClave(rs.getString(3));
                 usuario.setUsuNombres(rs.getString(4));
@@ -207,5 +207,51 @@ public class UsuarioDaoImpl implements UsuarioDao {
             conn.close();
             pstmt.close();
         }
+    }
+    
+    @Override
+    public List<FacUsuario> findDoctoresXEsp(int codEspecialidad) throws SQLException {
+        List<FacUsuario> usuarios = new ArrayList<FacUsuario>();
+
+        try {
+            conn = new ConexionDB().getConexion();
+            StringBuffer ssql = new StringBuffer();
+            ssql.append(" SELECT DISTINCT USU.* ");
+            ssql.append(" FROM CIT_USUARIO USU, CIT_USUARIO_APLICACION UAP ");
+            ssql.append(" WHERE UAP.USU_CODIGO = USU.USU_CODIGO ");
+            ssql.append(" AND UAP.ROL_CODIGO = 3 ");
+            if(codEspecialidad>0){
+            ssql.append("AND ESP_CODIGO = ?  ");
+            }
+            pstmt = conn.prepareStatement(ssql.toString());
+            if(codEspecialidad>0){
+            pstmt.setInt(1, codEspecialidad);
+            }
+            rs = pstmt.executeQuery();
+
+            while (rs.next()) {
+                FacUsuario usuario = new FacUsuario();
+                usuario.setUsuCodigo(rs.getLong(1));
+                usuario.setUsuLogin(rs.getString(3));
+                usuario.setUsuClave(rs.getString(4));
+                usuario.setUsuNombres(rs.getString(5));
+                usuario.setUsuApellidos(rs.getString(6));
+                usuario.setUsuCorreo(rs.getString(7));
+                usuario.setUsuIdentificacion(rs.getString(8));
+                usuario.setUsuDireccion(rs.getString(9));
+                usuario.setUsuTelefono(rs.getString(10));
+                usuario.setUsuEstado(rs.getInt(11));
+                usuario.setFechaCreacion(rs.getDate(12));
+                usuario.setFechaModificacion(rs.getDate(13));
+                usuarios.add(usuario);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            conn.close();
+            pstmt.close();
+        }
+
+        return usuarios;
     }
 }
