@@ -123,16 +123,22 @@
 
             <ui:define name="lista">  
                 <h:form id="formLista">
-                    <p:commandButton id="agregar" value="Agregar" validateClient="true" ajax="true" icon="ui-icon-cart"
-                                     actionListener="#{citasBean.addArticulo}" rendered="#{not empty request.getRemoteUser()}"
-                                     update=":formLista, :formDatos:growl, :formListaArticulo:dtListaArticulo" process=":formLista" />
                     <center>
                         <h:panelGrid id="gridLista" rendered="#{not empty request.getRemoteUser()}">                          
-                            <p:dataTable id="listaSimple" value="#{citasBean.listaDetalleFacturas}"
+                            <p:dataTable id="listaSimple" value="#{citasBean.listaCitas}"
                                          var="item" paginator="false" rows="10" paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink}
                                          {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
                                          rowsPerPageTemplate="5,10,15" emptyMessage="Registro no encontrado.">                                                          
 
+                                 <p:column headerText="Editar" style="text-align: center">
+                                    <p:commandButton id="btnEditar" ajax="true" icon="ui-icon-pencil"
+                                                     actionListener="#{citasBean.edit}" update=":formDatos"                                                    
+                                                     title="Editar">
+                                        <f:attribute name="objetoEditar" value="#{item}" />
+                                    </p:commandButton>
+                                </p:column>
+                                
+                                
                                 <p:column headerText="Eliminar" style="text-align: center">                                          
                                     <p:commandButton id="btnEliminar" ajax="true" icon="ui-icon-trash"
                                                      actionListener="#{citasBean.remove}"
@@ -145,27 +151,42 @@
                                     </p:commandButton>
                                 </p:column>
 
-                                <p:column headerText="Cantidad" style="text-align: center">
+                                <p:column headerText="Cedula Paciente" style="text-align: center">
                                     <p:inputNumber thousandSeparator="" decimalSeparator="" decimalPlaces="0" value="#{item.detCatidad}">
                                         <p:ajax event="change" listener="#{citasBean.procesarArticulo}" update="listaSimple,:formDatos:growl" />                                        
                                     </p:inputNumber>
                                 </p:column>
 
-                                <p:column headerText="Concepto">
+                                <p:column headerText="Nombres Paciente">
                                     <h:outputText value="#{item.artCodigo.artCodigoUnico} #{item.artCodigo.artDescripcion}" />
                                 </p:column>
-
-                                <p:column headerText="Valor Unitario">                                    
-                                    <p:inputNumber value="#{item.detValorUnitario}">
-                                        <p:ajax event="change" listener="#{citasBean.procesarArticulo}" update="listaSimple,:formDatos:growl" />                                        
-                                    </p:inputNumber>
-                                </p:column>   
-
-                                <p:column id="total" headerText="Valor Total">
-                                    <h:outputText value="#{item.detSubtotal}">
-                                        <f:convertNumber type="currency" currencySymbol="$"/>
+                                
+                                <p:column headerText="Fecha Cita" filterBy="#{item.usuCodigo.fechaCreacion}" filterMatchMode="contains" footerText="Fecha Creación">
+                                    <h:outputText value="#{item.usuCodigo.fechaCreacion}">
+                                        <f:convertDateTime pattern="dd/MM/yyyy" />
                                     </h:outputText>
-                                </p:column>   
+                                </p:column>
+                                
+                                <p:column headerText="Hora Cita" filterBy="#{item.usuCodigo.fechaCreacion}" filterMatchMode="contains" footerText="Hora Cita">
+                                    <h:outputText value="#{item.usuCodigo.fechaCreacion}">
+                                        <f:convertDateTime pattern="HH:mm" />
+                                    </h:outputText>
+                                </p:column>
+                                
+                                <p:column headerText="Doctor" filterBy="#{item.usuCodigo.fechaCreacion}" filterMatchMode="contains" footerText="Doctor">
+                                    <h:outputText value="#{item.usuCodigo.fechaCreacion}">
+                                    </h:outputText>
+                                </p:column>
+
+                                <p:column headerText="Especialidad" filterBy="#{item.usuCodigo.fechaCreacion}" filterMatchMode="contains" footerText="Especialidad">
+                                    <h:outputText value="#{item.usuCodigo.fechaCreacion}">
+                                    </h:outputText>
+                                </p:column>
+
+                                <p:column headerText="Estado" filterBy="#{item.usuCodigo.fechaCreacion}" filterMatchMode="contains" footerText="Estado">
+                                    <h:outputText value="#{item.usuCodigo.fechaCreacion}">
+                                    </h:outputText>
+                                </p:column> 
 
                             </p:dataTable>                                                      
                         </h:panelGrid>

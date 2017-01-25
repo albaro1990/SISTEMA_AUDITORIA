@@ -19,115 +19,86 @@ public class CitCita implements Serializable {
 
     private static final long serialVersionUID = 1L;
     
-    private BigDecimal cabCodigo;
     
-    private Date cabFechaCreacion;
+    private Long citCodigo;
     
-    private Integer cabEstado;
-  
-    private String cabAutorizacion;
-    
-    private String cabIdentificacion;
-   
-    private BigDecimal cabTotal;
-    
-    private BigDecimal cabIva;
-    
-    private BigDecimal cabSubtotal;
-    
-    private List<FacDetalleFactura> facDetalleFacturaList;
+    private FacUsuario usuario;
     
     private CitPaciente cliCodigo;
+    
+    private Date citFechaCita;
+    
+    private String horaCita;
+    
+    private Integer citEstado;
+      
+    private String citMotivo;
     
     private FacUsuarioAplicacion uapCodigo;
 
     public CitCita() {
     }
 
-    public CitCita(BigDecimal cabCodigo) {
-        this.cabCodigo = cabCodigo;
+    public CitCita(Long cabCodigo) {
+        this.citCodigo = citCodigo;
     }
 
-    public CitCita(BigDecimal cabCodigo, Date cabFechaCreacion, Integer cabEstado, BigDecimal cabTotal, BigDecimal cabIva, BigDecimal cabSubtotal) {
-        this.cabCodigo = cabCodigo;
-        this.cabFechaCreacion = cabFechaCreacion;
-        this.cabEstado = cabEstado;
-        this.cabTotal = cabTotal;
-        this.cabIva = cabIva;
-        this.cabSubtotal = cabSubtotal;
+    public CitCita(Long citCodigo, Date citFechaCita, Integer citEstado, String citMotivo) {
+        this.citCodigo = citCodigo;
+        this.citFechaCita = citFechaCita;
+        this.citEstado = citEstado;
+        this.citMotivo = citMotivo;
+
     }
 
-    public BigDecimal getCabCodigo() {
-        return cabCodigo;
+    public Long getCitCodigo() {
+        return citCodigo;
     }
 
-    public void setCabCodigo(BigDecimal cabCodigo) {
-        this.cabCodigo = cabCodigo;
+    public void setCitCodigo(Long citCodigo) {
+        this.citCodigo = citCodigo;
     }
 
-    public Date getCabFechaCreacion() {
-        return cabFechaCreacion;
+    public FacUsuario getUsuario() {
+        return usuario;
     }
 
-    public void setCabFechaCreacion(Date cabFechaCreacion) {
-        this.cabFechaCreacion = cabFechaCreacion;
+    public void setUsuario(FacUsuario usuario) {
+        this.usuario = usuario;
     }
 
-    public Integer getCabEstado() {
-        return cabEstado;
+    public Date getCitFechaCita() {
+        return citFechaCita;
     }
 
-    public void setCabEstado(Integer cabEstado) {
-        this.cabEstado = cabEstado;
+    public void setCitFechaCita(Date citFechaCita) {
+        this.citFechaCita = citFechaCita;
     }
 
-    public String getCabAutorizacion() {
-        return cabAutorizacion;
+    public String getHoraCita() {
+        return horaCita;
     }
 
-    public void setCabAutorizacion(String cabAutorizacion) {
-        this.cabAutorizacion = cabAutorizacion;
+    public void setHoraCita(String horaCita) {
+        this.horaCita = horaCita;
     }
 
-    public String getCabIdentificacion() {
-        return cabIdentificacion;
+    public Integer getCitEstado() {
+        return citEstado;
     }
 
-    public void setCabIdentificacion(String cabIdentificacion) {
-        this.cabIdentificacion = cabIdentificacion;
+    public void setCitEstado(Integer citEstado) {
+        this.citEstado = citEstado;
     }
 
-    public BigDecimal getCabTotal() {
-        return cabTotal;
+    public String getCitMotivo() {
+        return citMotivo;
     }
 
-    public void setCabTotal(BigDecimal cabTotal) {
-        this.cabTotal = cabTotal;
+    public void setCitMotivo(String citMotivo) {
+        this.citMotivo = citMotivo;
     }
 
-    public BigDecimal getCabIva() {
-        return cabIva;
-    }
-
-    public void setCabIva(BigDecimal cabIva) {
-        this.cabIva = cabIva;
-    }
-
-    public BigDecimal getCabSubtotal() {
-        return cabSubtotal;
-    }
-
-    public void setCabSubtotal(BigDecimal cabSubtotal) {
-        this.cabSubtotal = cabSubtotal;
-    }
-
-    public List<FacDetalleFactura> getFacDetalleFacturaList() {
-        return facDetalleFacturaList;
-    }
-
-    public void setFacDetalleFacturaList(List<FacDetalleFactura> facDetalleFacturaList) {
-        this.facDetalleFacturaList = facDetalleFacturaList;
-    }
 
     public CitPaciente getCliCodigo() {
         return cliCodigo;
@@ -148,7 +119,7 @@ public class CitCita implements Serializable {
     @Override
     public int hashCode() {
         int hash = 0;
-        hash += (cabCodigo != null ? cabCodigo.hashCode() : 0);
+        hash += (citCodigo != null ? citCodigo.hashCode() : 0);
         return hash;
     }
 
@@ -159,7 +130,7 @@ public class CitCita implements Serializable {
             return false;
         }
         CitCita other = (CitCita) object;
-        if ((this.cabCodigo == null && other.cabCodigo != null) || (this.cabCodigo != null && !this.cabCodigo.equals(other.cabCodigo))) {
+        if ((this.citCodigo == null && other.citCodigo != null) || (this.citCodigo != null && !this.citCodigo.equals(other.citCodigo))) {
             return false;
         }
         return true;
@@ -167,7 +138,7 @@ public class CitCita implements Serializable {
 
     @Override
     public String toString() {
-        return "com.facturacion.entity.FacCabeceraFactura[ cabCodigo=" + cabCodigo + " ]";
+        return "com.facturacion.entity.FacCabeceraFactura[ cabCodigo=" + citCodigo + " ]";
     }
     
 }

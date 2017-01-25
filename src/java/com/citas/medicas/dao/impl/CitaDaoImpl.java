@@ -1,7 +1,6 @@
 package com.citas.medicas.dao.impl;
 
 import com.citas.medicas.conexion.ConexionDB;
-import com.citas.medicas.dao.CabeceraFacturaDao;
 import com.citas.medicas.entity.CitCita;
 import com.citas.medicas.entity.CitPaciente;
 import com.citas.medicas.entity.FacUsuarioAplicacion;
@@ -12,8 +11,9 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
+import com.citas.medicas.dao.CitaDao;
 
-public class CabeceraFacturaDaoImpl implements CabeceraFacturaDao {
+public class CitaDaoImpl implements CitaDao {
 
     private Connection conn;
     private ResultSet rs;

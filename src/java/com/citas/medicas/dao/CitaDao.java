@@ -4,7 +4,7 @@ import com.citas.medicas.entity.CitCita;
 import java.sql.SQLException;
 import java.util.List;
 
-public interface CabeceraFacturaDao {
+public interface CitaDao {
 
     public int save(CitCita factura) throws SQLException;
 

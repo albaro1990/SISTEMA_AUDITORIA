@@ -6,7 +6,6 @@ package com.citas.medicas.controller;
 
 import com.citas.medicas.dao.ArticuloDao;
 import com.citas.medicas.dao.ArticuloDetalleDao;
-import com.citas.medicas.dao.CabeceraFacturaDao;
 import com.citas.medicas.dao.CiudadDao;
 import com.citas.medicas.dao.ClienteDao;
 import com.citas.medicas.dao.DetalleFacturaDao;
@@ -14,7 +13,7 @@ import com.citas.medicas.dao.EspecialidadDao;
 import com.citas.medicas.dao.UsuarioDao;
 import com.citas.medicas.dao.impl.ArticuloDaoImpl;
 import com.citas.medicas.dao.impl.ArticuloDetalleDaoImpl;
-import com.citas.medicas.dao.impl.CabeceraFacturaDaoImpl;
+import com.citas.medicas.dao.impl.CitaDaoImpl;
 import com.citas.medicas.dao.impl.CiudadDaoImpl;
 import com.citas.medicas.dao.impl.ClienteDaoImpl;
 import com.citas.medicas.dao.impl.DetalleFacturaDaoImpl;
@@ -48,6 +47,7 @@ import org.primefaces.event.UnselectEvent;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import com.citas.medicas.dao.CitaDao;
 
 @ManagedBean(name = "citasBean")
 @ViewScoped
@@ -60,14 +60,14 @@ public class CitaBean extends GenericBean {
     private CitPaciente clienteNuevo;
     private FacArticuloDetalle articuloDetalle;
     private CitCita cita;
-    private List<FacDetalleFactura> listaDetalleFacturas;
+    private List<CitCita> listaCitas;
     private List<FacArticulo> listaArticulos;
     private List<FacUsuario> listaUsuMedicos;
     private List<FacCiudad> ciudades = new ArrayList<FacCiudad>();
     private List<CitEspecialidad> especialidades = new ArrayList<CitEspecialidad>();
     private ClienteDao clienteDao = new ClienteDaoImpl();
     private CiudadDao ciudadDAO = new CiudadDaoImpl();
-    private CabeceraFacturaDao cabeceraFacturaDao = new CabeceraFacturaDaoImpl();
+    private CitaDao citaDao = new CitaDaoImpl();
     private DetalleFacturaDao detalleFacturaDao = new DetalleFacturaDaoImpl();
     private ArticuloDao articuloDao = new ArticuloDaoImpl();
     private UsuarioDao usuarioDao = new UsuarioDaoImpl();
@@ -82,28 +82,21 @@ public class CitaBean extends GenericBean {
     public CitaBean() {
         try {
             ciudades = ciudadDAO.findAll();
+            listaCitas = citaDao.findAll();
             paciente = new CitPaciente();
             clienteNuevo = new CitPaciente();
             articuloDetalle = new FacArticuloDetalle();
             detalleFactura = new FacDetalleFactura();
             articuloSeleccionado = new FacArticulo();
             cita = new CitCita();
-            cita.setCabSubtotal(BigDecimal.ZERO);
-            cita.setCabTotal(BigDecimal.ZERO);
-            cita.setCabIva(BigDecimal.ZERO);
-            cita.setCabFechaCreacion(new Date());
-            cita.setCabAutorizacion(String.valueOf(Random.class.newInstance().nextInt()));
-            
-            
-        } catch (InstantiationException | IllegalAccessException ex) {
-            LOG.error(ex.getMessage(), ex);
-        }catch (SQLException ex) {
+ 
+        } catch (SQLException ex) {
             LOG.error(ex.getMessage(), ex);
         }
 
-        listaDetalleFacturas = new ArrayList<>();
         listaArticulos = new ArrayList<>();
         listaUsuMedicos = new ArrayList<>();
+        listaCitas = new ArrayList<>();
         cargarCombos();
     }
 
@@ -114,7 +107,7 @@ public class CitaBean extends GenericBean {
             cita.setCabFechaCreacion(new Date());
             cita.setCabAutorizacion(String.valueOf(Random.class.newInstance().nextInt()));
             detalleFactura = new FacDetalleFactura();
-            listaDetalleFacturas = new ArrayList<>();
+             listaCitas = new ArrayList<>();
             listaArticulos = new ArrayList<>();
         } catch (InstantiationException | IllegalAccessException ex) {
             LOG.error(ex.getMessage(), ex);
@@ -127,9 +120,9 @@ public class CitaBean extends GenericBean {
         cita.setCabIva(BigDecimal.ZERO);
         Double subtotal = new Double(0);
         try {
-            if (!listaDetalleFacturas.isEmpty()) {
-                for (FacDetalleFactura item : listaDetalleFacturas) {
-                    if (item.getDetCatidad() != null) {
+            if (!listaCitas.isEmpty()) {
+                for (CitCita item :  listaCitas) {
+                   /* if (item.getDetCatidad() != null) {
                         FacArticulo art = articuloDao.find(item.getArtCodigo().getArtCodigo());
                         if (art != null) {
                             if (item.getDetCatidad() <= art.getArtCantidadIngresada().intValue()) {
@@ -146,13 +139,13 @@ public class CitaBean extends GenericBean {
                         } else {
                         }
                     } else {
-                    }
+                    }*/
                 }
                 cita.setCabSubtotal(BigDecimal.valueOf(Utils.redondearNumero(BigDecimal.valueOf(subtotal).divide(BigDecimal.valueOf(1.14), 2, BigDecimal.ROUND_HALF_UP), 2, true)));
                 cita.setCabIva(BigDecimal.valueOf(Utils.redondearNumero(cita.getCabSubtotal().multiply(BigDecimal.valueOf(0.14)), 2, true)));
                 cita.setCabTotal(cita.getCabSubtotal().add(cita.getCabIva()));
             }
-        } catch (SQLException ex) {
+        } catch (Exception ex) {
             LOG.error(ex.getMessage(), ex);
         }
     }
@@ -197,10 +190,10 @@ public class CitaBean extends GenericBean {
     }
 
     private boolean estaEnSeleccion(Integer codigoArticulo) {
-        for (int i = 0; i < listaDetalleFacturas.size(); i++) {
-            if (listaDetalleFacturas.get(i).getArtCodigo().getArtCodigo().equals(codigoArticulo)) {
+        for (int i = 0; i < listaCitas.size(); i++) {
+           // if (listaCitas.get(i).getArtCodigo().getArtCodigo().equals(codigoArticulo)) {
                 return true;
-            }
+            //}
         }
         return false;
     }
@@ -212,7 +205,7 @@ public class CitaBean extends GenericBean {
         detalleFactura.setDetCatidad(Double.valueOf(0));
         detalleFactura.setDetValorUnitario(BigDecimal.ZERO);
 
-        listaDetalleFacturas.add(detalleFactura);
+       // listaDetalleFacturas.add(detalleFactura);
 
         if (detalleFactura.getArtCodigo().getArtCodigo() != null) {
             requestContext.execute("PF('dlListaArticulo').hide()");
@@ -228,7 +221,7 @@ public class CitaBean extends GenericBean {
         detalleFactura.setDetCatidad(Double.valueOf(0));
         detalleFactura.setDetValorUnitario(BigDecimal.ZERO);
 
-        listaDetalleFacturas.add(detalleFactura);
+    //    listaDetalleFacturas.add(detalleFactura);
 
         if (detalleFactura.getArtCodigo().getArtCodigo() != null) {
             requestContext.execute("PF('dlListaArticulo').hide()");
@@ -245,13 +238,13 @@ public class CitaBean extends GenericBean {
                     cita.setCabEstado(1);
                     int idc = cabeceraFacturaDao.save(cita);
                     if (idc > 0) {
-                        for (FacDetalleFactura item : listaDetalleFacturas) {
-                            item.setDetAplicaIva(1);
-                            item.setCabCodigo(cabeceraFacturaDao.find(idc));
-                            detalleFacturaDao.save(item);
-                        }
-                        saveMessageInfoDetail("Factura", "La factura se creo correctamente");
-                        createKardex(listaDetalleFacturas);
+//                        for (FacDetalleFactura item : listaDetalleFacturas) {
+//                            item.setDetAplicaIva(1);
+//                            item.setCabCodigo(cabeceraFacturaDao.find(idc));
+//                            detalleFacturaDao.save(item);
+//                        }
+//                        saveMessageInfoDetail("Factura", "La factura se creo correctamente");
+//                        createKardex(listaDetalleFacturas);
                         inicializar(actionEvent);
                     } else {
                         saveMessageWarnDetail("Factura", "Error al crear la factura");
@@ -341,7 +334,7 @@ public class CitaBean extends GenericBean {
         try {
             detalleFactura = (FacDetalleFactura) event.getComponent().getAttributes().get("objetoRemover");
             if (detalleFactura != null) {
-                listaDetalleFacturas.remove(detalleFactura);
+              //  listaDetalleFacturas.remove(detalleFactura);
                 procesarArticulo();
             }
         } catch (Exception e) {
@@ -363,16 +356,6 @@ public class CitaBean extends GenericBean {
 
     public void setCita(CitCita cita) {
         this.cita = cita;
-    }
-
-  
-
-    public List<FacDetalleFactura> getListaDetalleFacturas() {
-        return listaDetalleFacturas;
-    }
-
-    public void setListaDetalleFacturas(List<FacDetalleFactura> listaDetalleFacturas) {
-        this.listaDetalleFacturas = listaDetalleFacturas;
     }
 
     public List<FacArticulo> getListaArticulos() {
@@ -439,11 +422,11 @@ public class CitaBean extends GenericBean {
         this.listaUsuMedicos = listaUsuMedicos;
     }
 
-    public CabeceraFacturaDao getCabeceraFacturaDao() {
+    public CitaDao getCabeceraFacturaDao() {
         return cabeceraFacturaDao;
     }
 
-    public void setCabeceraFacturaDao(CabeceraFacturaDao cabeceraFacturaDao) {
+    public void setCabeceraFacturaDao(CitaDao cabeceraFacturaDao) {
         this.cabeceraFacturaDao = cabeceraFacturaDao;
     }
 
@@ -501,6 +484,14 @@ public class CitaBean extends GenericBean {
 
     public void setCodigoEsp(Integer codigoEsp) {
         this.codigoEsp = codigoEsp;
+    }
+
+    public List<CitCita> getListaCitas() {
+        return listaCitas;
+    }
+
+    public void setListaCitas(List<CitCita> listaCitas) {
+        this.listaCitas = listaCitas;
     }
 
 }
