@@ -60,6 +60,7 @@ public class CitaBean extends GenericBean {
     private CitPaciente clienteNuevo;
     private FacArticuloDetalle articuloDetalle;
     private CitCita cita;
+    private CitEspecialidad especialidad;
     private List<CitCita> listaCitas;
     private List<FacArticulo> listaArticulos;
     private List<FacUsuario> listaUsuMedicos;
@@ -81,13 +82,16 @@ public class CitaBean extends GenericBean {
     
     public CitaBean() {
         try {
-            ciudades = ciudadDAO.findAll();
-            listaCitas = citaDao.findAll();
+            
+            
+            especialidad = new CitEspecialidad();
             paciente = new CitPaciente();
             clienteNuevo = new CitPaciente();
             articuloDetalle = new FacArticuloDetalle();
             detalleFactura = new FacDetalleFactura();
             articuloSeleccionado = new FacArticulo();
+            ciudades = ciudadDAO.findAll();
+            listaCitas = citaDao.findAll();
             cita = new CitCita();
  
         } catch (SQLException ex) {
@@ -196,46 +200,6 @@ public class CitaBean extends GenericBean {
         }
     }
 
-    private boolean estaEnSeleccion(Integer codigoArticulo) {
-        for (int i = 0; i < listaCitas.size(); i++) {
-           // if (listaCitas.get(i).getArtCodigo().getArtCodigo().equals(codigoArticulo)) {
-                return true;
-            //}
-        }
-        return false;
-    }
-
-    public void onRowSelect(SelectEvent event) {
-        RequestContext requestContext = RequestContext.getCurrentInstance();
-        detalleFactura = new FacDetalleFactura();
-        detalleFactura.setArtCodigo(articuloSeleccionado);
-        detalleFactura.setDetCatidad(Double.valueOf(0));
-        detalleFactura.setDetValorUnitario(BigDecimal.ZERO);
-
-       // listaDetalleFacturas.add(detalleFactura);
-
-        if (detalleFactura.getArtCodigo().getArtCodigo() != null) {
-            requestContext.execute("PF('dlListaArticulo').hide()");
-        } else {
-            saveMessageWarnDetail("Artículo", "Seleccione un artículo");
-        }
-    }
-
-    public void onRowUnselect(UnselectEvent event) {
-        RequestContext requestContext = RequestContext.getCurrentInstance();
-        detalleFactura = new FacDetalleFactura();
-        detalleFactura.setArtCodigo(articuloSeleccionado);
-        detalleFactura.setDetCatidad(Double.valueOf(0));
-        detalleFactura.setDetValorUnitario(BigDecimal.ZERO);
-
-    //    listaDetalleFacturas.add(detalleFactura);
-
-        if (detalleFactura.getArtCodigo().getArtCodigo() != null) {
-            requestContext.execute("PF('dlListaArticulo').hide()");
-        } else {
-            saveMessageWarnDetail("Artículo", "Seleccione un artículo");
-        }
-    }
 
     public void create(ActionEvent actionEvent) {
         try {
@@ -343,13 +307,22 @@ public class CitaBean extends GenericBean {
     }
 
     public void edit(ActionEvent event) {
+        cita = new CitCita();
+        especialidad = new CitEspecialidad();
+        try {
+            cita = (CitCita) event.getComponent().getAttributes().get("objetoEditar");
+            especialidad = cita.getUsuario().getCitEspecialidad();
+//            codigoRol = usuarioAplicacion.getRolCodigo().getRolCodigo().intValue();
+        } catch (Exception e) {
+            LOG.error(e.getMessage(), e);
+        }
 
     }
 
     public void remove(ActionEvent event) {
-        detalleFactura = new FacDetalleFactura();
+        cita = new CitCita();
         try {
-            detalleFactura = (FacDetalleFactura) event.getComponent().getAttributes().get("objetoRemover");
+            cita = (CitCita) event.getComponent().getAttributes().get("objetoRemover");
             if (detalleFactura != null) {
               //  listaDetalleFacturas.remove(detalleFactura);
                 procesarArticulo();
