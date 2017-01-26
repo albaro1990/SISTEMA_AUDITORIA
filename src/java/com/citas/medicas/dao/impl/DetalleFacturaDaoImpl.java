@@ -26,7 +26,7 @@ public class DetalleFacturaDaoImpl implements DetalleFacturaDao {
             pstmt = conn.prepareStatement(sql.toString(), new String[]{"DET_CODIGO"});
             
             pstmt.setInt(1, detalleFactura.getArtCodigo().getArtCodigo());
-            pstmt.setBigDecimal(2, detalleFactura.getCabCodigo().getCabCodigo());
+//            pstmt.setBigDecimal(2, detalleFactura.getCabCodigo().getCabCodigo());
             pstmt.setDouble(3, detalleFactura.getDetCatidad());
             pstmt.setBigDecimal(4, detalleFactura.getDetValorUnitario());
             pstmt.setString(5, detalleFactura.getArtCodigo().getArtDescripcion());
@@ -100,7 +100,7 @@ public class DetalleFacturaDaoImpl implements DetalleFacturaDao {
                 FacDetalleFactura detFacura = new FacDetalleFactura();
                 detFacura.setDetCodigo(rs.getBigDecimal(1));
                 detFacura.getArtCodigo().setArtCodigo(rs.getInt(2));
-                detFacura.getCabCodigo().setCabCodigo(rs.getBigDecimal(3));
+//                detFacura.getCabCodigo().setCabCodigo(rs.getBigDecimal(3));
                 detFacura.setDetCatidad(rs.getDouble(4));
                 detFacura.setDetValorUnitario(rs.getBigDecimal(5));
                 detFacura.setDetNombreArticulo(rs.getString(6));
@@ -131,7 +131,7 @@ public class DetalleFacturaDaoImpl implements DetalleFacturaDao {
                 detFacura = new FacDetalleFactura();
                 detFacura.setDetCodigo(rs.getBigDecimal(1));
                 detFacura.getArtCodigo().setArtCodigo(rs.getInt(2));
-                detFacura.getCabCodigo().setCabCodigo(rs.getBigDecimal(3));
+//                detFacura.getCabCodigo().setCabCodigo(rs.getBigDecimal(3));
                 detFacura.setDetCatidad(rs.getDouble(4));
                 detFacura.setDetValorUnitario(rs.getBigDecimal(5));
                 detFacura.setDetNombreArticulo(rs.getString(6));

@@ -28,7 +28,7 @@ public class CitCita implements Serializable {
     
     private Date citFechaCita;
     
-    private String horaCita;
+    private Date horaCita;
     
     private Integer citEstado;
       
@@ -75,11 +75,11 @@ public class CitCita implements Serializable {
         this.citFechaCita = citFechaCita;
     }
 
-    public String getHoraCita() {
+    public Date getHoraCita() {
         return horaCita;
     }
 
-    public void setHoraCita(String horaCita) {
+    public void setHoraCita(Date horaCita) {
         this.horaCita = horaCita;
     }
 

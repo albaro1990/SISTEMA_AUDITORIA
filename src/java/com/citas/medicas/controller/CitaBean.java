@@ -104,20 +104,20 @@ public class CitaBean extends GenericBean {
         try {
             paciente = new CitPaciente();
             cita = new CitCita();
-            cita.setCabFechaCreacion(new Date());
-            cita.setCabAutorizacion(String.valueOf(Random.class.newInstance().nextInt()));
+//            cita.setCabFechaCreacion(new Date());
+//            cita.setCabAutorizacion(String.valueOf(Random.class.newInstance().nextInt()));
             detalleFactura = new FacDetalleFactura();
              listaCitas = new ArrayList<>();
             listaArticulos = new ArrayList<>();
-        } catch (InstantiationException | IllegalAccessException ex) {
+        } catch (Exception ex) {
             LOG.error(ex.getMessage(), ex);
         }
     }
 
     public void procesarArticulo() {
-        cita.setCabSubtotal(BigDecimal.ZERO);
-        cita.setCabTotal(BigDecimal.ZERO);
-        cita.setCabIva(BigDecimal.ZERO);
+//        cita.setCabSubtotal(BigDecimal.ZERO);
+//        cita.setCabTotal(BigDecimal.ZERO);
+//        cita.setCabIva(BigDecimal.ZERO);
         Double subtotal = new Double(0);
         try {
             if (!listaCitas.isEmpty()) {
@@ -141,9 +141,9 @@ public class CitaBean extends GenericBean {
                     } else {
                     }*/
                 }
-                cita.setCabSubtotal(BigDecimal.valueOf(Utils.redondearNumero(BigDecimal.valueOf(subtotal).divide(BigDecimal.valueOf(1.14), 2, BigDecimal.ROUND_HALF_UP), 2, true)));
-                cita.setCabIva(BigDecimal.valueOf(Utils.redondearNumero(cita.getCabSubtotal().multiply(BigDecimal.valueOf(0.14)), 2, true)));
-                cita.setCabTotal(cita.getCabSubtotal().add(cita.getCabIva()));
+//                cita.setCabSubtotal(BigDecimal.valueOf(Utils.redondearNumero(BigDecimal.valueOf(subtotal).divide(BigDecimal.valueOf(1.14), 2, BigDecimal.ROUND_HALF_UP), 2, true)));
+//                cita.setCabIva(BigDecimal.valueOf(Utils.redondearNumero(cita.getCabSubtotal().multiply(BigDecimal.valueOf(0.14)), 2, true)));
+//                cita.setCabTotal(cita.getCabSubtotal().add(cita.getCabIva()));
             }
         } catch (Exception ex) {
             LOG.error(ex.getMessage(), ex);
@@ -232,11 +232,12 @@ public class CitaBean extends GenericBean {
 
     public void create(ActionEvent actionEvent) {
         try {
-            if (cita.getCabTotal().intValue() > 0) {
-                if (cita.getCabCodigo() == null) {
+//            if (cita.getCitCodigo().intValue() > 0) {
+                if (cita.getCitCodigo() == null) {
                     cita.setCliCodigo(paciente);
-                    cita.setCabEstado(1);
-                    int idc = cabeceraFacturaDao.save(cita);
+                    cita.setUsuario(usuarioDao.find(codigoMedico));
+                    cita.setCitEstado(1);
+                    int idc = citaDao.save(cita);
                     if (idc > 0) {
 //                        for (FacDetalleFactura item : listaDetalleFacturas) {
 //                            item.setDetAplicaIva(1);
@@ -247,12 +248,21 @@ public class CitaBean extends GenericBean {
 //                        createKardex(listaDetalleFacturas);
                         inicializar(actionEvent);
                     } else {
-                        saveMessageWarnDetail("Factura", "Error al crear la factura");
+                        saveMessageWarnDetail("Cita", "Error al crear la factura");
                     }
-                }
-            } else {
-                saveMessageWarnDetail("Factura", "Ingrese detalles de la factura");
+                } else if (cita.getCitCodigo() != null) {
+                citaDao.update(cita);
+//                usuarioAplicacion.setUsuCodigo(usuarioDAO.find(usuario.getUsuCodigo().intValue()));
+//                usuarioAplicacion.setRolCodigo(rolDAO.find(codigoRol));
+//                usuarioAplicacion.setUapEstado(usuario.getUsuEstado());
+//                usuarioAplicacionDao.update(usuarioAplicacion);
+//                cargarDependencias();
+                saveMessageInfoDetail("Cita", "Cita " + cita.getCitCodigo() + " modificado correctamente");
+                this.inicializar(actionEvent);
             }
+//            } else {
+//                saveMessageWarnDetail("Cita", "Ingrese detalles de la factura");
+//            }
         } catch (SQLException ex) {
             LOG.error(ex.getMessage(), ex);
         }
@@ -266,7 +276,7 @@ public class CitaBean extends GenericBean {
                     articuloDetalle.setArtCantidadIgresada(null);
                     articuloDetalle.setArtCantidadSaliente(BigDecimal.valueOf(item.getDetCatidad()));
                     articuloDetalle.setArtValorUnitario(item.getDetValorUnitario());
-                    articuloDetalle.setArtAutorizacion(item.getCabCodigo().getCabAutorizacion());
+//                    articuloDetalle.setArtAutorizacion(item.getCabCodigo().getCabAutorizacion());
                     articuloDetalle.setArtSaldo(item.getArtCodigo().getArtCantidadIngresada().subtract(BigDecimal.valueOf(item.getDetCatidad())));
                     articuloDetalleDao.save(articuloDetalle);
                     item.getArtCodigo().setArtCantidadIngresada(articuloDetalle.getArtSaldo());
@@ -423,11 +433,11 @@ public class CitaBean extends GenericBean {
     }
 
     public CitaDao getCabeceraFacturaDao() {
-        return cabeceraFacturaDao;
+        return citaDao;
     }
 
-    public void setCabeceraFacturaDao(CitaDao cabeceraFacturaDao) {
-        this.cabeceraFacturaDao = cabeceraFacturaDao;
+    public void setCabeceraFacturaDao(CitaDao citaDao) {
+        this.citaDao = citaDao;
     }
 
     public DetalleFacturaDao getDetalleFacturaDao() {

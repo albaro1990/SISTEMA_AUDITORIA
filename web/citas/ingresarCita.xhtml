@@ -65,7 +65,7 @@
                                     <f:verbatim/><f:verbatim/><f:verbatim/><f:verbatim/>
 
                                     <p:outputLabel value="Num Cita" for="autorizacion" />
-                                    <p:inputText id="autorizacion" value="#{citasBean.cita.cabAutorizacion}" disabled="true" />                                                                                                     
+                                    <p:inputText id="autorizacion" value="#{citasBean.cita.citCodigo}" disabled="true" />                                                                                                     
                                     <p:tooltip for="autorizacion"
                                                value="Autorización"
                                                showEffect="clip" hideEffect="explode" />
@@ -94,13 +94,13 @@
                                     <f:verbatim/><f:verbatim/><f:verbatim/>
 
                                     <p:outputLabel for="fecha" value="Fecha Cita:" />
-                                    <p:calendar id="fecha" value="#{calendarView.date9}" pattern="dd-MM-yyyy" mask="true" />
+                                    <p:calendar id="fecha" value="#{citasBean.cita.citFechaCita}" pattern="dd-MM-yyyy" mask="true" />
                                     <p:tooltip for="fecha"
                                                value="Fecha"
                                                showEffect="clip" hideEffect="explode" /> 
 
                                     <p:outputLabel for="hora" value="Hora:" />
-                                    <p:calendar id="hora" value="#{citasBean.cita.cabFechaCreacion}" pattern="HH:mm" timeOnly="true"  />
+                                    <p:calendar id="hora" value="#{citasBean.cita.horaCita}" pattern="HH:mm" timeOnly="true"  />
                                     <p:tooltip for="hora"
                                                value="hora"
                                                showEffect="clip" hideEffect="explode" /> 
@@ -151,40 +151,40 @@
                                     </p:commandButton>
                                 </p:column>
 
-                                <p:column headerText="Cedula Paciente" style="text-align: center">
-                                    <p:inputNumber thousandSeparator="" decimalSeparator="" decimalPlaces="0" value="#{item.detCatidad}">
-                                        <p:ajax event="change" listener="#{citasBean.procesarArticulo}" update="listaSimple,:formDatos:growl" />                                        
+                                <p:column headerText="Cedula Paciente" filterBy="#{item.cliCodigo.pacNombres} #{item.cliCodigo.pacApellidos}" style="text-align: center" filterMatchMode="contains" footerText="Cedula Paciente">
+                                    <p:inputNumber thousandSeparator="" decimalSeparator="" decimalPlaces="0" value="#{item.cliCodigo.pacIdentificacin}">
+                                                                               
                                     </p:inputNumber>
                                 </p:column>
 
-                                <p:column headerText="Nombres Paciente">
-                                    <h:outputText value="#{item.artCodigo.artCodigoUnico} #{item.artCodigo.artDescripcion}" />
+                                <p:column headerText="Nombres Paciente" filterBy="#{item.cliCodigo.pacNombres} #{item.cliCodigo.pacApellidos}" filterMatchMode="contains" footerText="Nombres Paciente">
+                                    <h:outputText value="#{item.cliCodigo.pacNombres} #{item.cliCodigo.pacApellidos}" />
                                 </p:column>
                                 
-                                <p:column headerText="Fecha Cita" filterBy="#{item.usuCodigo.fechaCreacion}" filterMatchMode="contains" footerText="Fecha Creación">
-                                    <h:outputText value="#{item.usuCodigo.fechaCreacion}">
+                                <p:column headerText="Fecha Cita" filterBy="#{item.citFechaCita}" filterMatchMode="contains" footerText="Fecha Cita">
+                                    <h:outputText value="#{item.citFechaCita}">
                                         <f:convertDateTime pattern="dd/MM/yyyy" />
                                     </h:outputText>
                                 </p:column>
                                 
-                                <p:column headerText="Hora Cita" filterBy="#{item.usuCodigo.fechaCreacion}" filterMatchMode="contains" footerText="Hora Cita">
-                                    <h:outputText value="#{item.usuCodigo.fechaCreacion}">
+                                <p:column headerText="Hora Cita" filterBy="#{item.horaCita}" filterMatchMode="contains" footerText="Hora Cita">
+                                    <h:outputText value="#{item.horaCita}">
                                         <f:convertDateTime pattern="HH:mm" />
                                     </h:outputText>
                                 </p:column>
                                 
-                                <p:column headerText="Doctor" filterBy="#{item.usuCodigo.fechaCreacion}" filterMatchMode="contains" footerText="Doctor">
-                                    <h:outputText value="#{item.usuCodigo.fechaCreacion}">
+                                <p:column headerText="Doctor" filterBy="#{item.usuario.usuNombres}" filterMatchMode="contains" footerText="Doctor">
+                                    <h:outputText value="#{item.usuario.usuNombres}">
                                     </h:outputText>
                                 </p:column>
 
-                                <p:column headerText="Especialidad" filterBy="#{item.usuCodigo.fechaCreacion}" filterMatchMode="contains" footerText="Especialidad">
-                                    <h:outputText value="#{item.usuCodigo.fechaCreacion}">
+                                <p:column headerText="Especialidad" filterBy="#{item.usuario.citEspecialidad.espDescripcion}" filterMatchMode="contains" footerText="Especialidad">
+                                    <h:outputText value="#{item.usuario.citEspecialidad.espDescripcion}">
                                     </h:outputText>
                                 </p:column>
 
-                                <p:column headerText="Estado" filterBy="#{item.usuCodigo.fechaCreacion}" filterMatchMode="contains" footerText="Estado">
-                                    <h:outputText value="#{item.usuCodigo.fechaCreacion}">
+                                <p:column headerText="Estado" filterBy="#{item.citEstado}" filterMatchMode="contains" footerText="Estado">
+                                    <h:outputText value="#{item.citEstado}">
                                     </h:outputText>
                                 </p:column> 
 
