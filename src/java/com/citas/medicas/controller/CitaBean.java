@@ -223,6 +223,7 @@ public class CitaBean extends GenericBean {
                     }
                 } else if (cita.getCitCodigo() != null) {
                 citaDao.update(cita);
+                cargarCombos();
 //                usuarioAplicacion.setUsuCodigo(usuarioDAO.find(usuario.getUsuCodigo().intValue()));
 //                usuarioAplicacion.setRolCodigo(rolDAO.find(codigoRol));
 //                usuarioAplicacion.setUapEstado(usuario.getUsuEstado());
