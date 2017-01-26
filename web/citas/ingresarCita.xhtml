@@ -82,8 +82,7 @@
 
                                     <h:panelGrid id="idDoctor">
                                         <p:outputLabel for="doctor" value="Elejir Doctor:"  />
-                                        <p:selectOneMenu id="doctor" label="doctor" value="#{citasBean.codigoMedico}"    
-                                                         required="true" requiredMessage="Campo requerido">
+                                        <p:selectOneMenu id="doctor" label="doctor" value="#{citasBean.codigoMedico}">
                                             <f:selectItem itemLabel="Seleccione..." noSelectionOption="true" />
                                             <f:selectItems value="#{citasBean.listaUsuMedicos}" var="item" itemLabel="#{item.usuNombres}" itemValue="#{item.usuCodigo}" />
                                         </p:selectOneMenu>
