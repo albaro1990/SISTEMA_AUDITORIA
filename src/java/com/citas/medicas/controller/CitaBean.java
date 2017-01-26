@@ -94,10 +94,10 @@ public class CitaBean extends GenericBean {
             LOG.error(ex.getMessage(), ex);
         }
 
-        listaArticulos = new ArrayList<>();
+       /* listaArticulos = new ArrayList<>();
         listaUsuMedicos = new ArrayList<>();
-        listaCitas = new ArrayList<>();
-        cargarCombos();
+        listaCitas = new ArrayList<>();*/
+        this.cargarCombos();
     }
 
     public void inicializar(ActionEvent actionEvent) {
@@ -149,14 +149,21 @@ public class CitaBean extends GenericBean {
             LOG.error(ex.getMessage(), ex);
         }
     }
-
     public void cargarCombos() {
         try {
             especialidades = especilidadDAO.findAll();
+            ciudades = ciudadDAO.findAll();
             if(codigoEsp==null){
                 codigoEsp=0;
             }
             listaUsuMedicos = usuarioDao.findDoctoresXEsp(codigoEsp);
+            listaCitas = citaDao.findAll();
+            for (CitCita item : listaCitas) {
+                item.setCliCodigo(clienteDao.findXId(item.getCliCodigo().getPacCodigo().intValue()));
+                item.setUsuario(usuarioDao.find(item.getUsuario().getUsuCodigo().intValue()));
+                item.getUsuario().setCitEspecialidad(especilidadDAO.find(item.getUsuario().getCitEspecialidad().getEspCodigo().intValue()));
+                
+            }
             //listaArticulos = articuloDao.findAll();
         } catch (SQLException ex) {
             LOG.error(ex.getMessage(), ex);

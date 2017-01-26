@@ -151,10 +151,8 @@
                                     </p:commandButton>
                                 </p:column>
 
-                                <p:column headerText="Cedula Paciente" filterBy="#{item.cliCodigo.pacNombres} #{item.cliCodigo.pacApellidos}" style="text-align: center" filterMatchMode="contains" footerText="Cedula Paciente">
-                                    <p:inputNumber thousandSeparator="" decimalSeparator="" decimalPlaces="0" value="#{item.cliCodigo.pacIdentificacin}">
-                                                                               
-                                    </p:inputNumber>
+                                <p:column headerText="Cedula Paciente" filterBy="#{item.cliCodigo.pacIdentificacin}" style="text-align: center" filterMatchMode="contains" footerText="Cedula Paciente">
+                                         <h:outputText value="#{item.cliCodigo.pacIdentificacin}" />
                                 </p:column>
 
                                 <p:column headerText="Nombres Paciente" filterBy="#{item.cliCodigo.pacNombres} #{item.cliCodigo.pacApellidos}" filterMatchMode="contains" footerText="Nombres Paciente">

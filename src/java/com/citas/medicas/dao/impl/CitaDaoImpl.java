@@ -12,6 +12,10 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 import com.citas.medicas.dao.CitaDao;
+import com.citas.medicas.entity.FacUsuario;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 public class CitaDaoImpl implements CitaDao {
 
@@ -33,9 +37,11 @@ public class CitaDaoImpl implements CitaDao {
             pstmt.setLong(1, cita.getUsuario().getUsuCodigo());
             pstmt.setLong(2, cita.getCliCodigo().getPacCodigo());
             pstmt.setDate(3, new java.sql.Date(cita.getCitFechaCita().getTime()));
-            int hora = cita.getHoraCita().getHours();
-            int minutos = cita.getHoraCita().getMinutes();
-            String horaMin = hora +":"+minutos;
+           String horaMin= this.formatHoras(cita.getHoraCita(), "dd/MM/yyyy HH:mm:ss");
+            //HH:mm:ss
+//            int hora = cita.getHoraCita().getHours();
+//            int minutos = cita.getHoraCita().getMinutes();
+//             = hora +":"+minutos;
             pstmt.setString(4, horaMin);
             pstmt.setInt(5, cita.getCitEstado());
             pstmt.setString(6, cita.getCitMotivo());
@@ -59,11 +65,11 @@ public class CitaDaoImpl implements CitaDao {
     }
 
     @Override
-    public int update(CitCita factura) throws SQLException {
+    public int update(CitCita cita) throws SQLException {
         int nup = 0;
         try {
             conn = new ConexionDB().getConexion();
-            pstmt = conn.prepareStatement("UPDATE CIT_CITA SET CIT_ESTADO=" + factura.getCitEstado() + " WHERE CAB_CODIGO = " + factura.getCitCodigo() + " ");
+            pstmt = conn.prepareStatement("UPDATE CIT_CITA SET CIT_ESTADO=" + cita.getCitEstado() + ", CIT_HORA='"+cita.getHoraCita()+"', CIT_FECHA='"+cita.getCitFechaCita()+"' WHERE CAB_CODIGO = " + cita.getCitCodigo() + " ");
 
             nup = pstmt.executeUpdate();
         } catch (SQLException e) {
@@ -80,7 +86,7 @@ public class CitaDaoImpl implements CitaDao {
         int ndel = 0;
         try {
             conn = new ConexionDB().getConexion();
-            pstmt = conn.prepareStatement("DELETE FROM FAC_CABECERA_FACTURA WHERE CAB_CODIGO = " + id + "");
+            pstmt = conn.prepareStatement("DELETE FROM CIT_CITA WHERE CAB_CODIGO = " + id + "");
             ndel = pstmt.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -93,26 +99,29 @@ public class CitaDaoImpl implements CitaDao {
 
     @Override
     public List<CitCita> findAll() throws SQLException {
-        List<CitCita> facturas = new ArrayList<CitCita>();
+        List<CitCita> citas = new ArrayList<CitCita>();
 
         try {
             conn = new ConexionDB().getConexion();
-            pstmt = conn.prepareStatement("SELECT * FROM FAC_CABECERA_FACTURA ");
+            pstmt = conn.prepareStatement("SELECT * FROM CIT_CITA ");
             rs = pstmt.executeQuery();
 
             while (rs.next()) {
-                CitCita factura = new CitCita();
-//                factura.setCabCodigo(rs.getBigDecimal(1));
-//                factura.getUapCodigo().setUapCodigo(rs.getBigDecimal(2));
-//                factura.getCliCodigo().setPacCodigo(rs.getLong(3));
-//                factura.setCabFechaCreacion(rs.getDate(4));
-//                factura.setCabEstado(rs.getInt(5));
-//                factura.setCabAutorizacion(rs.getString(6));
-//                factura.setCabIdentificacion(rs.getString(7));//ruc de la empresa emisora no del cliente
-//                factura.setCabTotal(rs.getBigDecimal(8));
-//                factura.setCabIva(rs.getBigDecimal(9));
-//                factura.setCabSubtotal(rs.getBigDecimal(10));
-                facturas.add(factura);
+                CitCita cita = new CitCita();
+                cita.setCitCodigo(rs.getLong(1));
+                cita.setUsuario(new FacUsuario());
+                cita.getUsuario().setUsuCodigo(rs.getLong(2));
+                cita.setCliCodigo(new CitPaciente());
+                cita.getCliCodigo().setPacCodigo(rs.getLong(3));
+                cita.setCitFechaCita(rs.getDate(4));
+                String hora = rs.getString(5);
+                this.formatDate(hora);
+                cita.setHoraCita(this.formatDate(hora));
+                cita.setCitEstado(rs.getInt(6));
+                if(rs.getString(7)!=null){
+                    cita.setCitMotivo(rs.getString(7));
+                }
+                citas.add(cita);
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -121,7 +130,7 @@ public class CitaDaoImpl implements CitaDao {
             pstmt.close();
         }
 
-        return facturas;
+        return citas;
     }
 
     @Override
@@ -131,7 +140,7 @@ public class CitaDaoImpl implements CitaDao {
 
         try {
             conn = new ConexionDB().getConexion();
-            pstmt = conn.prepareStatement("SELECT * FROM FAC_CABECERA_FACTURA WHERE CAB_CODIGO = ?");
+            pstmt = conn.prepareStatement("SELECT * FROM CIT_CITA WHERE CIT_CODIGO = ?");
             pstmt.setInt(1, id);
             rs = pstmt.executeQuery();
 
@@ -159,4 +168,25 @@ public class CitaDaoImpl implements CitaDao {
         }
         return factura;
     }
+    
+    public static String formatHoras (Date date, String formato){
+		SimpleDateFormat simpleDateFormat = new SimpleDateFormat(formato);
+		String hora = simpleDateFormat.format(date);
+		hora = hora.substring(11, 16);
+		return  hora;
+		
+	}
+    	/**
+	 * Método que retorna un objeto de tipo Date dado la fecha basado en el formato dd/mm/yyyy
+	 * @param fecha La fecha que se desea parsear.
+	 * @return La fecha en formato Date.
+	 */
+	public static Date formatDate(String fecha) {
+		SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH:mm");
+		try {
+			return simpleDateFormat.parse(fecha);
+		} catch (ParseException e) {
+			throw new RuntimeException("Error en el parseo de la fecha: "	+ fecha);
+		}
+	}
 }

@@ -179,4 +179,40 @@ public class ClienteDaoImpl implements ClienteDao {
             pstmt.close();
         }
     }
+    
+    
+    @Override
+    public CitPaciente findXId(int id) throws SQLException {
+
+        CitPaciente cliente = null;
+
+        try {
+            conn = new ConexionDB().getConexion();
+            pstmt = conn.prepareStatement("SELECT * FROM CIT_PACIENTE WHERE PAC_CODIGO = ? AND PAC_ESTADO = 1");
+            pstmt.setInt(1, id);
+            rs = pstmt.executeQuery();
+
+            while (rs.next()) {
+                cliente = new CitPaciente();
+                cliente.setPacCodigo(rs.getLong(1));
+                cliente.setCodigoCiudad(new FacCiudad());
+                cliente.getCodigoCiudad().setCiuCodigo(rs.getBigDecimal(2));
+                cliente.setPacNombres(rs.getString(3));
+                cliente.setPacApellidos(rs.getString(4));
+                cliente.setPacTelefono(rs.getString(5));
+                cliente.setPacDireccion(rs.getString(6));
+                cliente.setPacIdentificacin(rs.getString(7));
+                cliente.setPacCorreo(rs.getString(8));
+                cliente.setPacEstado(rs.getInt(9));
+                cliente.setPacGenero(rs.getString(10));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            conn.close();
+            pstmt.close();
+        }
+
+        return cliente;
+    }
 }

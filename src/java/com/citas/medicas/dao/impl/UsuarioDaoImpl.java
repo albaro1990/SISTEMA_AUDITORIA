@@ -2,6 +2,7 @@ package com.citas.medicas.dao.impl;
 
 import com.citas.medicas.conexion.ConexionDB;
 import com.citas.medicas.dao.UsuarioDao;
+import com.citas.medicas.entity.CitEspecialidad;
 import com.citas.medicas.entity.FacUsuario;
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -149,6 +150,10 @@ public class UsuarioDaoImpl implements UsuarioDao {
             while (rs.next()) {
                 usuario = new FacUsuario();
                 usuario.setUsuCodigo(rs.getLong(1));
+                usuario.setCitEspecialidad(new CitEspecialidad());
+                if(rs.getLong(2)>0){
+                usuario.getCitEspecialidad().setEspCodigo(rs.getLong(2));
+                }
                 usuario.setUsuLogin(rs.getString(3));
                 usuario.setUsuClave(rs.getString(4));
                 usuario.setUsuNombres(rs.getString(5));
