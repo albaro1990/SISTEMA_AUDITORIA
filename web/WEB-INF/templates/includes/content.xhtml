@@ -10,6 +10,11 @@
         <ui:composition>
             <p:fieldset legend="Página Principal">
                 <div align="center">
+                    <p:galleria value="#{imagesView.images}" var="image" panelWidth="500" panelHeight="313" autoPlay="true" showCaption="true">
+                    <p:graphicImage name="images/centro/#{image}" title="#{image}"/>
+                </p:galleria>
+                </div>
+                <div align="center">
                     TANIA CHICA
                 </div>
             </p:fieldset>
