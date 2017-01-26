@@ -63,7 +63,7 @@ public class CitaDaoImpl implements CitaDao {
         int nup = 0;
         try {
             conn = new ConexionDB().getConexion();
-            pstmt = conn.prepareStatement("UPDATE FAC_CABECERA_FACTURA SET CAB_ESTADO=" + factura.getCitEstado() + " WHERE CAB_CODIGO = " + factura.getCitCodigo() + " ");
+            pstmt = conn.prepareStatement("UPDATE CIT_CITA SET CIT_ESTADO=" + factura.getCitEstado() + " WHERE CAB_CODIGO = " + factura.getCitCodigo() + " ");
 
             nup = pstmt.executeUpdate();
         } catch (SQLException e) {
