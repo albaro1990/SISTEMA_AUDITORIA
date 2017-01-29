@@ -16,11 +16,23 @@
 
             <ui:define name="datos">
                 <div align="center">
-                    <p:panel id="paneDatos" header="Ingreso al Sistema" footer="">
+                    <br></br>
+                            <br></br>
+                            <br></br>
+                            <br></br>
+                            <br></br>
+                            <br></br>
+                          
+                    <p:panel id="paneDatos" header="LOGIN" footer="">
                         <h:form id="formDatos">
                             <p:focus context=":paneDatos" />
-                            <p:growl id="growl" sticky="true" showDetail="true" life="3000" />                           
+                            <p:growl id="growl" sticky="true" showDetail="true" life="3000" /> 
+                            
+                           <center><p:graphicImage name="images/Login_1.png"  /></center>
                             <h:panelGrid columns="2">
+                                 
+                                                                  
+
                                 <p:outputLabel for="username" value="Usuario" />
                                 <p:inputText id="username" 
                                              value="#{shiroLoginBean.usuario.usuLogin}"
@@ -42,6 +54,10 @@
                             </h:panelGrid>
                         </h:form>
                     </p:panel>
+                            <br></br>
+                            <br></br>
+                            <br></br>
+                            <br></br>
                     <p:blockUI animate="true" block="paneDatos" trigger="formDatos:validar" />
                 </div>
             </ui:define>
