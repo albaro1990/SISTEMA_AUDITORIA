@@ -138,13 +138,13 @@
                                 </p:column>
                                 
                                 
-                                <p:column headerText="Eliminar" style="text-align: center">                                          
+                                <p:column headerText="Cancelar" style="text-align: center">                                          
                                     <p:commandButton id="btnEliminar" ajax="true" icon="ui-icon-trash"
                                                      actionListener="#{citasBean.remove}"
-                                                     title="Eliminar"
+                                                     title="Cancelar"
                                                      update="listaSimple :formDatos:growl">
-                                        <p:confirm header="Eliminar"
-                                                   message="Esta seguro que desea eliminar? "
+                                        <p:confirm header="Cancelar"
+                                                   message="Esta seguro que desea Cancelar? "
                                                    icon="ui-icon-alert" />
                                         <f:attribute name="objetoRemover" value="#{item}" />
                                     </p:commandButton>

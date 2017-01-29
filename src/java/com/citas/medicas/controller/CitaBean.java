@@ -79,6 +79,7 @@ public class CitaBean extends GenericBean {
     private Integer codigoCiudad;
     private Integer codigoEsp;
     private Integer codigoMedico;
+    private Integer codigoPaciente;
     
     public CitaBean() {
         try {
@@ -313,7 +314,9 @@ public class CitaBean extends GenericBean {
         try {
             cita = (CitCita) event.getComponent().getAttributes().get("objetoEditar");
             especialidad = cita.getUsuario().getCitEspecialidad();
-//            codigoRol = usuarioAplicacion.getRolCodigo().getRolCodigo().intValue();
+            codigoEsp = cita.getUsuario().getCitEspecialidad().getEspCodigo().intValue();
+            codigoMedico = cita.getUsuario().getUsuCodigo().intValue();
+            paciente = clienteDao.findXId(cita.getCliCodigo().getPacCodigo().intValue());
         } catch (Exception e) {
             LOG.error(e.getMessage(), e);
         }
@@ -324,6 +327,7 @@ public class CitaBean extends GenericBean {
         cita = new CitCita();
         try {
             cita = (CitCita) event.getComponent().getAttributes().get("objetoRemover");
+           int ndel = citaDao.cacelar(cita.getCitCodigo().intValue());
             if (detalleFactura != null) {
               //  listaDetalleFacturas.remove(detalleFactura);
                 procesarArticulo();
@@ -483,6 +487,14 @@ public class CitaBean extends GenericBean {
 
     public void setListaCitas(List<CitCita> listaCitas) {
         this.listaCitas = listaCitas;
+    }
+
+    public Integer getCodigoPaciente() {
+        return codigoPaciente;
+    }
+
+    public void setCodigoPaciente(Integer codigoPaciente) {
+        this.codigoPaciente = codigoPaciente;
     }
 
 }
