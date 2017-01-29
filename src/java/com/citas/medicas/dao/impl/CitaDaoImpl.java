@@ -67,11 +67,16 @@ public class CitaDaoImpl implements CitaDao {
     @Override
     public int update(CitCita cita) throws SQLException {
         int nup = 0;
+         StringBuilder sql = new StringBuilder();
         try {
              String horaMin= this.formatHoras(cita.getHoraCita(), "dd/MM/yyyy HH:mm:ss");
             conn = new ConexionDB().getConexion();
-            pstmt = conn.prepareStatement("UPDATE CIT_CITA SET CIT_ESTADO=" + cita.getCitEstado() + ", CIT_HORA='"+horaMin+"', CIT_FECHA='"+ cita.getCitFechaCita().getTime()+"' WHERE CIT_CODIGO = " + cita.getCitCodigo() + " ");
-
+            sql.append("UPDATE CIT_CITA SET CIT_ESTADO= ?, CIT_HORA=?, CIT_FECHA=? WHERE CIT_CODIGO = ? ");
+            pstmt = conn.prepareStatement(sql.toString());
+            pstmt.setInt(1, cita.getCitEstado().intValue());
+            pstmt.setString(2, horaMin);
+            pstmt.setDate(3, new java.sql.Date(cita.getCitFechaCita().getTime()));
+            pstmt.setLong(4, cita.getCitCodigo());
             nup = pstmt.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -104,7 +109,7 @@ public class CitaDaoImpl implements CitaDao {
 
         try {
             conn = new ConexionDB().getConexion();
-            pstmt = conn.prepareStatement("SELECT * FROM CIT_CITA ");
+            pstmt = conn.prepareStatement("SELECT * FROM CIT_CITA WHERE CIT_ESTADO NOT IN(0) ");
             rs = pstmt.executeQuery();
 
             while (rs.next()) {
@@ -170,6 +175,7 @@ public class CitaDaoImpl implements CitaDao {
         return factura;
     }
     
+    
     public static String formatHoras (Date date, String formato){
 		SimpleDateFormat simpleDateFormat = new SimpleDateFormat(formato);
 		String hora = simpleDateFormat.format(date);
@@ -177,17 +183,39 @@ public class CitaDaoImpl implements CitaDao {
 		return  hora;
 		
 	}
+    
     	/**
 	 * Método que retorna un objeto de tipo Date dado la fecha basado en el formato dd/mm/yyyy
 	 * @param fecha La fecha que se desea parsear.
 	 * @return La fecha en formato Date.
 	 */
-	public static Date formatDate(String fecha) {
+public static Date formatDate(String fecha) {
 		SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH:mm");
 		try {
 			return simpleDateFormat.parse(fecha);
 		} catch (ParseException e) {
 			throw new RuntimeException("Error en el parseo de la fecha: "	+ fecha);
 		}
-	}
+ }
+
+    @Override
+    public int cacelar(int id) throws SQLException {
+         int nup = 0;
+         StringBuilder sql = new StringBuilder();
+        try {
+            conn = new ConexionDB().getConexion();
+            sql.append("UPDATE CIT_CITA SET CIT_ESTADO= 0 WHERE CIT_CODIGO = ? ");
+            pstmt = conn.prepareStatement(sql.toString());
+            pstmt.setLong(1, id);
+            nup = pstmt.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            conn.close();
+            pstmt.close();
+        }
+        return nup;
+    }
+        
+
 }
