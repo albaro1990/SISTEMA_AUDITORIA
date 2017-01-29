@@ -4,7 +4,7 @@
     <description>CITAS-MEDICAS</description>
     <context-param>
         <param-name>primefaces.THEME</param-name>
-        <param-value>eggplant</param-value>
+        <param-value>blitzer</param-value>
     </context-param>
     <!-- JSF Config -->
     <context-param>
