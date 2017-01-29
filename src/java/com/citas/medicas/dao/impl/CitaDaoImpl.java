@@ -37,7 +37,7 @@ public class CitaDaoImpl implements CitaDao {
             pstmt.setLong(1, cita.getUsuario().getUsuCodigo());
             pstmt.setLong(2, cita.getCliCodigo().getPacCodigo());
             pstmt.setDate(3, new java.sql.Date(cita.getCitFechaCita().getTime()));
-           String horaMin= this.formatHoras(cita.getHoraCita(), "dd/MM/yyyy HH:mm:ss");
+            String horaMin= this.formatHoras(cita.getHoraCita(), "dd/MM/yyyy HH:mm:ss");
             //HH:mm:ss
 //            int hora = cita.getHoraCita().getHours();
 //            int minutos = cita.getHoraCita().getMinutes();
@@ -68,8 +68,9 @@ public class CitaDaoImpl implements CitaDao {
     public int update(CitCita cita) throws SQLException {
         int nup = 0;
         try {
+             String horaMin= this.formatHoras(cita.getHoraCita(), "dd/MM/yyyy HH:mm:ss");
             conn = new ConexionDB().getConexion();
-            pstmt = conn.prepareStatement("UPDATE CIT_CITA SET CIT_ESTADO=" + cita.getCitEstado() + ", CIT_HORA='"+cita.getHoraCita()+"', CIT_FECHA='"+cita.getCitFechaCita()+"' WHERE CAB_CODIGO = " + cita.getCitCodigo() + " ");
+            pstmt = conn.prepareStatement("UPDATE CIT_CITA SET CIT_ESTADO=" + cita.getCitEstado() + ", CIT_HORA='"+horaMin+"', CIT_FECHA='"+ cita.getCitFechaCita().getTime()+"' WHERE CIT_CODIGO = " + cita.getCitCodigo() + " ");
 
             nup = pstmt.executeUpdate();
         } catch (SQLException e) {
