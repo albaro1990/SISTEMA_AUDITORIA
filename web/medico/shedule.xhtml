@@ -6,35 +6,42 @@
       xmlns:h="http://java.sun.com/jsf/html"
       xmlns:ui="http://java.sun.com/jsf/facelets"
       xmlns:f="http://java.sun.com/jsf/core">
-    <script type="text/javascript">
-        PrimeFaces.locales['tr'] = {
-            closeText: 'kapat',
-            prevText: 'geri',
-            nextText: 'ileri',
-            currentText: 'bugün',
-            monthNames: ['Ocak', 'Şubat', 'Mart', 'Nisan', 'Mayıs', 'Haziran',
-                'Temmuz', 'Ağustos', 'Eylül', 'Ekim', 'Kasım', 'Aralık'],
-            monthNamesShort: ['Oca', 'Şub', 'Mar', 'Nis', 'May', 'Haz',
-                'Tem', 'Ağu', 'Eyl', 'Eki', 'Kas', 'Ara'],
-            dayNames: ['Pazar', 'Pazartesi', 'Salı', 'Çarşamba', 'Perşembe', 'Cuma', 'Cumartesi'],
-            dayNamesShort: ['Pz', 'Pt', 'Sa', 'Ça', 'Pe', 'Cu', 'Ct'],
-            dayNamesMin: ['Pz', 'Pt', 'Sa', 'Ça', 'Pe', 'Cu', 'Ct'],
-            weekHeader: 'Hf',
-            firstDay: 1,
-            isRTL: false,
-            showMonthAfterYear: false,
-            yearSuffix: '',
-            month: 'Ay',
-            week: 'Hafta',
-            day: 'Gün',
-            allDayText: 'Tüm Gün'
-        };
-    </script>
-    <style type="text/css">
-        .value {
-            width: 1000px;
-        }
-    </style>
+
+    <h:head>
+        <script type="text/javascript">
+            PrimeFaces.locales['es'] = {
+                closeText: 'Cerrar',
+                prevText: 'Anterior',
+                nextText: 'Siguiente',
+                monthNames: ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'],
+                monthNamesShort: ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'],
+                dayNames: ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'],
+                dayNamesShort: ['Dom', 'Lun', 'Mar', 'Mie', 'Jue', 'Vie', 'Sab'],
+                dayNamesMin: ['D', 'L', 'M', 'M', 'J', 'V', 'S'],
+                weekHeader: 'Semana',
+                firstDay: 1,
+                isRTL: false,
+                showMonthAfterYear: false,
+                yearSuffix: '',
+                timeOnlyTitle: 'Sólo hora',
+                timeText: 'Tiempo',
+                hourText: 'Hora',
+                minuteText: 'Minuto',
+                secondText: 'Segundo',
+                currentText: 'Fecha actual',
+                ampm: false,
+                month: 'Mes',
+                week: 'Semana',
+                day: 'Día',
+                allDayText: 'Todo el día'
+            };
+        </script>
+        <style type="text/css">
+            .value {
+                width: 1000px;
+            }
+        </style>
+    </h:head>
     <h:body>
         <ui:composition template="./../WEB-INF/templates/cuerpo.xhtml">
 
@@ -47,40 +54,39 @@
                     <p:focus context="formDatos" />                    
                     <p:growl id="growl" showDetail="true"  life="5000" />
                     <center>
-                        <h:panelGrid id="gridDatos" rendered="#{not empty request.getRemoteUser()}">
-                            <p:panel id="paneDatos" header="Agenda">                                     
+
+
+
+                        <h:panelGrid columnClasses="value" id="gridDatos" rendered="#{not empty request.getRemoteUser()}">
+                            <p:panel id="paneDatos" header="Agenda">  
+                                <p:schedule id="schedule" value="#{scheduleView.eventModel}"  locale="es" widgetVar="myschedule" timeZone="GMT-05" >
+
+                                    <p:ajax event="dateSelect" listener="#{scheduleView.onDateSelect}" update="eventDetails" oncomplete="PF('eventDialog').show();" />
+                                    <p:ajax event="eventSelect" listener="#{scheduleView.onEventSelect}" update="eventDetails" oncomplete="PF('eventDialog').show();" />
+                                    <p:ajax event="eventMove" listener="#{scheduleView.onEventMove}" update="messages" />
+                                    <p:ajax event="eventResize" listener="#{scheduleView.onEventResize}" update="messages" />
+
+                                </p:schedule>
+
                             </p:panel>
+
                         </h:panelGrid>
                         <p:growl id="messages" showDetail="true" />
-
-                        <h:panelGrid columnClasses="value">
-                            <h3 style="margin-top: 0">Agenda</h3>
-                            <p:schedule id="schedule" value="#{scheduleView.eventModel}" widgetVar="myschedule" timeZone="GMT-05">
-
-                                <p:ajax event="dateSelect" listener="#{scheduleView.onDateSelect}" update="eventDetails" oncomplete="PF('eventDialog').show();" />
-                                <p:ajax event="eventSelect" listener="#{scheduleView.onEventSelect}" update="eventDetails" oncomplete="PF('eventDialog').show();" />
-                                <p:ajax event="eventMove" listener="#{scheduleView.onEventMove}" update="messages" />
-                                <p:ajax event="eventResize" listener="#{scheduleView.onEventResize}" update="messages" />
-
-                            </p:schedule>
-
-                        </h:panelGrid>
-
-                        <p:dialog widgetVar="eventDialog" header="Detalle Cita" showEffect="clip" hideEffect="clip">
+                        <p:dialog widgetVar="eventDialog" header="Detalle Cita" showEffect="clip" hideEffect="clip" >
                             <h:panelGrid id="eventDetails" columns="2">
-                                <p:outputLabel for="title" value="Titles:" />
+                                <p:outputLabel for="title" value="Motivo:" />
                                 <p:inputText id="title" value="#{scheduleView.event.title}" required="true" />
 
                                 <p:outputLabel for="from" value="Fecha Hora:" />
                                 <p:calendar id="from" value="#{scheduleView.event.startDate}" timeZone="GMT-05" pattern="dd/MM/yyyy HH:mm"/>
 
-                              
 
-                                <p:outputLabel for="allDay" value="All Day:" />
+
+                                <p:outputLabel for="allDay" value="Todo el Día:" />
                                 <h:selectBooleanCheckbox id="allDay" value="#{scheduleView.event.allDay}" />
 
-                                <p:commandButton type="reset" value="Reset" />
-                                <p:commandButton id="addButton" value="Save" actionListener="#{scheduleView.addEvent}" oncomplete="PF('myschedule').update();PF('eventDialog').hide();" />
+                                <p:commandButton type="reset" value="Cancelar" />
+                                <p:commandButton id="addButton" value="Aceptar" actionListener="#{scheduleView.addEvent}" oncomplete="PF('myschedule').update();PF('eventDialog').hide();" />
                             </h:panelGrid>
                         </p:dialog>    
                     </center>
@@ -89,10 +95,10 @@
 
             <ui:define name="lista">  
                 <h:form id="formLista">
-                  
+
                     <center>
                         <h:panelGrid id="gridLista" rendered="#{not empty request.getRemoteUser()}">                          
-                                                            
+
                         </h:panelGrid>
                     </center>
                 </h:form>
