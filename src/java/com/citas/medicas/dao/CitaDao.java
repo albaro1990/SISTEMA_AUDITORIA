@@ -17,4 +17,6 @@ public interface CitaDao {
     public CitCita find(int id) throws SQLException;
     
     public int cacelar(int id) throws SQLException;
+    
+    public List<CitCita> findAllXMedico() throws SQLException;
 }

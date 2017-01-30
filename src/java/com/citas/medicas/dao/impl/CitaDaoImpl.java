@@ -184,12 +184,14 @@ public class CitaDaoImpl implements CitaDao {
 		
 	}
     
+     
+    
     	/**
 	 * Método que retorna un objeto de tipo Date dado la fecha basado en el formato dd/mm/yyyy
 	 * @param fecha La fecha que se desea parsear.
 	 * @return La fecha en formato Date.
 	 */
-public static Date formatDate(String fecha) {
+ public static Date formatDate(String fecha) {
 		SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH:mm");
 		try {
 			return simpleDateFormat.parse(fecha);
@@ -197,6 +199,24 @@ public static Date formatDate(String fecha) {
 			throw new RuntimeException("Error en el parseo de la fecha: "	+ fecha);
 		}
  }
+ 
+ 
+ 
+ public static Date formatFecha(String fecha, String formato) {
+		SimpleDateFormat simpleDateFormat = new SimpleDateFormat(formato);
+		try {
+			return simpleDateFormat.parse(fecha);
+		} catch (ParseException e) {
+			throw new RuntimeException("Error en el parseo de la fecha: "	+ fecha);
+		}
+ }
+  
+   public static String formatFechaString (Date date, String formato){
+		SimpleDateFormat simpleDateFormat = new SimpleDateFormat(formato);
+		String fecha = simpleDateFormat.format(date);
+		return  fecha;
+		
+	}
 
     @Override
     public int cacelar(int id) throws SQLException {
@@ -216,6 +236,45 @@ public static Date formatDate(String fecha) {
         }
         return nup;
     }
+    
+     @Override
+    public List<CitCita> findAllXMedico() throws SQLException {
+        List<CitCita> citas = new ArrayList<CitCita>();
+
+        try {
+            conn = new ConexionDB().getConexion();
+            pstmt = conn.prepareStatement("SELECT * FROM CIT_CITA WHERE CIT_ESTADO NOT IN(0) ");
+            rs = pstmt.executeQuery();
+
+            while (rs.next()) {
+                CitCita cita = new CitCita();
+                cita.setCitCodigo(rs.getLong(1));
+                cita.setUsuario(new FacUsuario());
+                cita.getUsuario().setUsuCodigo(rs.getLong(2));
+                cita.setCliCodigo(new CitPaciente());
+                cita.getCliCodigo().setPacCodigo(rs.getLong(3));
+                String fechaCita = this.formatFechaString(rs.getDate(4), "dd/MM/yyyy");
+                String fechaHoraCita= fechaCita +" "+ rs.getString(5);
+                cita.setCitFechaCita(this.formatFecha(fechaHoraCita, "dd/MM/yyyy HH:mm"));
+                 String hora = rs.getString(5);
+                this.formatDate(hora);
+                cita.setHoraCita(this.formatDate(hora));
+                cita.setCitEstado(rs.getInt(6));
+                if(rs.getString(7)!=null){
+                    cita.setCitMotivo(rs.getString(7));
+                }
+                citas.add(cita);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            conn.close();
+            pstmt.close();
+        }
+
+        return citas;
+    }
+
         
 
 }

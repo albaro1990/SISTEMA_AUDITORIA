@@ -49,6 +49,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import com.citas.medicas.dao.CitaDao;
 import java.util.Calendar;
+import java.util.logging.Level;
 import javax.annotation.PostConstruct;
 import org.primefaces.event.ScheduleEntryMoveEvent;
 import org.primefaces.event.ScheduleEntryResizeEvent;
@@ -65,6 +66,9 @@ public class ScheduleView extends GenericBean {
     private static final long serialVersionUID = 1L;
     
     private List<CitCita> listaCitas;
+    
+     private CitaDao citaDao = new CitaDaoImpl();
+    
     private ScheduleModel eventModel;
      
     private ScheduleModel lazyEventModel;
@@ -74,10 +78,16 @@ public class ScheduleView extends GenericBean {
     @PostConstruct
     public void init() {
         eventModel = new DefaultScheduleModel();
-        eventModel.addEvent(new DefaultScheduleEvent("Champions League Match", previousDay8Pm(), previousDay11Pm()));
-        eventModel.addEvent(new DefaultScheduleEvent("Birthday Party", today1Pm(), today6Pm()));
-        eventModel.addEvent(new DefaultScheduleEvent("Breakfast at Tiffanys", nextDay9Am(), nextDay11Am()));
-        eventModel.addEvent(new DefaultScheduleEvent("Plant the new garden stuff", theDayAfter3Pm(), fourDaysLater3pm()));
+        try {
+          listaCitas=   citaDao.findAllXMedico();
+            for (CitCita listaCita : listaCitas) {
+                 eventModel.addEvent(new DefaultScheduleEvent("CHEQUEO DE RUTINA",listaCita.getCitFechaCita(),listaCita.getHoraCita()));
+                
+            }
+            
+        } catch (SQLException ex) {
+            java.util.logging.Logger.getLogger(ScheduleView.class.getName()).log(Level.SEVERE, null, ex);
+        }
          
         lazyEventModel = new LazyScheduleModel() {
              
