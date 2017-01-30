@@ -64,7 +64,7 @@ public class ScheduleView extends GenericBean {
 
     private static final long serialVersionUID = 1L;
     
- 
+    private List<CitCita> listaCitas;
     private ScheduleModel eventModel;
      
     private ScheduleModel lazyEventModel;
