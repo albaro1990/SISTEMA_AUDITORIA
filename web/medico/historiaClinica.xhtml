@@ -1,0 +1,198 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"     
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core">
+
+    <h:body>
+        <ui:composition template="./../WEB-INF/templates/cuerpo.xhtml">
+
+            <ui:define name="page-title">
+                Historia Clinica
+            </ui:define>
+
+            <ui:define name="datos">
+                <h:form id="formDatos">
+                    <p:focus context="formDatos" />                    
+                    <p:growl id="growl" showDetail="true"  life="5000" />
+                    <center>
+                        <h:panelGrid id="gridDatos" rendered="#{not empty request.getRemoteUser()}">
+                            <p:panel id="paneDatos" header="Ingresar Cita">
+
+                                <h:panelGrid columns="10" > 
+
+                                    <p:outputLabel value="Identificación" for="ruc" />
+                                    <p:inputText id="ruc" value="#{citasBean.paciente.pacIdentificacin}" required="true" 
+                                                 requiredMessage="Campo requerido" maxlength="15" />                                       
+
+                                    <p:tooltip for="ruc"
+                                               value="Buscar por ruc o cédula"
+                                               showEffect="clip" hideEffect="explode" />  
+
+                                    <p:outputLabel value="Paciente" for="cliente" />
+                                    <p:inputText id="cliente" disabled="true"                                                 
+                                                 value="#{citasBean.paciente.pacNombres} #{citasBean.paciente.pacApellidos}" />                             
+                                    <p:tooltip for="cliente"
+                                               value="Buscar por cliente"
+                                               showEffect="clip" hideEffect="explode" /> 
+
+
+                                    <p:commandButton id="buscar" value="Buscar" validateClient="true" ajax="true" icon="ui-icon-search"
+                                                     actionListener="#{citasBean.findCliente}"
+                                                     update=":formLista,formDatos" process=":formDatos" />
+                                    <f:verbatim/>
+
+                                    <p:commandButton id="ingresar" value="Ingresar" validateClient="true" ajax="true" icon="ui-icon-disk"
+                                                     actionListener="#{citasBean.addCliente}" immediate="true" process=":formDatos"
+                                                     update=":formDatos" />
+                                    <f:verbatim/>
+                                    
+                                    <p:outputLabel value="Teléfono" for="telefono" />
+                                    <p:inputText id="telefono" value="#{citasBean.paciente.pacTelefono}" disabled="true" />                             
+                                    <p:tooltip for="telefono"
+                                               value="Teléfono"
+                                               showEffect="clip" hideEffect="explode" />  
+
+                                    <p:outputLabel value="Dirección" for="direccion" />
+                                    <p:inputText id="direccion" value="#{citasBean.paciente.pacDireccion}" disabled="true" />                             
+                                    <p:tooltip for="direccion"
+                                               value="Dirección"
+                                               showEffect="clip" hideEffect="explode" />  
+
+                                    <f:verbatim/><f:verbatim/><f:verbatim/><f:verbatim/>
+
+                                    <p:outputLabel value="Num Cita" for="autorizacion" />
+                                    <p:inputText id="autorizacion" value="#{citasBean.cita.citCodigo}" disabled="true" />                                                                                                     
+                                    <p:tooltip for="autorizacion"
+                                               value="Autorización"
+                                               showEffect="clip" hideEffect="explode" />
+
+                                    <p:outputLabel for="especilidad" value="Especialidad:"/>
+                                    <p:selectOneMenu id="especilidad" label="especilidad" value="#{citasBean.codigoEsp}">
+                                        <f:selectItem itemLabel="TODAS" noSelectionOption="true" />
+                                        <f:selectItems value="#{citasBean.especialidades}" var="item" itemLabel="#{item.espDescripcion}" itemValue="#{item.espCodigo}" />
+                                        <p:ajax event="valueChange" update="idDoctor"  listener="#{citasBean.cargarCombos()}" />
+                                    </p:selectOneMenu>
+                                    <p:tooltip for="especilidad"
+                                               value="Campo requerido"
+                                               showEffect="clip" hideEffect="explode" />
+
+                                    <h:panelGrid id="idDoctor">
+                                        <p:outputLabel for="doctor" value="Elejir Doctor:"  />
+                                        <p:selectOneMenu id="doctor" label="doctor" value="#{citasBean.codigoMedico}">
+                                            <f:selectItem itemLabel="Seleccione..." noSelectionOption="true" />
+                                            <f:selectItems value="#{citasBean.listaUsuMedicos}" var="item" itemLabel="#{item.usuNombres}" itemValue="#{item.usuCodigo}" />
+                                        </p:selectOneMenu>
+                                        <p:tooltip for="doctor"
+                                                   value="Campo requerido"
+                                                   showEffect="clip" hideEffect="explode" />
+                                    </h:panelGrid>
+                                    <f:verbatim/><f:verbatim/><f:verbatim/>
+
+                                    <p:outputLabel for="fecha" value="Fecha Cita:" />
+                                    <p:calendar id="fecha" value="#{citasBean.cita.citFechaCita}" pattern="dd-MM-yyyy" mask="true" />
+                                    <p:tooltip for="fecha"
+                                               value="Fecha"
+                                               showEffect="clip" hideEffect="explode" /> 
+
+                                    <p:outputLabel for="hora" value="Hora:" />
+                                    <p:calendar id="hora" value="#{citasBean.cita.horaCita}" pattern="HH:mm" timeOnly="true"  />
+                                    <p:tooltip for="hora"
+                                               value="hora"
+                                               showEffect="clip" hideEffect="explode" /> 
+
+                                    <f:facet name="footer">
+                                        <p:commandButton id="grabar" value="Guardar" validateClient="true" ajax="true" icon="ui-icon-disk"
+                                                         actionListener="#{citasBean.create}"
+                                                         update=":formLista,formDatos" process=":formLista,formDatos" />
+
+                                        <p:commandButton value="Nuevo" validateClient="true" ajax="true" icon="ui-icon-document"
+                                                         actionListener="#{citasBean.inicializar}" immediate="true"
+                                                         update=":formLista,formDatos" process=":formDatos"  />
+                                    </f:facet>                             
+                                </h:panelGrid>                                      
+                            </p:panel>
+                        </h:panelGrid>
+                    </center>
+                </h:form>
+            </ui:define>
+
+            <ui:define name="lista">  
+                <h:form id="formLista">
+                    <center>
+                        <h:panelGrid id="gridLista" rendered="#{not empty request.getRemoteUser()}">                          
+                            <p:dataTable id="listaSimple" value="#{citasBean.listaCitas}"
+                                         var="item" paginator="false" rows="10" paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink}
+                                         {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                                         rowsPerPageTemplate="5,10,15" emptyMessage="Registro no encontrado.">                                                          
+
+                                 <p:column headerText="Editar" style="text-align: center">
+                                    <p:commandButton id="btnEditar" ajax="true" icon="ui-icon-pencil"
+                                                     actionListener="#{citasBean.edit}" update=":formDatos"                                                    
+                                                     title="Editar">
+                                        <f:attribute name="objetoEditar" value="#{item}" />
+                                    </p:commandButton>
+                                </p:column>
+                                
+                                
+                                <p:column headerText="Cancelar" style="text-align: center">                                          
+                                    <p:commandButton id="btnEliminar" ajax="true" icon="ui-icon-trash"
+                                                     actionListener="#{citasBean.remove}"
+                                                     title="Cancelar"
+                                                     update="listaSimple :formDatos:growl">
+                                        <p:confirm header="Cancelar"
+                                                   message="Esta seguro que desea Cancelar? "
+                                                   icon="ui-icon-alert" />
+                                        <f:attribute name="objetoRemover" value="#{item}" />
+                                    </p:commandButton>
+                                </p:column>
+
+                                <p:column headerText="Cedula Paciente" filterBy="#{item.cliCodigo.pacIdentificacin}" style="text-align: center" filterMatchMode="contains" footerText="Cedula Paciente">
+                                         <h:outputText value="#{item.cliCodigo.pacIdentificacin}" />
+                                </p:column>
+
+                                <p:column headerText="Nombres Paciente" filterBy="#{item.cliCodigo.pacNombres} #{item.cliCodigo.pacApellidos}" filterMatchMode="contains" footerText="Nombres Paciente">
+                                    <h:outputText value="#{item.cliCodigo.pacNombres} #{item.cliCodigo.pacApellidos}" />
+                                </p:column>
+                                
+                                <p:column headerText="Fecha Cita" filterBy="#{item.citFechaCita}" filterMatchMode="contains" footerText="Fecha Cita">
+                                    <h:outputText value="#{item.citFechaCita}">
+                                        <f:convertDateTime pattern="dd/MM/yyyy" />
+                                    </h:outputText>
+                                </p:column>
+                                
+                                <p:column headerText="Hora Cita" filterBy="#{item.horaCita}" filterMatchMode="contains" footerText="Hora Cita">
+                                    <h:outputText value="#{item.horaCita}">
+                                        <f:convertDateTime pattern="HH:mm" />
+                                    </h:outputText>
+                                </p:column>
+                                
+                                <p:column headerText="Doctor" filterBy="#{item.usuario.usuNombres}" filterMatchMode="contains" footerText="Doctor">
+                                    <h:outputText value="#{item.usuario.usuNombres}">
+                                    </h:outputText>
+                                </p:column>
+
+                                <p:column headerText="Especialidad" filterBy="#{item.usuario.citEspecialidad.espDescripcion}" filterMatchMode="contains" footerText="Especialidad">
+                                    <h:outputText value="#{item.usuario.citEspecialidad.espDescripcion}">
+                                    </h:outputText>
+                                </p:column>
+
+                                <p:column headerText="Estado" filterBy="#{item.citEstado}" filterMatchMode="contains" footerText="Estado">
+                                    <h:outputText value="#{item.citEstado}">
+                                    </h:outputText>
+                                </p:column> 
+
+                            </p:dataTable>                                                      
+                        </h:panelGrid>
+                    </center>
+                </h:form>
+                <ui:include src="/common/confirmaBorrar.xhtml" />
+                <ui:include src="/common/popupArticulo.xhtml" />
+                <ui:include src="/common/popupPaciente.xhtml" />
+            </ui:define>
+        </ui:composition>
+    </h:body>
+</html>
