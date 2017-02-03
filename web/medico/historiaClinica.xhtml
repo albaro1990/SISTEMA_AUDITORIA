@@ -24,6 +24,7 @@
 
                                 <h:panelGrid columns="10" > 
 
+
                                     <p:outputLabel value="Identificación" for="ruc" />
                                     <p:inputText id="ruc" value="#{historiaClinicaBean.paciente.pacIdentificacin}" required="true" 
                                                  requiredMessage="Campo requerido" maxlength="15" />                                       
@@ -38,48 +39,41 @@
                                     <p:tooltip for="cliente"
                                                value="Buscar por cliente"
                                                showEffect="clip" hideEffect="explode" /> 
-
-
-                                    <p:commandButton id="buscar" value="Buscar" validateClient="true" ajax="true" icon="ui-icon-search"
-                                                     actionListener="#{historiaClinicaBean.findCliente}"
-                                                     update=":formLista,formDatos" process=":formDatos" />
                                     <f:verbatim/>
-
-                                    <p:commandButton id="ingresar" value="Ingresar" validateClient="true" ajax="true" icon="ui-icon-disk"
-                                                     actionListener="#{historiaClinicaBean.addCliente}" immediate="true" process=":formDatos"
-                                                     update=":formDatos" />
-                                    <f:verbatim/>
-                                    
-                                    <p:outputLabel value="Teléfono" for="telefono" />
-                                    <p:inputText id="telefono" value="#{historiaClinicaBean.paciente.pacTelefono}" disabled="true" />                             
-                                    <p:tooltip for="telefono"
-                                               value="Teléfono"
-                                               showEffect="clip" hideEffect="explode" />  
-
-                                    <p:outputLabel value="Dirección" for="direccion" />
-                                    <p:inputText id="direccion" value="#{historiaClinicaBean.paciente.pacDireccion}" disabled="true" />                             
-                                    <p:tooltip for="direccion"
-                                               value="Dirección"
-                                               showEffect="clip" hideEffect="explode" />  
-
+                                    <f:verbatim/> 
                                     <f:verbatim/><f:verbatim/><f:verbatim/><f:verbatim/>
+                                <h3>Signos Vitales</h3>
+                                <f:verbatim/><f:verbatim/><f:verbatim/><f:verbatim/><f:verbatim/><f:verbatim/><f:verbatim/>
+                                        <p:outputLabel value="Estatura: " for="estatura" />
+                                        <p:inputText id="estatura" value="#{historiaClinicaBean.cita.citCodigo}"/>                                                                                                     
+                                        <p:tooltip for="estatura"
+                                                   value="estatura"
+                                                   showEffect="clip" hideEffect="explode" />
+                                        <p:outputLabel value="Peso: " for="peso" />
+                                        <p:inputText id="peso" value="#{historiaClinicaBean.cita.citCodigo}"/>                                                                                                     
+                                        <p:tooltip for="peso"
+                                                   value="peso"
+                                                   showEffect="clip" hideEffect="explode" />
+                                        <f:verbatim/><f:verbatim/><f:verbatim/>
+                                        <p:outputLabel value="Temperatura: " for="temperatura" />
+                                        <p:inputText id="temperatura" value="#{historiaClinicaBean.cita.citCodigo}"/>                                                                                                     
+                                        <p:tooltip for="temperatura"
+                                                   value="temperatura"
+                                                   showEffect="clip" hideEffect="explode" />
+                                        <p:outputLabel value="Presión: " for="presion" />
+                                        <p:inputText id="presion" value="#{historiaClinicaBean.cita.citCodigo}"/>                                                                                                     
+                                        <p:tooltip for="presion"
+                                                   value="presion"
+                                                   showEffect="clip" hideEffect="explode" />
+                                        <f:verbatim/><f:verbatim/><f:verbatim/>
 
-                                    <p:outputLabel value="Num Cita" for="autorizacion" />
-                                    <p:inputText id="autorizacion" value="#{historiaClinicaBean.cita.citCodigo}" disabled="true" />                                                                                                     
-                                    <p:tooltip for="autorizacion"
-                                               value="Autorización"
-                                               showEffect="clip" hideEffect="explode" />
-                                    <f:verbatim/><f:verbatim/><f:verbatim/>
+                                        <f:facet name="footer">
+                                            <p:commandButton id="grabar" value="Guardar" validateClient="true" ajax="true" icon="ui-icon-disk"
+                                                             actionListener="#{historiaClinicaBean.create}"
+                                                             update=":formLista,formDatos" process=":formLista,formDatos" />
 
-                                    <f:facet name="footer">
-                                        <p:commandButton id="grabar" value="Guardar" validateClient="true" ajax="true" icon="ui-icon-disk"
-                                                         actionListener="#{historiaClinicaBean.create}"
-                                                         update=":formLista,formDatos" process=":formLista,formDatos" />
+                                        </f:facet>   
 
-                                        <p:commandButton value="Nuevo" validateClient="true" ajax="true" icon="ui-icon-document"
-                                                         actionListener="#{historiaClinicaBean.inicializar}" immediate="true"
-                                                         update=":formLista,formDatos" process=":formDatos"  />
-                                    </f:facet>                             
                                 </h:panelGrid>                                      
                             </p:panel>
                         </h:panelGrid>
@@ -90,25 +84,23 @@
             <ui:define name="lista">  
                 <h:form id="formLista">
                     <p:commandButton id="ingresar" value="Agregar Diagnosotico" validateClient="true" ajax="true" icon="ui-icon-disk"
-                                                     actionListener="#{historiaClinicaBean.addArticulo}" rendered="#{not empty request.getRemoteUser()}"
-                                                     immediate="true" process=":formLista"
-                                                     update=":formLista, :formDatos:growl" />
+                                     actionListener="#{historiaClinicaBean.addArticulo}" rendered="#{not empty request.getRemoteUser()}"
+                                     immediate="true" process=":formLista"
+                                     update=":formLista, :formDatos:growl" />
                     <center>
                         <h:panelGrid id="gridLista" rendered="#{not empty request.getRemoteUser()}">                          
                             <p:dataTable id="listaSimple" value="#{historiaClinicaBean.listaCitas}"
-                                         var="item" paginator="false" rows="10" paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink}
+                                         var="item" paginator="true" rows="10" paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink}
                                          {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
                                          rowsPerPageTemplate="5,10,15" emptyMessage="Registro no encontrado.">                                                          
 
-                                 <p:column headerText="Editar" style="text-align: center">
+                                <p:column headerText="Editar" style="text-align: center">
                                     <p:commandButton id="btnEditar" ajax="true" icon="ui-icon-pencil"
                                                      actionListener="#{historiaClinicaBean.edit}" update=":formDatos"                                                    
                                                      title="Editar">
                                         <f:attribute name="objetoEditar" value="#{item}" />
                                     </p:commandButton>
                                 </p:column>
-                                
-                                
                                 <p:column headerText="Cancelar" style="text-align: center">                                          
                                     <p:commandButton id="btnEliminar" ajax="true" icon="ui-icon-trash"
                                                      actionListener="#{historiaClinicaBean.remove}"
@@ -120,41 +112,11 @@
                                         <f:attribute name="objetoRemover" value="#{item}" />
                                     </p:commandButton>
                                 </p:column>
-
-                                <p:column headerText="Cedula Paciente" filterBy="#{item.cliCodigo.pacIdentificacin}" style="text-align: center" filterMatchMode="contains" footerText="Cedula Paciente">
-                                         <h:outputText value="#{item.cliCodigo.pacIdentificacin}" />
-                                </p:column>
-
-                                <p:column headerText="Nombres Paciente" filterBy="#{item.cliCodigo.pacNombres} #{item.cliCodigo.pacApellidos}" filterMatchMode="contains" footerText="Nombres Paciente">
-                                    <h:outputText value="#{item.cliCodigo.pacNombres} #{item.cliCodigo.pacApellidos}" />
-                                </p:column>
-                                
-                                <p:column headerText="Fecha Cita" filterBy="#{item.citFechaCita}" filterMatchMode="contains" footerText="Fecha Cita">
-                                    <h:outputText value="#{item.citFechaCita}">
-                                        <f:convertDateTime pattern="dd/MM/yyyy" />
-                                    </h:outputText>
-                                </p:column>
-                                
-                                <p:column headerText="Hora Cita" filterBy="#{item.horaCita}" filterMatchMode="contains" footerText="Hora Cita">
-                                    <h:outputText value="#{item.horaCita}">
-                                        <f:convertDateTime pattern="HH:mm" />
-                                    </h:outputText>
-                                </p:column>
-                                
-                                <p:column headerText="Doctor" filterBy="#{item.usuario.usuNombres}" filterMatchMode="contains" footerText="Doctor">
-                                    <h:outputText value="#{item.usuario.usuNombres}">
-                                    </h:outputText>
-                                </p:column>
-
-                                <p:column headerText="Especialidad" filterBy="#{item.usuario.citEspecialidad.espDescripcion}" filterMatchMode="contains" footerText="Especialidad">
+                                <p:column headerText="Diagnostico" filterBy="#{item.usuario.citEspecialidad.espDescripcion}" filterMatchMode="contains" footerText="Diagnostico">
                                     <h:outputText value="#{item.usuario.citEspecialidad.espDescripcion}">
                                     </h:outputText>
                                 </p:column>
 
-                                <p:column headerText="Estado" filterBy="#{item.citEstado}" filterMatchMode="contains" footerText="Estado">
-                                    <h:outputText value="#{item.citEstado}">
-                                    </h:outputText>
-                                </p:column> 
 
                             </p:dataTable>                                                      
                         </h:panelGrid>
