@@ -20,12 +20,12 @@
                     <p:growl id="growl" showDetail="true"  life="5000" />
                     <center>
                         <h:panelGrid id="gridDatos" rendered="#{not empty request.getRemoteUser()}">
-                            <p:panel id="paneDatos" header="Ingresar Cita">
+                            <p:panel id="paneDatos" header="Datos Paciente">
 
                                 <h:panelGrid columns="10" > 
 
                                     <p:outputLabel value="Identificación" for="ruc" />
-                                    <p:inputText id="ruc" value="#{citasBean.paciente.pacIdentificacin}" required="true" 
+                                    <p:inputText id="ruc" value="#{historiaClinicaBean.paciente.pacIdentificacin}" required="true" 
                                                  requiredMessage="Campo requerido" maxlength="15" />                                       
 
                                     <p:tooltip for="ruc"
@@ -34,30 +34,30 @@
 
                                     <p:outputLabel value="Paciente" for="cliente" />
                                     <p:inputText id="cliente" disabled="true"                                                 
-                                                 value="#{citasBean.paciente.pacNombres} #{citasBean.paciente.pacApellidos}" />                             
+                                                 value="#{historiaClinicaBean.paciente.pacNombres} #{citasBean.paciente.pacApellidos}" />                             
                                     <p:tooltip for="cliente"
                                                value="Buscar por cliente"
                                                showEffect="clip" hideEffect="explode" /> 
 
 
                                     <p:commandButton id="buscar" value="Buscar" validateClient="true" ajax="true" icon="ui-icon-search"
-                                                     actionListener="#{citasBean.findCliente}"
+                                                     actionListener="#{historiaClinicaBean.findCliente}"
                                                      update=":formLista,formDatos" process=":formDatos" />
                                     <f:verbatim/>
 
                                     <p:commandButton id="ingresar" value="Ingresar" validateClient="true" ajax="true" icon="ui-icon-disk"
-                                                     actionListener="#{citasBean.addCliente}" immediate="true" process=":formDatos"
+                                                     actionListener="#{historiaClinicaBean.addCliente}" immediate="true" process=":formDatos"
                                                      update=":formDatos" />
                                     <f:verbatim/>
                                     
                                     <p:outputLabel value="Teléfono" for="telefono" />
-                                    <p:inputText id="telefono" value="#{citasBean.paciente.pacTelefono}" disabled="true" />                             
+                                    <p:inputText id="telefono" value="#{historiaClinicaBean.paciente.pacTelefono}" disabled="true" />                             
                                     <p:tooltip for="telefono"
                                                value="Teléfono"
                                                showEffect="clip" hideEffect="explode" />  
 
                                     <p:outputLabel value="Dirección" for="direccion" />
-                                    <p:inputText id="direccion" value="#{citasBean.paciente.pacDireccion}" disabled="true" />                             
+                                    <p:inputText id="direccion" value="#{historiaClinicaBean.paciente.pacDireccion}" disabled="true" />                             
                                     <p:tooltip for="direccion"
                                                value="Dirección"
                                                showEffect="clip" hideEffect="explode" />  
@@ -65,52 +65,19 @@
                                     <f:verbatim/><f:verbatim/><f:verbatim/><f:verbatim/>
 
                                     <p:outputLabel value="Num Cita" for="autorizacion" />
-                                    <p:inputText id="autorizacion" value="#{citasBean.cita.citCodigo}" disabled="true" />                                                                                                     
+                                    <p:inputText id="autorizacion" value="#{historiaClinicaBean.cita.citCodigo}" disabled="true" />                                                                                                     
                                     <p:tooltip for="autorizacion"
                                                value="Autorización"
                                                showEffect="clip" hideEffect="explode" />
-
-                                    <p:outputLabel for="especilidad" value="Especialidad:"/>
-                                    <p:selectOneMenu id="especilidad" label="especilidad" value="#{citasBean.codigoEsp}">
-                                        <f:selectItem itemLabel="TODAS" noSelectionOption="true" />
-                                        <f:selectItems value="#{citasBean.especialidades}" var="item" itemLabel="#{item.espDescripcion}" itemValue="#{item.espCodigo}" />
-                                        <p:ajax event="valueChange" update="idDoctor"  listener="#{citasBean.cargarCombos()}" />
-                                    </p:selectOneMenu>
-                                    <p:tooltip for="especilidad"
-                                               value="Campo requerido"
-                                               showEffect="clip" hideEffect="explode" />
-
-                                    <h:panelGrid id="idDoctor">
-                                        <p:outputLabel for="doctor" value="Elejir Doctor:"  />
-                                        <p:selectOneMenu id="doctor" label="doctor" value="#{citasBean.codigoMedico}">
-                                            <f:selectItem itemLabel="Seleccione..." noSelectionOption="true" />
-                                            <f:selectItems value="#{citasBean.listaUsuMedicos}" var="item" itemLabel="#{item.usuNombres}" itemValue="#{item.usuCodigo}" />
-                                        </p:selectOneMenu>
-                                        <p:tooltip for="doctor"
-                                                   value="Campo requerido"
-                                                   showEffect="clip" hideEffect="explode" />
-                                    </h:panelGrid>
                                     <f:verbatim/><f:verbatim/><f:verbatim/>
-
-                                    <p:outputLabel for="fecha" value="Fecha Cita:" />
-                                    <p:calendar id="fecha" value="#{citasBean.cita.citFechaCita}" pattern="dd-MM-yyyy" mask="true" />
-                                    <p:tooltip for="fecha"
-                                               value="Fecha"
-                                               showEffect="clip" hideEffect="explode" /> 
-
-                                    <p:outputLabel for="hora" value="Hora:" />
-                                    <p:calendar id="hora" value="#{citasBean.cita.horaCita}" pattern="HH:mm" timeOnly="true"  />
-                                    <p:tooltip for="hora"
-                                               value="hora"
-                                               showEffect="clip" hideEffect="explode" /> 
 
                                     <f:facet name="footer">
                                         <p:commandButton id="grabar" value="Guardar" validateClient="true" ajax="true" icon="ui-icon-disk"
-                                                         actionListener="#{citasBean.create}"
+                                                         actionListener="#{historiaClinicaBean.create}"
                                                          update=":formLista,formDatos" process=":formLista,formDatos" />
 
                                         <p:commandButton value="Nuevo" validateClient="true" ajax="true" icon="ui-icon-document"
-                                                         actionListener="#{citasBean.inicializar}" immediate="true"
+                                                         actionListener="#{historiaClinicaBean.inicializar}" immediate="true"
                                                          update=":formLista,formDatos" process=":formDatos"  />
                                     </f:facet>                             
                                 </h:panelGrid>                                      
@@ -122,16 +89,20 @@
 
             <ui:define name="lista">  
                 <h:form id="formLista">
+                    <p:commandButton id="ingresar" value="Agregar Diagnosotico" validateClient="true" ajax="true" icon="ui-icon-disk"
+                                                     actionListener="#{historiaClinicaBean.addArticulo}" rendered="#{not empty request.getRemoteUser()}"
+                                                     immediate="true" process=":formLista"
+                                                     update=":formLista, :formDatos:growl" />
                     <center>
                         <h:panelGrid id="gridLista" rendered="#{not empty request.getRemoteUser()}">                          
-                            <p:dataTable id="listaSimple" value="#{citasBean.listaCitas}"
+                            <p:dataTable id="listaSimple" value="#{historiaClinicaBean.listaCitas}"
                                          var="item" paginator="false" rows="10" paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink}
                                          {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
                                          rowsPerPageTemplate="5,10,15" emptyMessage="Registro no encontrado.">                                                          
 
                                  <p:column headerText="Editar" style="text-align: center">
                                     <p:commandButton id="btnEditar" ajax="true" icon="ui-icon-pencil"
-                                                     actionListener="#{citasBean.edit}" update=":formDatos"                                                    
+                                                     actionListener="#{historiaClinicaBean.edit}" update=":formDatos"                                                    
                                                      title="Editar">
                                         <f:attribute name="objetoEditar" value="#{item}" />
                                     </p:commandButton>
@@ -140,7 +111,7 @@
                                 
                                 <p:column headerText="Cancelar" style="text-align: center">                                          
                                     <p:commandButton id="btnEliminar" ajax="true" icon="ui-icon-trash"
-                                                     actionListener="#{citasBean.remove}"
+                                                     actionListener="#{historiaClinicaBean.remove}"
                                                      title="Cancelar"
                                                      update="listaSimple :formDatos:growl">
                                         <p:confirm header="Cancelar"
@@ -190,7 +161,7 @@
                     </center>
                 </h:form>
                 <ui:include src="/common/confirmaBorrar.xhtml" />
-                <ui:include src="/common/popupArticulo.xhtml" />
+                <ui:include src="/common/popupDiagnostico.xhtml" />
                 <ui:include src="/common/popupPaciente.xhtml" />
             </ui:define>
         </ui:composition>

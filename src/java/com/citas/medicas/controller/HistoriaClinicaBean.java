@@ -180,12 +180,12 @@ public class HistoriaClinicaBean extends GenericBean {
         listaArticulos = new ArrayList<>();
         RequestContext requestContext = RequestContext.getCurrentInstance();
         try {
-            if (paciente.getPacIdentificacin() != null) {
+            //if (paciente.getPacIdentificacin() != null) {
                 cargarCombos();
-                requestContext.execute("PF('dlListaArticulo').show()");
-            } else {
-                agregarDialogMensaje(FacesContext.getCurrentInstance(), FacesMessage.SEVERITY_WARN, "Factura", "Ingresar cliente", RequestContext.getCurrentInstance());
-            }
+                requestContext.execute("PF('dlListaDetalleDiag').show()");
+            //} else {
+              //  agregarDialogMensaje(FacesContext.getCurrentInstance(), FacesMessage.SEVERITY_WARN, "Factura", "Ingresar cliente", RequestContext.getCurrentInstance());
+            //}
         } catch (Exception ex) {
             LOG.error(ex.getMessage(), ex);
         }
