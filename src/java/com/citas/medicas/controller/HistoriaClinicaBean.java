@@ -48,6 +48,8 @@ import org.primefaces.event.UnselectEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import com.citas.medicas.dao.CitaDao;
+import javax.faces.bean.ManagedProperty;
+import javax.faces.bean.RequestScoped;
 
 @ManagedBean(name = "historiaClinicaBean")
 @ViewScoped
@@ -80,29 +82,14 @@ public class HistoriaClinicaBean extends GenericBean {
     private Integer codigoEsp;
     private Integer codigoMedico;
     private Integer codigoPaciente;
+    private Integer codigoCita;
+    
     
     public HistoriaClinicaBean() {
-        try {
-            
-            
-            especialidad = new CitEspecialidad();
-            paciente = new CitPaciente();
-            clienteNuevo = new CitPaciente();
-            articuloDetalle = new FacArticuloDetalle();
-            detalleFactura = new FacDetalleFactura();
-            articuloSeleccionado = new FacArticulo();
-            ciudades = ciudadDAO.findAll();
-            listaCitas = citaDao.findAll();
-            cita = new CitCita();
- 
-        } catch (SQLException ex) {
-            LOG.error(ex.getMessage(), ex);
-        }
 
-       /* listaArticulos = new ArrayList<>();
-        listaUsuMedicos = new ArrayList<>();
-        listaCitas = new ArrayList<>();*/
-        this.cargarCombos();
+            getCodigoCita();
+ 
+        
     }
 
     public void inicializar(ActionEvent actionEvent) {
@@ -176,13 +163,29 @@ public class HistoriaClinicaBean extends GenericBean {
 
     }
 
-    public void addArticulo(ActionEvent actionEvent) {
+    public void addAntPersonales(ActionEvent actionEvent) {
         listaArticulos = new ArrayList<>();
         RequestContext requestContext = RequestContext.getCurrentInstance();
         try {
             //if (paciente.getPacIdentificacin() != null) {
                 cargarCombos();
-                requestContext.execute("PF('dlListaDetalleDiag').show()");
+                requestContext.execute("PF('dlAntPersonales').show()");
+            //} else {
+              //  agregarDialogMensaje(FacesContext.getCurrentInstance(), FacesMessage.SEVERITY_WARN, "Factura", "Ingresar cliente", RequestContext.getCurrentInstance());
+            //}
+        } catch (Exception ex) {
+            LOG.error(ex.getMessage(), ex);
+        }
+    }
+    
+    
+    public void addAntFamiliares(ActionEvent actionEvent) {
+        listaArticulos = new ArrayList<>();
+        RequestContext requestContext = RequestContext.getCurrentInstance();
+        try {
+            //if (paciente.getPacIdentificacin() != null) {
+                cargarCombos();
+                requestContext.execute("PF('dlAntFamiliares').show()");
             //} else {
               //  agregarDialogMensaje(FacesContext.getCurrentInstance(), FacesMessage.SEVERITY_WARN, "Factura", "Ingresar cliente", RequestContext.getCurrentInstance());
             //}
@@ -495,6 +498,14 @@ public class HistoriaClinicaBean extends GenericBean {
 
     public void setCodigoPaciente(Integer codigoPaciente) {
         this.codigoPaciente = codigoPaciente;
+    }
+
+    public Integer getCodigoCita() {
+        return codigoCita;
+    }
+
+    public void setCodigoCita(Integer codigoCita) {
+        this.codigoCita = codigoCita;
     }
 
 }

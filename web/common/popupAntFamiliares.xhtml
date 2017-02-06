@@ -8,11 +8,11 @@
 
 
     <h:body>	
-        <p:dialog modal="true" widgetVar="dlListaDetalleDiag" resizable="false"
+        <p:dialog modal="true" widgetVar="dlAntFamiliares" resizable="true" width="50%"
                   header="Diagnostico" dynamic="true" draggable="true" closeOnEscape="true" closable="true"
                   appendTo="@(body)" showEffect="blind" hideEffect="blind">
 
-            <h:form id="formDiagnostico">    
+            <h:form id="formAntFamiliares">    
                 <h:panelGrid id="gridDatos" rendered="#{not empty request.getRemoteUser()}">
                     <p:panel id="paneDatos" header="Ingresar Diagnostico">
                         <h:panelGrid columns="3">

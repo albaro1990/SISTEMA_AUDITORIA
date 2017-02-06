@@ -63,8 +63,8 @@
 
                                     <p:ajax event="dateSelect"  listener="#{scheduleView.onDateSelect}" update="eventDetails" oncomplete="PF('eventDialog').show();" />
                                     <p:ajax event="eventSelect" listener="#{scheduleView.onEventSelect}" update="eventDetails" oncomplete="PF('eventDialog').show();" />
-                                    <p:ajax event="eventMove" listener="#{scheduleView.onEventMove}" update="messages" />
-                                    <p:ajax event="eventResize" listener="#{scheduleView.onEventResize}" update="messages" />
+                                    <!--<p:ajax event="eventMove" listener="#{scheduleView.onEventMove}" update="messages" />
+                                    <p:ajax event="eventResize" listener="#{scheduleView.onEventResize}" update="messages" />-->
 
                                 </p:schedule>
 

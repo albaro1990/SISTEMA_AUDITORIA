@@ -4,37 +4,25 @@
  */
 package com.citas.medicas.controller;
 
-import com.citas.medicas.dao.ArticuloDao;
-import com.citas.medicas.dao.ArticuloDetalleDao;
 import com.citas.medicas.dao.CiudadDao;
 import com.citas.medicas.dao.ClienteDao;
-import com.citas.medicas.dao.DetalleFacturaDao;
 import com.citas.medicas.dao.EspecialidadDao;
 import com.citas.medicas.dao.UsuarioDao;
-import com.citas.medicas.dao.impl.ArticuloDaoImpl;
-import com.citas.medicas.dao.impl.ArticuloDetalleDaoImpl;
 import com.citas.medicas.dao.impl.CitaDaoImpl;
 import com.citas.medicas.dao.impl.CiudadDaoImpl;
 import com.citas.medicas.dao.impl.ClienteDaoImpl;
-import com.citas.medicas.dao.impl.DetalleFacturaDaoImpl;
 import com.citas.medicas.dao.impl.EspecialidadDaoImpl;
 import com.citas.medicas.dao.impl.UsuarioDaoImpl;
-import com.citas.medicas.entity.FacArticulo;
-import com.citas.medicas.entity.FacArticuloDetalle;
 import com.citas.medicas.entity.CitCita;
 import com.citas.medicas.entity.CitEspecialidad;
 import com.citas.medicas.entity.CitPaciente;
 import com.citas.medicas.entity.FacCiudad;
-import com.citas.medicas.entity.FacDetalleFactura;
 import com.citas.medicas.entity.FacUsuario;
-import com.citas.medicas.utilitarios.Utils;
-import com.citas.medicas.utilitarios.ValidadorCedulaRuc;
-import java.math.BigDecimal;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Random;
+
 
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
@@ -51,6 +39,8 @@ import com.citas.medicas.dao.CitaDao;
 import java.util.Calendar;
 import java.util.logging.Level;
 import javax.annotation.PostConstruct;
+import javax.faces.bean.RequestScoped;
+import javax.faces.bean.SessionScoped;
 import org.primefaces.event.ScheduleEntryMoveEvent;
 import org.primefaces.event.ScheduleEntryResizeEvent;
 import org.primefaces.model.DefaultScheduleEvent;
@@ -62,8 +52,9 @@ import org.primefaces.model.ScheduleModel;
 @ManagedBean(name = "scheduleView")
 @ViewScoped
 public class ScheduleView extends GenericBean {
-
+    
     private static final long serialVersionUID = 1L;
+    private final Logger LOG = LoggerFactory.getLogger(CitaBean.class);
     
     private List<CitCita> listaCitas;
     
@@ -74,15 +65,37 @@ public class ScheduleView extends GenericBean {
     private ScheduleModel lazyEventModel;
  
     private ScheduleEvent event = new DefaultScheduleEvent();
+    
+    private CitPaciente paciente;
+    private CitPaciente clienteNuevo;
+
+    private CitCita cita;
+    private CitEspecialidad especialidad;
+
+
+    private List<FacUsuario> listaUsuMedicos;
+    private List<FacCiudad> ciudades = new ArrayList<FacCiudad>();
+    private List<CitEspecialidad> especialidades = new ArrayList<CitEspecialidad>();
+    private ClienteDao clienteDao = new ClienteDaoImpl();
+    private CiudadDao ciudadDAO = new CiudadDaoImpl();
+
+    private UsuarioDao usuarioDao = new UsuarioDaoImpl();
+    private EspecialidadDao especilidadDAO = new EspecialidadDaoImpl();
+    private Integer codigoCiudad;
+    private Integer codigoEsp;
+    private Integer codigoMedico;
+    private Integer codigoPaciente;
+    private Integer codigoCita;
+    
  
     @PostConstruct
     public void init() {
         eventModel = new DefaultScheduleModel();
         try {
           listaCitas=   citaDao.findAllXMedico();
-            for (CitCita listaCita : listaCitas) {
-                 eventModel.addEvent(new DefaultScheduleEvent("CHEQUEO DE RUTINA",listaCita.getCitFechaCita(),listaCita.getHoraCita()));
-                
+            for (CitCita listaCita : listaCitas) {                
+                 eventModel.addEvent(new DefaultScheduleEvent("CHEQUEO DE RUTINA",listaCita.getCitFechaCita(),listaCita.getHoraCita(),listaCita));
+                 
             }
             
         } catch (SQLException ex) {
@@ -102,6 +115,29 @@ public class ScheduleView extends GenericBean {
         };
     }
      
+    public void addAntPersonales(ActionEvent actionEvent) {
+       
+        RequestContext requestContext = RequestContext.getCurrentInstance();
+        try {
+          
+                requestContext.execute("PF('dlAntPersonales').show()");
+            
+        } catch (Exception ex) {
+            LOG.error(ex.getMessage(), ex);
+        }
+    }
+    
+    
+    public void addAntFamiliares(ActionEvent actionEvent) {
+        RequestContext requestContext = RequestContext.getCurrentInstance();
+        try {
+            
+                requestContext.execute("PF('dlAntFamiliares').show()");
+         
+        } catch (Exception ex) {
+            LOG.error(ex.getMessage(), ex);
+        }
+    }
     public Date getRandomDate(Date base) {
         Calendar date = Calendar.getInstance();
         date.setTime(base);
@@ -221,10 +257,19 @@ public class ScheduleView extends GenericBean {
      
     public void onEventSelect(SelectEvent selectEvent) {
         event = (ScheduleEvent) selectEvent.getObject();
+        setCita((CitCita) event.getData());
+        codigoPaciente = 1;
+    }
+    
+     public void onEventIngresar(SelectEvent selectEvent) {
+        event = (ScheduleEvent) selectEvent.getObject();
+        FacesContext context = FacesContext.getCurrentInstance();
+        HistoriaClinicaBean historiaBean= context.getApplication().evaluateExpressionGet(context, "#{historiaClinicaBean}", HistoriaClinicaBean.class);
+        historiaBean.setCita((CitCita) event.getData());
     }
      
     public void onDateSelect(SelectEvent selectEvent) {
-        event = new DefaultScheduleEvent("", (Date) selectEvent.getObject(), (Date) selectEvent.getObject());
+        event = new DefaultScheduleEvent("", (Date) selectEvent.getObject(), (Date) selectEvent.getObject(), (CitCita) selectEvent.getObject());
     }
      
     public void onEventMove(ScheduleEntryMoveEvent event) {
@@ -242,4 +287,179 @@ public class ScheduleView extends GenericBean {
     private void addMessage(FacesMessage message) {
         FacesContext.getCurrentInstance().addMessage(null, message);
     }
+    
+    public void edit(ActionEvent event) {
+        cita = new CitCita();
+        especialidad = new CitEspecialidad();
+        try {
+            cita = (CitCita) event.getComponent().getAttributes().get("objetoEditar");
+            especialidad = cita.getUsuario().getCitEspecialidad();
+            codigoEsp = cita.getUsuario().getCitEspecialidad().getEspCodigo().intValue();
+            codigoMedico = cita.getUsuario().getUsuCodigo().intValue();
+            paciente = clienteDao.findXId(cita.getCliCodigo().getPacCodigo().intValue());
+        } catch (Exception e) {
+            LOG.error(e.getMessage(), e);
+        }
+
+    }
+
+    public void remove(ActionEvent event) {
+        cita = new CitCita();
+        try {
+            cita = (CitCita) event.getComponent().getAttributes().get("objetoRemover");
+           int ndel = citaDao.cacelar(cita.getCitCodigo().intValue());
+//            if (detalleFactura != null) {
+//              //  listaDetalleFacturas.remove(detalleFactura);
+//                procesarArticulo();
+//            }
+        } catch (Exception e) {
+        }
+
+    }
+
+    public List<CitCita> getListaCitas() {
+        return listaCitas;
+    }
+
+    public void setListaCitas(List<CitCita> listaCitas) {
+        this.listaCitas = listaCitas;
+    }
+
+    public CitaDao getCitaDao() {
+        return citaDao;
+    }
+
+    public void setCitaDao(CitaDao citaDao) {
+        this.citaDao = citaDao;
+    }
+
+    public CitPaciente getPaciente() {
+        return paciente;
+    }
+
+    public void setPaciente(CitPaciente paciente) {
+        this.paciente = paciente;
+    }
+
+    public CitPaciente getClienteNuevo() {
+        return clienteNuevo;
+    }
+
+    public void setClienteNuevo(CitPaciente clienteNuevo) {
+        this.clienteNuevo = clienteNuevo;
+    }
+
+    public CitCita getCita() {
+        return cita;
+    }
+
+    public void setCita(CitCita cita) {
+        this.cita = cita;
+    }
+
+    public CitEspecialidad getEspecialidad() {
+        return especialidad;
+    }
+
+    public void setEspecialidad(CitEspecialidad especialidad) {
+        this.especialidad = especialidad;
+    }
+
+    public List<FacUsuario> getListaUsuMedicos() {
+        return listaUsuMedicos;
+    }
+
+    public void setListaUsuMedicos(List<FacUsuario> listaUsuMedicos) {
+        this.listaUsuMedicos = listaUsuMedicos;
+    }
+
+    public List<FacCiudad> getCiudades() {
+        return ciudades;
+    }
+
+    public void setCiudades(List<FacCiudad> ciudades) {
+        this.ciudades = ciudades;
+    }
+
+    public List<CitEspecialidad> getEspecialidades() {
+        return especialidades;
+    }
+
+    public void setEspecialidades(List<CitEspecialidad> especialidades) {
+        this.especialidades = especialidades;
+    }
+
+    public ClienteDao getClienteDao() {
+        return clienteDao;
+    }
+
+    public void setClienteDao(ClienteDao clienteDao) {
+        this.clienteDao = clienteDao;
+    }
+
+    public CiudadDao getCiudadDAO() {
+        return ciudadDAO;
+    }
+
+    public void setCiudadDAO(CiudadDao ciudadDAO) {
+        this.ciudadDAO = ciudadDAO;
+    }
+
+    public UsuarioDao getUsuarioDao() {
+        return usuarioDao;
+    }
+
+    public void setUsuarioDao(UsuarioDao usuarioDao) {
+        this.usuarioDao = usuarioDao;
+    }
+
+    public EspecialidadDao getEspecilidadDAO() {
+        return especilidadDAO;
+    }
+
+    public void setEspecilidadDAO(EspecialidadDao especilidadDAO) {
+        this.especilidadDAO = especilidadDAO;
+    }
+
+    public Integer getCodigoCiudad() {
+        return codigoCiudad;
+    }
+
+    public void setCodigoCiudad(Integer codigoCiudad) {
+        this.codigoCiudad = codigoCiudad;
+    }
+
+    public Integer getCodigoEsp() {
+        return codigoEsp;
+    }
+
+    public void setCodigoEsp(Integer codigoEsp) {
+        this.codigoEsp = codigoEsp;
+    }
+
+    public Integer getCodigoMedico() {
+        return codigoMedico;
+    }
+
+    public void setCodigoMedico(Integer codigoMedico) {
+        this.codigoMedico = codigoMedico;
+    }
+
+    public Integer getCodigoPaciente() {
+        return codigoPaciente;
+    }
+
+    public void setCodigoPaciente(Integer codigoPaciente) {
+        this.codigoPaciente = codigoPaciente;
+    }
+
+    public Integer getCodigoCita() {
+        return codigoCita;
+    }
+
+    public void setCodigoCita(Integer codigoCita) {
+        this.codigoCita = codigoCita;
+    }
+    
+    
 }

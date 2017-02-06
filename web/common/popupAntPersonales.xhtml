@@ -1,0 +1,42 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"     
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core">
+
+
+    <h:body>	
+        <p:dialog modal="true" widgetVar="dlAntPersonales" resizable="true" width="50%"
+                  header="Diagnostico" dynamic="true" draggable="true" closeOnEscape="true" closable="true"
+                  appendTo="@(body)" showEffect="blind" hideEffect="blind">
+
+            <h:form id="formAntPersnales">    
+                <h:panelGrid id="gridDatos" rendered="#{not empty request.getRemoteUser()}">
+                    <p:panel id="paneDatos" header="Ingresar Diagnostico">
+                        <h:panelGrid columns="3">
+                            
+                            
+
+                            
+                            <p:outputLabel value="Descripción:" for="dir" />
+                            <p:inputTextarea id="dir"
+                                             value="#{citasBean.clienteNuevo.pacDireccion}" />                             
+                            <p:tooltip for="dir"
+                                       value="Ingrese Dirección"
+                                       showEffect="clip" hideEffect="explode" />                                                                                                                     
+
+                            <f:facet name="footer">
+                                <p:commandButton id="grabar" value="Guardar" validateClient="true" ajax="true" icon="ui-icon-disk"
+                                                 actionListener="#{citasBean.createCliente}"
+                                                 update=":formDiagnostico,:formLista,formDatos" process=":formDiagnostico" />
+                                
+                            </f:facet>                             
+                        </h:panelGrid>                          
+                    </p:panel>
+                </h:panelGrid>
+            </h:form>
+        </p:dialog>      
+    </h:body>
+</html>
