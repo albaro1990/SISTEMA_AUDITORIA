@@ -24,38 +24,37 @@
 
                                 <h:panelGrid columns="9" > 
                                     <p:outputLabel value="Identificación" for="ruc" />
-                                    <p:inputText id="ruc" value="#{scheduleView.paciente.pacIdentificacin}" required="true" 
-                                                 requiredMessage="Campo requerido" maxlength="15" />                                       
+                                    <p:inputText id="ruc" value="#{scheduleView.paciente.pacIdentificacin}"  maxlength="15" readonly="true"/>                                       
                                     <p:tooltip for="ruc"
-                                               value="Buscar por ruc o cédula"
+                                               value="ruc o cédula"
                                                showEffect="clip" hideEffect="explode" />  
 
-                                    <p:outputLabel value="Paciente" for="cliente" />
-                                    <p:inputText id="cliente" disabled="true"                                                 
-                                                 value="#{scheduleView.paciente.pacNombres} #{scheduleView.paciente.pacApellidos}" />                             
+                                    <p:outputLabel value="Nombres" for="cliente" />
+                                    <p:inputText id="cliente"                                                
+                                                 value="#{scheduleView.paciente.pacNombres} #{scheduleView.paciente.pacApellidos}" readonly="true"/>                             
                                     <p:tooltip for="cliente"
                                                value="Buscar por cliente"
                                                showEffect="clip" hideEffect="explode" /> 
 
                                     <p:outputLabel value="Edad:" for="edad" />
-                                    <p:inputText id="edad" disabled="true"                                                 
-                                                 value="#{scheduleView.paciente.pacNombres} #{scheduleView.paciente.pacApellidos}" />                             
+                                    <p:inputText id="edad"                            
+                                                 value="#{scheduleView.paciente.edad}" readonly="true"/>                             
                                     <p:tooltip for="edad"
                                                value="Edad por cliente"
                                                showEffect="clip" hideEffect="explode" /> 
 
-                                    <p:outputLabel for="fecha" value="Fecha Naciemiento:" />
-                                    <p:calendar id="fecha" value="#{scheduleView.paciente.pacNombres}" pattern="dd-MM-yyyy" mask="true" />
+                                    <p:outputLabel for="fecha" value="Fecha Naciemiento:"  />
+                                    <p:calendar id="fecha" value="#{scheduleView.paciente.fechaNacimiento}" pattern="dd-MM-yyyy" mask="true" disabled="true" />
                                     <p:tooltip for="fecha"
                                                value="Fecha"
                                                showEffect="clip" hideEffect="explode" /> 
 
                                     <p:outputLabel value="Estado Civil: " for="estadoCivil" />
-                                    <p:inputText id="estadoCivil" value="#{scheduleView.cita.citCodigo}"/>                                                                                                     
+                                    <p:inputText id="estadoCivil" value="#{scheduleView.paciente.estadoCivil}" readonly="true"/>                                                                                                     
                                     <p:tooltip for="estadoCivil"
                                                value="estadoCivil"
                                                showEffect="clip" hideEffect="explode" />
-
+                                    <f:verbatim/><f:verbatim/><f:verbatim/>
                                     <p:outputLabel value="Talla: " for="talla" />
                                     <p:inputText id="talla" value="#{scheduleView.cita.citCodigo}"/>                                                                                                     
                                     <p:tooltip for="talla"
@@ -91,14 +90,13 @@
                                     <p:tooltip for="imc"
                                                value="imc"
                                                showEffect="clip" hideEffect="explode" />
-
                                     <p:outputLabel value="Motivo:" for="motivo" />
                                     <p:inputTextarea id="motivo"
                                                      value="#{scheduleView.cita.citCodigo}" />                             
                                     <p:tooltip for="motivo"
                                                value="Ingrese Motivo"
                                                showEffect="clip" hideEffect="explode" />  
-                                    
+
                                     <p:outputLabel value="Sintomas:" for="sintoma" />
                                     <p:inputTextarea id="sintoma"
                                                      value="#{scheduleView.cita.citCodigo}" />                             

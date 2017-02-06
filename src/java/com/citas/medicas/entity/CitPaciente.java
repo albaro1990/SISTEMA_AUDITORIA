@@ -8,6 +8,7 @@ package com.citas.medicas.entity;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -32,7 +33,9 @@ public class CitPaciente implements Serializable {
     private String pacCorreo;
     private Integer pacEstado;
     private String pacGenero;
-    
+    private Integer edad;
+    private Date fechaNacimiento;
+    private String estadoCivil;
     
    // private List<FacCitaFactura> facCitaFacturaList;
 
@@ -131,6 +134,31 @@ public class CitPaciente implements Serializable {
         this.pacGenero = pacGenero;
     }
 
+    public Integer getEdad() {
+        return edad;
+    }
+
+    public void setEdad(Integer edad) {
+        this.edad = edad;
+    }
+
+    public Date getFechaNacimiento() {
+        return fechaNacimiento;
+    }
+
+    public void setFechaNacimiento(Date fechaNacimiento) {
+        this.fechaNacimiento = fechaNacimiento;
+    }
+
+    public String getEstadoCivil() {
+        return estadoCivil;
+    }
+
+    public void setEstadoCivil(String estadoCivil) {
+        this.estadoCivil = estadoCivil;
+    }
+
+    
     @Override
     public int hashCode() {
         int hash = 0;

@@ -50,7 +50,7 @@ import org.primefaces.model.ScheduleEvent;
 import org.primefaces.model.ScheduleModel;
 
 @ManagedBean(name = "scheduleView")
-@ViewScoped
+@SessionScoped
 public class ScheduleView extends GenericBean {
     
     private static final long serialVersionUID = 1L;
@@ -88,6 +88,10 @@ public class ScheduleView extends GenericBean {
     private Integer codigoCita;
     
  
+     public ScheduleView() {
+            
+        
+    }
     @PostConstruct
     public void init() {
         eventModel = new DefaultScheduleModel();
@@ -258,7 +262,12 @@ public class ScheduleView extends GenericBean {
     public void onEventSelect(SelectEvent selectEvent) {
         event = (ScheduleEvent) selectEvent.getObject();
         setCita((CitCita) event.getData());
-        codigoPaciente = 1;
+        codigoPaciente = getCita().getCliCodigo().getPacCodigo().intValue();
+        try {
+           paciente =  clienteDao.findXId(codigoPaciente); 
+        } catch (Exception e) {
+        }
+        
     }
     
      public void onEventIngresar(SelectEvent selectEvent) {
