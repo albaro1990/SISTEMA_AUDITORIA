@@ -86,7 +86,7 @@ public class RolDaoImpl implements RolDao {
 
         try {
             conn = new ConexionDB().getConexion();
-            pstmt = conn.prepareStatement("SELECT * FROM CIT_ROL WHERE ROL_ESTADO=1");
+            pstmt = conn.prepareStatement("SELECT * FROM AUD_ROL WHERE ROL_ESTADO=1");
             rs = pstmt.executeQuery();
 
             while (rs.next()) {
