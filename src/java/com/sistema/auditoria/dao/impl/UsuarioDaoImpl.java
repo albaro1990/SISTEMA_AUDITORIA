@@ -26,8 +26,8 @@ public class UsuarioDaoImpl implements UsuarioDao {
         StringBuilder sql = new StringBuilder();
         try {
             conn = new ConexionDB().getConexion();
-            sql.append("INSERT INTO AUD_USUARIO(USU_CODIGO, USU_LOGIN, USU_CLAVE, USU_NOMBRE, USU_APELLIDOS, USU_CORREO, USU_IDENTIFICACION, USU_DIRECCION, USU_TELEFONO, USU_ESTADO, USU_FECHA_CREACION, ESP_CODIGO) "
-                    + "VALUES (CIT_SEQ_USUARIO.NEXTVAL, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? )");
+            sql.append("INSERT INTO AUD_USUARIO(USU_CODIGO, USU_LOGIN, USU_CLAVE, USU_NOMBRE, USU_APELLIDOS, USU_CORREO, USU_IDENTIFICACION, USU_DIRECCION, USU_TELEFONO, USU_ESTADO, USU_FECHA_CREACION) "
+                    + "VALUES (AUD_SEQ_USUARIO.NEXTVAL, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? )");
             pstmt = conn.prepareStatement(sql.toString(), new String[]{"USU_CODIGO"});
             pstmt.setString(1, usuario.getUsuLogin());
             pstmt.setString(2, usuario.getUsuClave());
@@ -39,12 +39,7 @@ public class UsuarioDaoImpl implements UsuarioDao {
             pstmt.setString(8, usuario.getUsuTelefono());
             pstmt.setInt(9, usuario.getUsuEstado());
             pstmt.setDate(10, new java.sql.Date(new java.util.Date().getTime()));
-            
-            if(usuario.getCitEspecialidad()!=null && usuario.getCitEspecialidad().getEspCodigo()!=null){
-                pstmt.setLong(11, usuario.getCitEspecialidad().getEspCodigo());
-            }else{
-                pstmt.setNull(11, Types.BIGINT);
-            }
+
             int affectedRows = pstmt.executeUpdate();
 
             if (affectedRows == 0) {
@@ -151,20 +146,20 @@ public class UsuarioDaoImpl implements UsuarioDao {
                 usuario = new AudUsuario();
                 usuario.setUsuCodigo(rs.getLong(1));
                 usuario.setCitEspecialidad(new CitEspecialidad());
-                if(rs.getLong(2)>0){
+               /* if(rs.getLong(2)>0){
                 usuario.getCitEspecialidad().setEspCodigo(rs.getLong(2));
-                }
-                usuario.setUsuLogin(rs.getString(3));
-                usuario.setUsuClave(rs.getString(4));
-                usuario.setUsuNombres(rs.getString(5));
-                usuario.setUsuApellidos(rs.getString(6));
-                usuario.setUsuCorreo(rs.getString(7));
-                usuario.setUsuIdentificacion(rs.getString(8));
-                usuario.setUsuDireccion(rs.getString(9));
-                usuario.setUsuTelefono(rs.getString(10));
-                usuario.setUsuEstado(rs.getInt(11));
-                usuario.setFechaCreacion(rs.getDate(12));
-                usuario.setFechaModificacion(rs.getDate(13));
+                }*/
+                usuario.setUsuLogin(rs.getString(2));
+                usuario.setUsuClave(rs.getString(3));
+                usuario.setUsuNombres(rs.getString(4));
+                usuario.setUsuApellidos(rs.getString(5));
+                usuario.setUsuCorreo(rs.getString(6));
+                usuario.setUsuIdentificacion(rs.getString(7));
+                usuario.setUsuDireccion(rs.getString(8));
+                usuario.setUsuTelefono(rs.getString(9));
+                usuario.setUsuEstado(rs.getInt(10));
+                usuario.setFechaCreacion(rs.getDate(11));
+                usuario.setFechaModificacion(rs.getDate(12));
             }
         } catch (SQLException e) {
             e.printStackTrace();

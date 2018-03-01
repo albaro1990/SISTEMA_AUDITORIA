@@ -26,7 +26,7 @@ public class UsuarioAplicacionDaoImpl implements UsuarioAplicacionDao {
         StringBuilder sql = new StringBuilder();
         try {
             conn = new ConexionDB().getConexion();
-            sql.append("INSERT INTO CIT_USUARIO_APLICACION(UAP_CODIGO, USU_CODIGO, ROL_CODIGO, UAP_ESTADO,UAP_FECHA_CREACION) VALUES (CIT_SEQ_USUARIO_APLICACION.NEXTVAL, ?, ?, ?, ?)");
+            sql.append("INSERT INTO AUD_USUARIO_APLICACION(UAP_CODIGO, USU_CODIGO, ROL_CODIGO, UAP_ESTADO,UAP_FECHA_CREACION) VALUES (AUD_SEQ_USUARIO_APLICACION.NEXTVAL, ?, ?, ?, ?)");
             pstmt = conn.prepareStatement(sql.toString(), new String[]{"UAP_CODIGO"});
             pstmt.setLong(1, usuarioAplicacion.getUsuCodigo().getUsuCodigo());
             pstmt.setBigDecimal(2, usuarioAplicacion.getRolCodigo().getRolCodigo());
@@ -55,7 +55,7 @@ public class UsuarioAplicacionDaoImpl implements UsuarioAplicacionDao {
         StringBuilder sql = new StringBuilder();
         try {
             conn = new ConexionDB().getConexion();
-            sql.append("UPDATE CIT_USUARIO_APLICACION SET USU_CODIGO = ?, ROL_CODIGO = ?, UAP_FECHA_ACTUALIZACION = ?, UAP_ESTADO = ? WHERE UAP_CODIGO = ?");
+            sql.append("UPDATE AUD_USUARIO_APLICACION SET USU_CODIGO = ?, ROL_CODIGO = ?, UAP_FECHA_ACTUALIZACION = ?, UAP_ESTADO = ? WHERE UAP_CODIGO = ?");
             pstmt = conn.prepareStatement(sql.toString());
             pstmt.setInt(1, usuarioAplicacion.getUsuCodigo().getUsuCodigo().intValue());
             pstmt.setInt(2, usuarioAplicacion.getRolCodigo().getRolCodigo().intValue());
@@ -78,7 +78,7 @@ public class UsuarioAplicacionDaoImpl implements UsuarioAplicacionDao {
         StringBuilder sql = new StringBuilder();
         try {
             conn = new ConexionDB().getConexion();
-            sql.append("DELETE FROM CIT_USUARIO_APLICACION WHERE UAP_CODIGO = ?");
+            sql.append("DELETE FROM AUD_USUARIO_APLICACION WHERE UAP_CODIGO = ?");
             pstmt = conn.prepareStatement(sql.toString());
             pstmt.setInt(1, id);
             ndel = pstmt.executeUpdate();
@@ -97,7 +97,7 @@ public class UsuarioAplicacionDaoImpl implements UsuarioAplicacionDao {
 
         try {
             conn = new ConexionDB().getConexion();
-            pstmt = conn.prepareStatement("SELECT * FROM CIT_USUARIO_APLICACION WHERE UAP_ESTADO = 1");
+            pstmt = conn.prepareStatement("SELECT * FROM AUD_USUARIO_APLICACION WHERE UAP_ESTADO = 1");
             rs = pstmt.executeQuery();
 
             while (rs.next()) {

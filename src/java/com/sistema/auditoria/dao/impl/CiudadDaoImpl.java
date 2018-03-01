@@ -25,7 +25,7 @@ public class CiudadDaoImpl implements CiudadDao {
             conn = new ConexionDB().getConexion();
            
             pstmt = conn.prepareStatement("INSERT INTO AUD_CIUDAD(CIU_CODIGO,CIU_NOMBRE,CIU_ESTADO) "
-                    + "values (CIT_SEQ_CIUDAD.NEXTVAL, '"+ciudad.getCiuNombre()+"',"+ciudad.getCiuEstado()+")", new String[]{"CIU_CODIGO"});
+                    + "values (AUD_SEQ_CIUDAD.NEXTVAL, '"+ciudad.getCiuNombre()+"',"+ciudad.getCiuEstado()+")", new String[]{"CIU_CODIGO"});
             
             int affectedRows = pstmt.executeUpdate();
             

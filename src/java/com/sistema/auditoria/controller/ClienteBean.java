@@ -103,9 +103,6 @@ public class ClienteBean extends GenericBean {
                 if (!usuarioDAO.existePorCampo(usuario.getUsuLogin())) {
                     if (ValidadorCedulaRuc.isCedulaValido(usuario.getUsuIdentificacion())) {
                         if (usuario.getUsuClave().equals(confirmarClave)) {
-                            if(codigoEsp!=null && codigoEsp>0){
-                            usuario.setCitEspecialidad(especilidadDAO.find(codigoEsp));
-                            }
                             int idUsuario = usuarioDAO.save(usuario);
                             usuarioAplicacion.setUsuCodigo(usuarioDAO.find(idUsuario));
                             usuarioAplicacion.setRolCodigo(rolDAO.find(codigoRol));
