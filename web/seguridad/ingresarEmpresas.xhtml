@@ -12,7 +12,7 @@
         <ui:composition template="./../WEB-INF/templates/cuerpo.xhtml">
 
             <ui:define name="page-title">
-                Ingresar Especialidad
+                Ingresar Empresa
             </ui:define>
 
             <ui:define name="datos">
@@ -22,18 +22,75 @@
                     <p:growl id="growl" showDetail="true"  life="800" />
                     <center>
                         <h:panelGrid id="gridDatos" rendered="#{not empty request.getRemoteUser()}">
-                            <p:panel id="paneDatos" header="Ingresar Especialidad">
+                            <p:panel id="paneDatos" header="Ingresar Empresa">
                                 <h:panelGrid columns="3">
-                                    <p:outputLabel value="Descripción:" for="nombre" />
+                                    <p:outputLabel value="Nombre:" for="nombre" />
                                     <p:inputText id="nombre" required="true"
                                                  requiredMessage="Campo requerido"
-                                                 value="#{especialidadBean.especialidad.espDescripcion}" />                             
+                                                 value="#{empresaBean.empresa.empNombre}" />                             
                                     <p:tooltip for="nombre"
                                                value="Campo requerido"
                                                showEffect="clip" hideEffect="explode" />
+                                    
+                                    
+                                    <p:outputLabel value="Razon Social:" for="nombre" />
+                                    <p:inputText id="razsoci" required="true"
+                                                 requiredMessage="Campo requerido"
+                                                 value="#{empresaBean.empresa.empRazon_Social}" />                             
+                                    <p:tooltip for="razsoci"
+                                               value="Campo requerido"
+                                               showEffect="clip" hideEffect="explode" />
+                                    
+                                   <p:outputLabel value="Telefono:" for="telf" />
+                                    <p:inputText id="telf"
+                                                 value="#{empresaBean.empresa.empTelefono}" />                             
+                                    <p:tooltip for="telf"
+                                               value="Ingrese Telefono"
+                                               showEffect="clip" hideEffect="explode" />
+                                    
+                                    
+                                     <p:outputLabel value="Direcciòn" for="dir" />
+                                    <p:inputText id="dir" required="true"
+                                                 requiredMessage="Campo requerido"
+                                                 value="#{empresaBean.empresa.empDireccion}" />                             
+                                    <p:tooltip for="dir"
+                                               value="Campo requerido"
+                                               showEffect="clip" hideEffect="explode" />
+                                    
+                                                                       
+                                    
+                                    <p:outputLabel value="Cédula/Ruc:" for="cedula" />
+                                    <p:inputText id="cedula" required="true" maxlength="10"
+                                                 requiredMessage="Campo requerido"
+                                                 value="#{empresaBean.empresa.empCed_Ruc}" />                             
+                                    <p:tooltip for="cedula"
+                                               value="Campo requerido"
+                                               showEffect="clip" hideEffect="explode" />
+                                    
+                                    
+                                    
+                                    <p:outputLabel value="Correo:" for="correo" />
+                                    <p:inputText id="correo" validatorMessage="El correo ingresado es incorrecto"
+                                                 value="#{empresaBean.empresa.empCorreo}">
+                                        <f:validateRegex
+                                            pattern="^[_A-Za-z0-9-\+]+(\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\.[A-Za-z0-9]+)*(\.[A-Za-z]{2,})$" />
+                                    </p:inputText>                             
+                                    <p:tooltip for="correo"
+                                               value="Ingrese correo Valido"
+                                               showEffect="clip" hideEffect="explode" />
+                                    
+                                    <p:outputLabel for="ciudad" value="Ciudad:"  />
+                                    <p:selectOneMenu id="ciudad" label="ciudad" value="#{empresaBean.codigoCiudad}" required="true" requiredMessage="Campo requerido">
+                                        <f:selectItem itemLabel="Seleccione..." noSelectionOption="true" />
+                                        <f:selectItems value="#{empresaBean.ciudades}" var="item" itemLabel="#{item.ciuNombre}" itemValue="#{item.ciuCodigo}" />
+                                    </p:selectOneMenu>
+                                    <p:tooltip for="ciudad"
+                                               value="Campo requerido"
+                                               showEffect="clip" hideEffect="explode" />
+                                    
 
                                     <p:outputLabel for="est" value="Estado:"  />
-                                    <p:selectOneMenu id="est" label="est" required="true" requiredMessage="Campo requerido" value="#{especialidadBean.especialidad.espEstado}">
+                                    <p:selectOneMenu id="est" label="est" required="true" requiredMessage="Campo requerido" value="#{empresaBean.empresa.empEstado}">
                                         <f:selectItem itemLabel="Seleccione..." noSelectionOption="true" />
                                         <f:selectItem itemLabel="ACTIVO" itemValue="1"/>
                                         <f:selectItem itemLabel="INACTIVO" itemValue="0"/>
@@ -44,10 +101,10 @@
 
                                     <f:facet name="footer">
                                         <p:commandButton id="grabar" value="Guardar" validateClient="true" ajax="true" icon="ui-icon-disk"
-                                                         actionListener="#{especialidadBean.create}"
+                                                         actionListener="#{empresaBean.create}"
                                                          update=":formLista,formDatos, growl" process=":formDatos" />
                                         <p:commandButton value="Nuevo" validateClient="true" ajax="true" icon="ui-icon-document"
-                                                         actionListener="#{especialidadBean.inicializar}" immediate="true"
+                                                         actionListener="#{empresaBean.inicializar}" immediate="true"
                                                          update=":formLista,formDatos, growl" process=":formDatos"  />
                                     </f:facet>                             
                                 </h:panelGrid>                          
@@ -62,7 +119,7 @@
                 <center>
                     <h:panelGrid id="gridLista" rendered="#{not empty request.getRemoteUser()}">
                         <h:form id="formLista">
-                            <p:dataTable id="listaSimple" value="#{especialidadBean.listaEspecialidades}"
+                            <p:dataTable id="listaSimple" value="#{empresaBean.listaEmpresa}"
                                          var="item" paginator="true" rows="10" paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink}
                                          {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
                                          rowsPerPageTemplate="5,10,15" emptyMessage="Registro no encontrado.">
@@ -72,7 +129,7 @@
                                 
                                   <p:column headerText="Editar" style="text-align: center">
                                     <p:commandButton id="btnEditar" ajax="true" icon="ui-icon-pencil"
-                                                     actionListener="#{especialidadBean.edit}" update=":formDatos"                                                    
+                                                     actionListener="#{empresaBean.edit}" update=":formDatos"                                                    
                                                      title="Editar">
                                         <f:attribute name="objetoEditar" value="#{item}" />
                                     </p:commandButton>
@@ -80,7 +137,7 @@
 
                                 <p:column headerText="Eliminar" style="text-align: center">                                          
                                     <p:commandButton id="btnEliminar" ajax="true" icon="ui-icon-trash"
-                                                     actionListener="#{especialidadBean.remove}"
+                                                     actionListener="#{empresaBean.remove}"
                                                      title="Eliminar"
                                                      update="listaSimple :formDatos:growl">
                                         <p:confirm header="Eliminar"
@@ -90,11 +147,32 @@
                                     </p:commandButton>
                                 </p:column>
 
-                                <p:column headerText="Descripción" filterBy="#{item.espDescripcion}" filterMatchMode="contains" footerText="Descripción">
-                                    <h:outputText value="#{item.espDescripcion}" />
+                                <p:column headerText="Nombre" filterBy="#{item.empNombre}" filterMatchMode="contains" footerText="Nombre">
+                                    <h:outputText value="#{item.empNombre}" />
                                 </p:column>
-                                <p:column headerText="Estado" filterBy="#{item.espEstado}" filterMatchMode="contains" footerText="Estado">
-                                    <h:outputText value="#{item.espEstado}" />
+                                
+                                <p:column headerText="Razon Social" filterBy="#{item.empRazon_Social}" filterMatchMode="contains" footerText="Razon Social">
+                                    <h:outputText value="#{item.empRazon_Social}" />
+                                </p:column>
+                                
+                                <p:column headerText="Telefono" filterBy="#{item.empTelefono}" filterMatchMode="contains" footerText="Telefono">
+                                    <h:outputText value="#{item.empTelefono}" />
+                                </p:column>
+                                
+                                <p:column headerText="Dirección" filterBy="#{item.empDireccion}" filterMatchMode="contains" footerText="Dirección">
+                                    <h:outputText value="#{item.empDireccion}" />
+                                </p:column>
+                                
+                                <p:column headerText="Cedula/Ruc" filterBy="#{item.empCed_Ruc}" filterMatchMode="contains" footerText="Cedula/Ruc">
+                                    <h:outputText value="#{item.empCed_Ruc}" />
+                                </p:column>
+                                
+                                <p:column headerText="Correo" filterBy="#{item.empCorreo}" filterMatchMode="contains" footerText="Correo">
+                                    <h:outputText value="#{item.empCorreo}" />
+                                </p:column>
+                                
+                                <p:column headerText="Estado" filterBy="#{item.empEstado}" filterMatchMode="contains" footerText="Estado">
+                                    <h:outputText value="#{item.empEstado}" />
                                 </p:column>
                             </p:dataTable>
                         </h:form>

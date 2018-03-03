@@ -2,8 +2,7 @@ package com.sistema.auditoria.dao.impl;
 
 import com.sistema.auditoria.conexion.ConexionDB;
 import com.sistema.auditoria.dao.CiudadDao;
-import com.sistema.auditoria.dao.EspecialidadDao;
-import com.sistema.auditoria.entity.CitEspecialidad;
+import com.sistema.auditoria.entity.AudEmpresa;
 import com.sistema.auditoria.entity.AudCiudad;
 import com.sistema.auditoria.entity.FacRol;
 import java.sql.Connection;
@@ -13,26 +12,28 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
+import com.sistema.auditoria.dao.EmpresaDao;
 
-public class EspecialidadDaoImpl implements EspecialidadDao {
+public class EmpresaDaoImpl implements EmpresaDao {
 
     private Connection conn;
     private ResultSet rs;
     private PreparedStatement pstmt;
 
     @Override
-    public int save(CitEspecialidad especialidad) throws SQLException {
+    public int save(AudEmpresa empresa) throws SQLException {
         int idInserted = 0;
         try {
             conn = new ConexionDB().getConexion();
            
-            pstmt = conn.prepareStatement("INSERT INTO CIT_ESPECIALIDAD(ESP_CODIGO,ESP_DESCRIPCION,ESP_ESTADO) "
-                    + "values (CIT_SEQ_ESPECIALIDAD.NEXTVAL, '"+especialidad.getEspDescripcion()+"',"+especialidad.getEspEstado()+")", new String[]{"ESP_CODIGO"});
+            pstmt = conn.prepareStatement("INSERT INTO AUD_EMPRESA(EMP_CODIGO,EMP_NOMBRES,EMP_RAZON_SOCIAL,EMP_TELEFONO,EMP_DIRECCION,EMP_CED_RUC,EMP_CORREO,EMP_ESTADO) "
+                    + "values (CIT_SEQ_EMPRESA.NEXTVAL, '"+empresa.getEmpNombre()+"','"+empresa.getEmpRazon_Social()+"','"+empresa.getEmpTelefono()+"','"+empresa.getEmpDireccion()+"','"+empresa.getEmpCed_Ruc()+"','"+empresa.getEmpCorreo()+"',"
+                            + ""+empresa.getEmpEstado()+")", new String[]{"EMP_CODIGO"});
             
             int affectedRows = pstmt.executeUpdate();
             
             if (affectedRows == 0) {
-                throw new SQLException("Error al crear la especialidad");
+                throw new SQLException("Error al crear la empresa");
             }
             rs = pstmt.getGeneratedKeys();  
             if (rs.next()) {
@@ -50,12 +51,13 @@ public class EspecialidadDaoImpl implements EspecialidadDao {
     }
 
     @Override
-    public int update(CitEspecialidad especialidad) throws SQLException {
+    public int update(AudEmpresa empresa) throws SQLException {
         int nup = 0;
         try {
             conn = new ConexionDB().getConexion();
-            pstmt = conn.prepareStatement("UPDATE CIT_ESPECIALIDAD SET ESP_DESCRIPCION='"+especialidad.getEspDescripcion()+"',ESP_ESTADO="+especialidad.getEspEstado()+""
-                    + " WHERE ESP_CODIGO = "+especialidad.getEspCodigo()+" ");
+            pstmt = conn.prepareStatement("UPDATE AUD_EMPRESA SET CIU_CODIGO='"+empresa.getCiuCodigo()+"',EMP_NOMBRES='"+empresa.getEmpNombre()+"',EMP_RAZON_SOCIAL='"+empresa.getEmpRazon_Social()+"',EMP_TELEFONO='"+empresa.getEmpTelefono()+"',EMP_DIRECCION='"+empresa.getEmpDireccion()+"',"
+                    + "EMP_CED_RUC='"+empresa.getEmpCed_Ruc()+"',EMP_CORREO='"+empresa.getEmpCorreo()+"',EMP_ESTADO="+empresa.getEmpEstado()+""
+                    + " WHERE EMP_CODIGO = "+empresa.getEmpCodigo()+" ");
             
 
             nup = pstmt.executeUpdate();
@@ -73,7 +75,7 @@ public class EspecialidadDaoImpl implements EspecialidadDao {
         int ndel = 0;
         try {
             conn = new ConexionDB().getConexion();
-            pstmt = conn.prepareStatement("DELETE FROM CIT_ESPECIALIDAD WHERE ESP_CODIGO = "+id+"");
+            pstmt = conn.prepareStatement("DELETE FROM AUD_EMPRESA WHERE EMP_CODIGO = "+id+"");
             ndel = pstmt.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -85,44 +87,44 @@ public class EspecialidadDaoImpl implements EspecialidadDao {
     }
 
     @Override
-    public List<CitEspecialidad> findAll() throws SQLException {
-        List<CitEspecialidad> especialidades = new ArrayList<CitEspecialidad>();
+    public List<AudEmpresa> findAll() throws SQLException {
+        List<AudEmpresa> empresas = new ArrayList<AudEmpresa>();
 
         try {
             conn = new ConexionDB().getConexion();
-            pstmt = conn.prepareStatement("SELECT * FROM CIT_ESPECIALIDAD ");
+            pstmt = conn.prepareStatement("SELECT * FROM AUD_EMPRESA ");
             rs = pstmt.executeQuery();
 
             while (rs.next()) {
-                CitEspecialidad especialidad = new CitEspecialidad();
-                especialidad.setEspCodigo(rs.getLong(1));
-                especialidad.setEspDescripcion(rs.getString(2));
-                especialidad.setEspEstado(rs.getInt(3));
-                especialidades.add(especialidad);
+                AudEmpresa empresa = new AudEmpresa();
+                empresa.setEmpCodigo(rs.getLong(1));
+                empresa.setEmpCed_Ruc(rs.getString(2));
+                empresa.setEmpEstado(rs.getInt(3));
+                empresas.add(empresa);
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
 
-        return especialidades;
+        return empresas;
     }
 
     @Override
-    public CitEspecialidad find(int id) throws SQLException {
+    public AudEmpresa find(int id) throws SQLException {
 
-        CitEspecialidad especialidad = null;
+        AudEmpresa empresa = null;
 
         try {
             conn = new ConexionDB().getConexion();
-            pstmt = conn.prepareStatement("SELECT * FROM CIT_ESPECIALIDAD WHERE ESP_CODIGO = ? AND ESP_ESTADO=1");
+            pstmt = conn.prepareStatement("SELECT * FROM AUD_EMPRESA WHERE EMP_CODIGO = ? AND EMP_ESTADO=1");
             pstmt.setInt(1, id);
             rs = pstmt.executeQuery();
 
             while (rs.next()) {
-                especialidad= new CitEspecialidad();
-                especialidad.setEspCodigo(rs.getLong(1));
-                especialidad.setEspDescripcion(rs.getString(2));
-                especialidad.setEspEstado(rs.getInt(3));
+                empresa= new AudEmpresa();
+                empresa.setEmpCodigo(rs.getLong(1));
+                empresa.setEmpCed_Ruc(rs.getString(2));
+                empresa.setEmpEstado(rs.getInt(3));
                
             }
         } catch (SQLException e) {
@@ -132,15 +134,15 @@ public class EspecialidadDaoImpl implements EspecialidadDao {
             pstmt.close();
         }
 
-        return especialidad;
+        return empresa;
     }
     
     @Override
-    public boolean existePorCampo(String nombre) throws SQLException {
+    public boolean existePorCampo(String cedula) throws SQLException {
         try {
             Integer rowCount = 0;
             conn = new ConexionDB().getConexion();
-            pstmt = conn.prepareStatement("SELECT COUNT(*) AS CONTADOR FROM CIT_ESPECIALIDAD C WHERE C.ESP_DESCRIPCION='" + nombre + "'");
+            pstmt = conn.prepareStatement("SELECT COUNT(*) AS CONTADOR FROM AUD_EMPRESA C WHERE C.EMP_CED_RUC='" + cedula + "'");
             rs = pstmt.executeQuery();
             while (rs.next()) {
                 rowCount = rs.getInt("CONTADOR");
@@ -159,7 +161,7 @@ public class EspecialidadDaoImpl implements EspecialidadDao {
         try {
             Long max = Long.valueOf(0);
             conn = new ConexionDB().getConexion();
-            pstmt = conn.prepareStatement("SELECT MAX(C.CIU_CODIGO)+1 FROM ESP_DESCRIPCION C");
+            pstmt = conn.prepareStatement("SELECT MAX(C.EMP_CODIGO)+1 FROM EMP_CED_RUC C");
             rs = pstmt.executeQuery();
             if (rs.next()) {
                 max = rs.getLong(1);

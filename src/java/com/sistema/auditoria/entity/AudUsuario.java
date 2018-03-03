@@ -39,7 +39,7 @@ public class AudUsuario implements Serializable {
     
     private Integer usuEstado;
     
-    private CitEspecialidad citEspecialidad;
+    private AudEmpresa citEspecialidad;
     
     private Date fechaCreacion;
     
@@ -168,11 +168,11 @@ public class AudUsuario implements Serializable {
         this.fechaModificacion = fechaModificacion;
     }
 
-    public CitEspecialidad getCitEspecialidad() {
+    public AudEmpresa getCitEspecialidad() {
         return citEspecialidad;
     }
 
-    public void setCitEspecialidad(CitEspecialidad citEspecialidad) {
+    public void setCitEspecialidad(AudEmpresa citEspecialidad) {
         this.citEspecialidad = citEspecialidad;
     }
 

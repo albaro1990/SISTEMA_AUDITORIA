@@ -6,17 +6,16 @@ package com.sistema.auditoria.controller;
 
 import com.sistema.auditoria.dao.CiudadDao;
 import com.sistema.auditoria.dao.ClienteDao;
-import com.sistema.auditoria.dao.EspecialidadDao;
 import com.sistema.auditoria.dao.RolDao;
 import com.sistema.auditoria.dao.UsuarioAplicacionDao;
 import com.sistema.auditoria.dao.UsuarioDao;
 import com.sistema.auditoria.dao.impl.CiudadDaoImpl;
 import com.sistema.auditoria.dao.impl.ClienteDaoImpl;
-import com.sistema.auditoria.dao.impl.EspecialidadDaoImpl;
+import com.sistema.auditoria.dao.impl.EmpresaDaoImpl;
 import com.sistema.auditoria.dao.impl.RolDaoImpl;
 import com.sistema.auditoria.dao.impl.UsuarioAplicacionDaoImpl;
 import com.sistema.auditoria.dao.impl.UsuarioDaoImpl;
-import com.sistema.auditoria.entity.CitEspecialidad;
+import com.sistema.auditoria.entity.AudEmpresa;
 import com.sistema.auditoria.entity.CitPaciente;
 import com.sistema.auditoria.entity.AudCiudad;
 import com.sistema.auditoria.entity.FacRol;
@@ -33,6 +32,7 @@ import org.primefaces.context.RequestContext;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import com.sistema.auditoria.dao.EmpresaDao;
 
 /**
  * @author rene.travez

@@ -9,7 +9,6 @@ import com.sistema.auditoria.dao.ArticuloDetalleDao;
 import com.sistema.auditoria.dao.CiudadDao;
 import com.sistema.auditoria.dao.ClienteDao;
 import com.sistema.auditoria.dao.DetalleFacturaDao;
-import com.sistema.auditoria.dao.EspecialidadDao;
 import com.sistema.auditoria.dao.UsuarioDao;
 import com.sistema.auditoria.dao.impl.ArticuloDaoImpl;
 import com.sistema.auditoria.dao.impl.ArticuloDetalleDaoImpl;
@@ -17,12 +16,12 @@ import com.sistema.auditoria.dao.impl.CitaDaoImpl;
 import com.sistema.auditoria.dao.impl.CiudadDaoImpl;
 import com.sistema.auditoria.dao.impl.ClienteDaoImpl;
 import com.sistema.auditoria.dao.impl.DetalleFacturaDaoImpl;
-import com.sistema.auditoria.dao.impl.EspecialidadDaoImpl;
+import com.sistema.auditoria.dao.impl.EmpresaDaoImpl;
 import com.sistema.auditoria.dao.impl.UsuarioDaoImpl;
 import com.sistema.auditoria.entity.FacArticulo;
 import com.sistema.auditoria.entity.FacArticuloDetalle;
 import com.sistema.auditoria.entity.CitCita;
-import com.sistema.auditoria.entity.CitEspecialidad;
+import com.sistema.auditoria.entity.AudEmpresa;
 import com.sistema.auditoria.entity.CitPaciente;
 import com.sistema.auditoria.entity.AudCiudad;
 import com.sistema.auditoria.entity.FacDetalleFactura;
@@ -50,6 +49,7 @@ import org.slf4j.LoggerFactory;
 import com.sistema.auditoria.dao.CitaDao;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.RequestScoped;
+import com.sistema.auditoria.dao.EmpresaDao;
 
 @ManagedBean(name = "historiaClinicaBean")
 @ViewScoped
@@ -62,19 +62,19 @@ public class HistoriaClinicaBean extends GenericBean {
     private CitPaciente clienteNuevo;
     private FacArticuloDetalle articuloDetalle;
     private CitCita cita;
-    private CitEspecialidad especialidad;
+    private AudEmpresa especialidad;
     private List<CitCita> listaCitas;
     private List<FacArticulo> listaArticulos;
     private List<AudUsuario> listaUsuMedicos;
     private List<AudCiudad> ciudades = new ArrayList<AudCiudad>();
-    private List<CitEspecialidad> especialidades = new ArrayList<CitEspecialidad>();
+    private List<AudEmpresa> especialidades = new ArrayList<AudEmpresa>();
     private ClienteDao clienteDao = new ClienteDaoImpl();
     private CiudadDao ciudadDAO = new CiudadDaoImpl();
     private CitaDao citaDao = new CitaDaoImpl();
     private DetalleFacturaDao detalleFacturaDao = new DetalleFacturaDaoImpl();
     private ArticuloDao articuloDao = new ArticuloDaoImpl();
     private UsuarioDao usuarioDao = new UsuarioDaoImpl();
-    private EspecialidadDao especilidadDAO = new EspecialidadDaoImpl();
+    private EmpresaDao especilidadDAO = new EmpresaDaoImpl();
     private ArticuloDetalleDao articuloDetalleDao = new ArticuloDetalleDaoImpl();
     private FacArticulo articuloSeleccionado;
     private FacDetalleFactura detalleFactura;
@@ -153,7 +153,7 @@ public class HistoriaClinicaBean extends GenericBean {
             for (CitCita item : listaCitas) {
                 item.setCliCodigo(clienteDao.findXId(item.getCliCodigo().getPacCodigo().intValue()));
                 item.setUsuario(usuarioDao.find(item.getUsuario().getUsuCodigo().intValue()));
-                item.getUsuario().setCitEspecialidad(especilidadDAO.find(item.getUsuario().getCitEspecialidad().getEspCodigo().intValue()));
+                item.getUsuario().setCitEspecialidad(especilidadDAO.find(item.getUsuario().getCitEspecialidad().getEmpCodigo().intValue()));
                 
             }
             //listaArticulos = articuloDao.findAll();
@@ -313,11 +313,11 @@ public class HistoriaClinicaBean extends GenericBean {
 
     public void edit(ActionEvent event) {
         cita = new CitCita();
-        especialidad = new CitEspecialidad();
+        especialidad = new AudEmpresa();
         try {
             cita = (CitCita) event.getComponent().getAttributes().get("objetoEditar");
             especialidad = cita.getUsuario().getCitEspecialidad();
-            codigoEsp = cita.getUsuario().getCitEspecialidad().getEspCodigo().intValue();
+            codigoEsp = cita.getUsuario().getCitEspecialidad().getEmpCodigo().intValue();
             codigoMedico = cita.getUsuario().getUsuCodigo().intValue();
             paciente = clienteDao.findXId(cita.getCliCodigo().getPacCodigo().intValue());
         } catch (Exception e) {
@@ -460,19 +460,19 @@ public class HistoriaClinicaBean extends GenericBean {
         this.codigoMedico = codigoMedico;
     }
 
-    public List<CitEspecialidad> getEspecialidades() {
+    public List<AudEmpresa> getEspecialidades() {
         return especialidades;
     }
 
-    public void setEspecialidades(List<CitEspecialidad> especialidades) {
+    public void setEspecialidades(List<AudEmpresa> especialidades) {
         this.especialidades = especialidades;
     }
 
-    public EspecialidadDao getEspecilidadDAO() {
+    public EmpresaDao getEspecilidadDAO() {
         return especilidadDAO;
     }
 
-    public void setEspecilidadDAO(EspecialidadDao especilidadDAO) {
+    public void setEspecilidadDAO(EmpresaDao especilidadDAO) {
         this.especilidadDAO = especilidadDAO;
     }
 

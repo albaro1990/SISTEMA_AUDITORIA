@@ -4,15 +4,14 @@
  */
 package com.sistema.auditoria.controller;
 
-import com.sistema.auditoria.dao.EspecialidadDao;
 import com.sistema.auditoria.dao.RolDao;
 import com.sistema.auditoria.dao.UsuarioAplicacionDao;
 import com.sistema.auditoria.dao.UsuarioDao;
-import com.sistema.auditoria.dao.impl.EspecialidadDaoImpl;
+import com.sistema.auditoria.dao.impl.EmpresaDaoImpl;
 import com.sistema.auditoria.dao.impl.RolDaoImpl;
 import com.sistema.auditoria.dao.impl.UsuarioAplicacionDaoImpl;
 import com.sistema.auditoria.dao.impl.UsuarioDaoImpl;
-import com.sistema.auditoria.entity.CitEspecialidad;
+import com.sistema.auditoria.entity.AudEmpresa;
 import com.sistema.auditoria.entity.FacRol;
 import com.sistema.auditoria.entity.AudUsuario;
 import com.sistema.auditoria.entity.FacUsuarioAplicacion;
@@ -26,6 +25,7 @@ import javax.faces.event.ActionEvent;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import com.sistema.auditoria.dao.EmpresaDao;
 
 /**
  * @author rene.travez
@@ -38,10 +38,10 @@ public class UsuarioBean extends GenericBean {
     private final Logger LOG = LoggerFactory.getLogger(UsuarioBean.class);
     private UsuarioDao usuarioDAO = new UsuarioDaoImpl();
     private RolDao rolDAO = new RolDaoImpl();
-    private EspecialidadDao especilidadDAO = new EspecialidadDaoImpl();
+    private EmpresaDao especilidadDAO = new EmpresaDaoImpl();
     private UsuarioAplicacionDao usuarioAplicacionDao = new UsuarioAplicacionDaoImpl();
     private List<FacRol> roles = new ArrayList<FacRol>();
-    private List<CitEspecialidad> especialidades = new ArrayList<CitEspecialidad>();
+    private List<AudEmpresa> especialidades = new ArrayList<AudEmpresa>();
     private List<FacUsuarioAplicacion> listaUsuarioAplicacion = new ArrayList<FacUsuarioAplicacion>();
     private AudUsuario usuario;
     private FacUsuarioAplicacion usuarioAplicacion;
@@ -76,7 +76,7 @@ public class UsuarioBean extends GenericBean {
                 mostrarEspecialidad=true;
                 especialidades = especilidadDAO.findAll();
             }else{
-                especialidades = new ArrayList<CitEspecialidad>();
+                especialidades = new ArrayList<AudEmpresa>();
                 mostrarEspecialidad=false;
                 codigoEsp = null;
             }
@@ -225,19 +225,19 @@ public class UsuarioBean extends GenericBean {
         this.listaUsuarioAplicacion = listaUsuarioAplicacion;
     }
 
-    public List<CitEspecialidad> getEspecialidades() {
+    public List<AudEmpresa> getEspecialidades() {
         return especialidades;
     }
 
-    public void setEspecialidades(List<CitEspecialidad> especialidades) {
+    public void setEspecialidades(List<AudEmpresa> especialidades) {
         this.especialidades = especialidades;
     }
 
-    public EspecialidadDao getEspecilidadDAO() {
+    public EmpresaDao getEspecilidadDAO() {
         return especilidadDAO;
     }
 
-    public void setEspecilidadDAO(EspecialidadDao especilidadDAO) {
+    public void setEspecilidadDAO(EmpresaDao especilidadDAO) {
         this.especilidadDAO = especilidadDAO;
     }
 

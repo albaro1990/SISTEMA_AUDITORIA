@@ -6,15 +6,14 @@ package com.sistema.auditoria.controller;
 
 import com.sistema.auditoria.dao.CiudadDao;
 import com.sistema.auditoria.dao.ClienteDao;
-import com.sistema.auditoria.dao.EspecialidadDao;
 import com.sistema.auditoria.dao.UsuarioDao;
 import com.sistema.auditoria.dao.impl.CitaDaoImpl;
 import com.sistema.auditoria.dao.impl.CiudadDaoImpl;
 import com.sistema.auditoria.dao.impl.ClienteDaoImpl;
-import com.sistema.auditoria.dao.impl.EspecialidadDaoImpl;
+import com.sistema.auditoria.dao.impl.EmpresaDaoImpl;
 import com.sistema.auditoria.dao.impl.UsuarioDaoImpl;
 import com.sistema.auditoria.entity.CitCita;
-import com.sistema.auditoria.entity.CitEspecialidad;
+import com.sistema.auditoria.entity.AudEmpresa;
 import com.sistema.auditoria.entity.CitPaciente;
 import com.sistema.auditoria.entity.AudCiudad;
 import com.sistema.auditoria.entity.AudUsuario;
@@ -48,6 +47,7 @@ import org.primefaces.model.DefaultScheduleModel;
 import org.primefaces.model.LazyScheduleModel;
 import org.primefaces.model.ScheduleEvent;
 import org.primefaces.model.ScheduleModel;
+import com.sistema.auditoria.dao.EmpresaDao;
 
 @ManagedBean(name = "scheduleView")
 @SessionScoped
@@ -70,19 +70,19 @@ public class ScheduleView extends GenericBean {
     private CitPaciente clienteNuevo;
 
     private CitCita cita;
-    private CitEspecialidad especialidad;
+    private AudEmpresa especialidad;
 
 
     private List<AudUsuario> listaUsuMedicos;
     private List<AudCiudad> ciudades = new ArrayList<AudCiudad>();
-    private List<CitEspecialidad> especialidades = new ArrayList<CitEspecialidad>();
+    private List<AudEmpresa> especialidades = new ArrayList<AudEmpresa>();
     private ClienteDao clienteDao = new ClienteDaoImpl();
     private CiudadDao ciudadDAO = new CiudadDaoImpl();
 
     private UsuarioDao usuarioDao = new UsuarioDaoImpl();
-    private EspecialidadDao especilidadDAO = new EspecialidadDaoImpl();
+    private EmpresaDao especilidadDAO = new EmpresaDaoImpl();
     private Integer codigoCiudad;
-    private Integer codigoEsp;
+    private Integer codigoEmp;
     private Integer codigoMedico;
     private Integer codigoPaciente;
     private Integer codigoCita;
@@ -299,11 +299,11 @@ public class ScheduleView extends GenericBean {
     
     public void edit(ActionEvent event) {
         cita = new CitCita();
-        especialidad = new CitEspecialidad();
+        especialidad = new AudEmpresa();
         try {
             cita = (CitCita) event.getComponent().getAttributes().get("objetoEditar");
             especialidad = cita.getUsuario().getCitEspecialidad();
-            codigoEsp = cita.getUsuario().getCitEspecialidad().getEspCodigo().intValue();
+            codigoEmp = cita.getUsuario().getCitEspecialidad().getEmpCodigo().intValue();
             codigoMedico = cita.getUsuario().getUsuCodigo().intValue();
             paciente = clienteDao.findXId(cita.getCliCodigo().getPacCodigo().intValue());
         } catch (Exception e) {
@@ -366,11 +366,11 @@ public class ScheduleView extends GenericBean {
         this.cita = cita;
     }
 
-    public CitEspecialidad getEspecialidad() {
+    public AudEmpresa getEspecialidad() {
         return especialidad;
     }
 
-    public void setEspecialidad(CitEspecialidad especialidad) {
+    public void setEspecialidad(AudEmpresa especialidad) {
         this.especialidad = especialidad;
     }
 
@@ -390,11 +390,11 @@ public class ScheduleView extends GenericBean {
         this.ciudades = ciudades;
     }
 
-    public List<CitEspecialidad> getEspecialidades() {
+    public List<AudEmpresa> getEspecialidades() {
         return especialidades;
     }
 
-    public void setEspecialidades(List<CitEspecialidad> especialidades) {
+    public void setEspecialidades(List<AudEmpresa> especialidades) {
         this.especialidades = especialidades;
     }
 
@@ -422,11 +422,11 @@ public class ScheduleView extends GenericBean {
         this.usuarioDao = usuarioDao;
     }
 
-    public EspecialidadDao getEspecilidadDAO() {
+    public EmpresaDao getEspecilidadDAO() {
         return especilidadDAO;
     }
 
-    public void setEspecilidadDAO(EspecialidadDao especilidadDAO) {
+    public void setEspecilidadDAO(EmpresaDao especilidadDAO) {
         this.especilidadDAO = especilidadDAO;
     }
 
@@ -438,12 +438,12 @@ public class ScheduleView extends GenericBean {
         this.codigoCiudad = codigoCiudad;
     }
 
-    public Integer getCodigoEsp() {
-        return codigoEsp;
+    public Integer getCodigoEmp() {
+        return codigoEmp;
     }
 
-    public void setCodigoEsp(Integer codigoEsp) {
-        this.codigoEsp = codigoEsp;
+    public void setCodigoEsp(Integer codigoEmp) {
+        this.codigoEmp = codigoEmp;
     }
 
     public Integer getCodigoMedico() {
