@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE resources PUBLIC "-//GlassFish.org//DTD GlassFish Application Server 3.1 Resource Definitions//EN" "http://glassfish.org/dtds/glassfish-resources_1_5.dtd">
 <resources>
-    <jdbc-connection-pool name="citasPool" ping="true"
+    <jdbc-connection-pool name="sisAudPool" ping="true"
                           datasource-classname="oracle.jdbc.pool.OracleDataSource"
                           res-type="javax.sql.DataSource"
                           steady-pool-size="5"
@@ -14,5 +14,5 @@
         <property name="Password" value="SISTEMA_AUDITORIA"/>
         <property name="URL" value="jdbc:oracle:thin:@localhost:1521:XE" />           
     </jdbc-connection-pool>
-    <jdbc-resource enabled="true" pool-name="citasPool" object-type="user" jndi-name="jdbc/sis-auditoria"/>
+    <jdbc-resource enabled="true" pool-name="sisAudPool" object-type="user" jndi-name="jdbc/sis-auditoria"/>
 </resources>

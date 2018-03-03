@@ -14,7 +14,7 @@ public class ConexionDB {
     public Connection getConexion() {
         try {
             Context ctx = new InitialContext();
-            DataSource ds = (DataSource) ctx.lookup("jdbc/citas-medicas");
+            DataSource ds = (DataSource) ctx.lookup("jdbc/sis-auditoria");
             c = ds.getConnection();
             System.out.println("CONECTADO!!!!");
         } catch (SQLException | NamingException e) {
