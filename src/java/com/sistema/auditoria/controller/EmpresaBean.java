@@ -61,6 +61,10 @@ public class EmpresaBean extends GenericBean {
         try{
             ciudades = ciudadDAO.findAll();
         listaEmpresa = empresaDAO.findAll();
+        for ( AudEmpresa item : listaEmpresa) {
+                item.setCodigoCiudad(ciudadDAO.find(item.getCodigoCiudad().getCiuCodigo().intValue()));
+            }
+        
         } catch (SQLException ex) {
             LOG.error(ex.getMessage(), ex);
         }
@@ -78,12 +82,13 @@ public class EmpresaBean extends GenericBean {
                             saveMessageInfoDetail("Cedula/Ruc", "Cedula/Ruc " + empresa.getEmpCed_Ruc()+ " creada correctamente");
                             this.inicializar(actionEvent);
                 } else {
-                    saveMessageErrorDetail("Cedula/Ruc", "Cedula/Ruc " + empresa.getEmpCed_Ruc()+ " ya existe");
-                }
+                        saveMessageErrorDetail("Cedula/Ruc", "La cédula o ruc es incorrecta");
+                    }
                 } else {
-                    saveMessageErrorDetail("Cedula/Ruc", "Cedula/Ruc " + empresa.getEmpCed_Ruc()+ " ya existe");
+                    saveMessageErrorDetail("Cedula/Ruc", "Cedula/Ruc " + empresa.getEmpCed_Ruc()+ " ");
                 }
             } else if(empresa.getEmpCodigo() != null){
+                empresa.setCodigoCiudad(ciudadDAO.find(codigoCiudad));
                 empresaDAO.update(empresa);
                 cargarDependencias();
                 this.inicializar(actionEvent);
@@ -100,7 +105,10 @@ public class EmpresaBean extends GenericBean {
     public void edit(ActionEvent event) {
         empresa = new AudEmpresa();
         try {
+            
             empresa = (AudEmpresa) event.getComponent().getAttributes().get("objetoEditar");
+            ciudad = empresa.getCodigoCiudad();
+            codigoCiudad = ciudad.getCiuCodigo().intValue();
 
         } catch (Exception e) {
         }
