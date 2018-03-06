@@ -13,7 +13,7 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 import com.sistema.auditoria.dao.CitaDao;
-import com.sistema.auditoria.entity.CitAntPersonales;
+import com.sistema.auditoria.entity.AudEstructuraAsignacion;
 import com.sistema.auditoria.entity.AudUsuario;
 import java.sql.Types;
 import java.text.ParseException;
@@ -27,7 +27,7 @@ public class AntPersonalesDaoImpl implements AntPersonalesDao {
     private PreparedStatement pstmt;
 
     @Override
-    public int save(CitAntPersonales antPersonales) throws SQLException {
+    public int save(AudEstructuraAsignacion antPersonales) throws SQLException {
         int idInserted = 0;
         StringBuilder sql = new StringBuilder();
         try {
@@ -40,7 +40,7 @@ public class AntPersonalesDaoImpl implements AntPersonalesDao {
             //antPersonales.setPacCodigo(new CitPaciente());
 
             pstmt = conn.prepareStatement(sql.toString(), new String[]{"ANTPER_CODIGO"});
-            pstmt.setLong(1, antPersonales.getPacCodigo().getPacCodigo());
+        /*    pstmt.setLong(1, antPersonales.getPacCodigo().getPacCodigo());
             if (antPersonales.getNumHijos() != null) {
                 pstmt.setInt(2, antPersonales.getNumHijos());
             } else {
@@ -111,7 +111,7 @@ public class AntPersonalesDaoImpl implements AntPersonalesDao {
 
             if (affectedRows == 0) {
                 throw new SQLException("Error al crear Ant Personales");
-            }
+            }*/
 
             rs = pstmt.getGeneratedKeys();
             if (rs.next()) {
@@ -202,9 +202,9 @@ public class AntPersonalesDaoImpl implements AntPersonalesDao {
     }
 
     @Override
-    public CitAntPersonales findXIdPaciente(int id) throws SQLException {
+    public AudEstructuraAsignacion findXIdPaciente(int id) throws SQLException {
 
-        CitAntPersonales antPersonales = null;
+        AudEstructuraAsignacion antPersonales = null;
 
         try {
             conn = new ConexionDB().getConexion();
@@ -213,8 +213,8 @@ public class AntPersonalesDaoImpl implements AntPersonalesDao {
             rs = pstmt.executeQuery();
 
             while (rs.next()) {
-                antPersonales = new CitAntPersonales();
-                antPersonales.setAntPerCodigo(rs.getLong(1));
+                antPersonales = new AudEstructuraAsignacion();
+/*                antPersonales.setAntPerCodigo(rs.getLong(1));
                 antPersonales.setPacCodigo(new CitPaciente());
                 antPersonales.getPacCodigo().setPacCodigo(rs.getLong(2));
                 antPersonales.setNumHijos(rs.getInt(3));
@@ -229,7 +229,7 @@ public class AntPersonalesDaoImpl implements AntPersonalesDao {
                 antPersonales.setAntTraumaticas(rs.getString(12));
                 antPersonales.setHospitalizacionAnteriores(rs.getString(13));
                 antPersonales.setAdicciones(rs.getString(14));
-                antPersonales.setOtros(rs.getString(15));
+                antPersonales.setOtros(rs.getString(15));*/
             }
         } catch (SQLException e) {
             e.printStackTrace();

@@ -15,7 +15,7 @@ import java.util.List;
  * @author
  */
 
-public class CitHistoriaClinica implements Serializable {
+public class AudPlanCuentas implements Serializable {
 
     private static final long serialVersionUID = 1L;
     
@@ -35,14 +35,14 @@ public class CitHistoriaClinica implements Serializable {
     private String citMotivo;
     
 
-    public CitHistoriaClinica() {
+    public AudPlanCuentas() {
     }
 
-    public CitHistoriaClinica(Long hisCodigo) {
+    public AudPlanCuentas(Long hisCodigo) {
         this.hisCodigo = hisCodigo;
     }
 
-    public CitHistoriaClinica(Long hisCodigo, Date citFechaCita, Integer citEstado, String citMotivo) {
+    public AudPlanCuentas(Long hisCodigo, Date citFechaCita, Integer citEstado, String citMotivo) {
         this.hisCodigo = hisCodigo;
         this.citFechaCita = citFechaCita;
         this.citEstado = citEstado;
@@ -119,10 +119,10 @@ public class CitHistoriaClinica implements Serializable {
     @Override
     public boolean equals(Object object) {
         // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof CitHistoriaClinica)) {
+        if (!(object instanceof AudPlanCuentas)) {
             return false;
         }
-        CitHistoriaClinica other = (CitHistoriaClinica) object;
+        AudPlanCuentas other = (AudPlanCuentas) object;
         if ((this.hisCodigo == null && other.hisCodigo != null) || (this.hisCodigo != null && !this.hisCodigo.equals(other.hisCodigo))) {
             return false;
         }

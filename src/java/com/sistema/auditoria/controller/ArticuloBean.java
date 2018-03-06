@@ -13,7 +13,7 @@ import com.sistema.auditoria.dao.impl.ArticuloDetalleDaoImpl;
 import com.sistema.auditoria.dao.impl.ProveedorArticuloDaoImpl;
 import com.sistema.auditoria.dao.impl.ProveedorDaoImpl;
 import com.sistema.auditoria.entity.FacArticulo;
-import com.sistema.auditoria.entity.FacArticuloDetalle;
+import com.sistema.auditoria.entity.AudDetEstadoFinan;
 import com.sistema.auditoria.entity.FacProveedor;
 import com.sistema.auditoria.entity.FacProveedorArticulo;
 import java.math.BigDecimal;
@@ -41,7 +41,7 @@ public class ArticuloBean extends GenericBean {
     private List<FacProveedorArticulo> listaProveedorArticulos = new ArrayList<FacProveedorArticulo>();
     private FacProveedor proveedor;
     private FacArticulo articulo;
-    private FacArticuloDetalle articuloDetalle;
+    private AudDetEstadoFinan articuloDetalle;
     private FacProveedorArticulo proveedorArticulo;
 
     private ProveedorDao proveedorDao = new ProveedorDaoImpl();
@@ -62,7 +62,7 @@ public class ArticuloBean extends GenericBean {
         proveedor = new FacProveedor();
         articulo = new FacArticulo();
         proveedorArticulo = new FacProveedorArticulo();
-        articuloDetalle = new FacArticuloDetalle();
+        articuloDetalle = new AudDetEstadoFinan();
         cargarCombos();
         cargarDependencias();
     }
@@ -135,11 +135,11 @@ public class ArticuloBean extends GenericBean {
                 Integer aplicaIva= 1;
                 articulo.setArtAplicaIvaInt(aplicaIva);
                 articuloDao.update(articulo);
-                articuloDetalle.setArtCantidadIgresada(nuevaCantidad);
+      /*          articuloDetalle.setArtCantidadIgresada(nuevaCantidad);
                 articuloDetalle.setFacArticulo(articuloDao.find(articulo.getArtCodigo()));
                 articuloDetalle.setArtValorUnitario(articulo.getArtValorUnitario());
                 articuloDetalle.setArtSaldo(nuevaCantidadFinal);
-                articuloDetalle.setArtAutorizacion(articulo.getArtCodigo().toString());
+                articuloDetalle.setArtAutorizacion(articulo.getArtCodigo().toString());*/
                 articuloDetalleDao.save(articuloDetalle);
                 if (!(proveedorArticuloDao.existePorCampo(articulo.getArtCodigo(), codigoProveedor))) {
                     proveedorArticulo.setFacArticulo(articuloDao.find(articulo.getArtCodigo()));
@@ -167,11 +167,11 @@ public class ArticuloBean extends GenericBean {
                 articulo.setArtAplicaIvaInt(aplicaIva);
                 int id = articuloDao.save(articulo);
                 Integer codigo = new Integer(id);
-                articuloDetalle.setArtSaldo(articulo.getArtCantidadIngresada());
+            /*    articuloDetalle.setArtSaldo(articulo.getArtCantidadIngresada());
                 articuloDetalle.setArtAutorizacion(codigo.toString());
                 articuloDetalle.setArtCantidadIgresada(articulo.getArtCantidadIngresada());
                 articuloDetalle.setFacArticulo(articuloDao.find(id));
-                articuloDetalle.setArtValorUnitario(articulo.getArtValorUnitario());
+                articuloDetalle.setArtValorUnitario(articulo.getArtValorUnitario());*/
                 articuloDetalleDao.save(articuloDetalle);
                 proveedorArticulo.setFacArticulo(articuloDao.find(id));
                 proveedorArticulo.setFacProveedor(proveedorDao.find(codigoProveedor));
@@ -262,11 +262,11 @@ public class ArticuloBean extends GenericBean {
         this.listaProveedorArticulos = listaProveedorArticulos;
     }
 
-    public FacArticuloDetalle getArticuloDetalle() {
+    public AudDetEstadoFinan getArticuloDetalle() {
         return articuloDetalle;
     }
 
-    public void setArticuloDetalle(FacArticuloDetalle articuloDetalle) {
+    public void setArticuloDetalle(AudDetEstadoFinan articuloDetalle) {
         this.articuloDetalle = articuloDetalle;
     }
 

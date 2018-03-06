@@ -19,7 +19,7 @@ import com.sistema.auditoria.dao.impl.DetalleFacturaDaoImpl;
 import com.sistema.auditoria.dao.impl.EmpresaDaoImpl;
 import com.sistema.auditoria.dao.impl.UsuarioDaoImpl;
 import com.sistema.auditoria.entity.FacArticulo;
-import com.sistema.auditoria.entity.FacArticuloDetalle;
+import com.sistema.auditoria.entity.AudDetEstadoFinan;
 import com.sistema.auditoria.entity.CitCita;
 import com.sistema.auditoria.entity.AudEmpresa;
 import com.sistema.auditoria.entity.CitPaciente;
@@ -60,7 +60,7 @@ public class HistoriaClinicaBean extends GenericBean {
 
     private CitPaciente paciente;
     private CitPaciente clienteNuevo;
-    private FacArticuloDetalle articuloDetalle;
+    private AudDetEstadoFinan articuloDetalle;
     private CitCita cita;
     private AudEmpresa especialidad;
     private List<CitCita> listaCitas;
@@ -248,14 +248,14 @@ public class HistoriaClinicaBean extends GenericBean {
         try {
             if (!listaDetalleFacturas.isEmpty()) {
                 for (FacDetalleFactura item : listaDetalleFacturas) {
-                    articuloDetalle.setFacArticulo(articuloDao.find(item.getArtCodigo().getArtCodigo()));
+/*                    articuloDetalle.setFacArticulo(articuloDao.find(item.getArtCodigo().getArtCodigo()));
                     articuloDetalle.setArtCantidadIgresada(null);
                     articuloDetalle.setArtCantidadSaliente(BigDecimal.valueOf(item.getDetCatidad()));
                     articuloDetalle.setArtValorUnitario(item.getDetValorUnitario());
 //                    articuloDetalle.setArtAutorizacion(item.getCabCodigo().getCabAutorizacion());
                     articuloDetalle.setArtSaldo(item.getArtCodigo().getArtCantidadIngresada().subtract(BigDecimal.valueOf(item.getDetCatidad())));
                     articuloDetalleDao.save(articuloDetalle);
-                    item.getArtCodigo().setArtCantidadIngresada(articuloDetalle.getArtSaldo());
+                    item.getArtCodigo().setArtCantidadIngresada(articuloDetalle.getArtSaldo());*/
                     articuloDao.update(item.getArtCodigo());
                 }
             }
