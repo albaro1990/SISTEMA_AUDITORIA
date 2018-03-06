@@ -5,7 +5,6 @@
 package com.sistema.auditoria.controller;
 
 import com.sistema.auditoria.dao.CiudadDao;
-import com.sistema.auditoria.dao.ProveedorDao;
 import com.sistema.auditoria.dao.impl.CiudadDaoImpl;
 import com.sistema.auditoria.dao.impl.ProveedorDaoImpl;
 import com.sistema.auditoria.entity.AudCiudad;
@@ -19,12 +18,13 @@ import javax.faces.bean.ViewScoped;
 import javax.faces.event.ActionEvent;
 
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.slf4j.LoggerFactory; 
+import com.sistema.auditoria.dao.ProveedorDao;
 
 /**
  * @author rene.travez
  */
-@ManagedBean(name = "proveedorBean")
+@ManagedBean(name = "ProveedorBean")
 @ViewScoped
 public class ProveedorBean extends GenericBean {
 

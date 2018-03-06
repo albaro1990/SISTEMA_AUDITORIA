@@ -26,8 +26,16 @@ public class EmpresaDaoImpl implements EmpresaDao {
         try {
             conn = new ConexionDB().getConexion();
            
-            pstmt = conn.prepareStatement("INSERT INTO AUD_EMPRESA(EMP_CODIGO,EMP_NOMBRES,EMP_RAZON_SOCIAL,EMP_TELEFONO,EMP_DIRECCION,EMP_CED_RUC,EMP_CORREO,EMP_ESTADO) "
-                    + "values (CIT_SEQ_EMPRESA.NEXTVAL, '"+empresa.getEmpNombre()+"','"+empresa.getEmpRazon_Social()+"','"+empresa.getEmpTelefono()+"','"+empresa.getEmpDireccion()+"','"+empresa.getEmpCed_Ruc()+"','"+empresa.getEmpCorreo()+"',"
+            pstmt = conn.prepareStatement("INSERT INTO AUD_EMPRESA(EMP_CODIGO,"
+                    + "CIU_CODIGO,"
+                    + "EMP_NOMBRES,"
+                    + "EMP_RAZON_SOCIAL,"
+                    + "EMP_TELEFONO,"
+                    + "EMP_DIRECCION,"
+                    + "EMP_CED_RUC,"
+                    + "EMP_CORREO,"
+                    + "EMP_ESTADO) "
+                    + "values (AUD_SEQ_EMPRESA.NEXTVAL,"+empresa.getCodigoCiudad().getCiuCodigo()+" ,'"+empresa.getEmpNombre()+"','"+empresa.getEmpRazon_Social()+"','"+empresa.getEmpTelefono()+"','"+empresa.getEmpDireccion()+"','"+empresa.getEmpCed_Ruc()+"','"+empresa.getEmpCorreo()+"',"
                             + ""+empresa.getEmpEstado()+")", new String[]{"EMP_CODIGO"});
             
             int affectedRows = pstmt.executeUpdate();
@@ -55,7 +63,7 @@ public class EmpresaDaoImpl implements EmpresaDao {
         int nup = 0;
         try {
             conn = new ConexionDB().getConexion();
-            pstmt = conn.prepareStatement("UPDATE AUD_EMPRESA SET CIU_CODIGO='"+empresa.getCiuCodigo()+"',EMP_NOMBRES='"+empresa.getEmpNombre()+"',EMP_RAZON_SOCIAL='"+empresa.getEmpRazon_Social()+"',EMP_TELEFONO='"+empresa.getEmpTelefono()+"',EMP_DIRECCION='"+empresa.getEmpDireccion()+"',"
+            pstmt = conn.prepareStatement("UPDATE AUD_EMPRESA SET CIU_CODIGO='"+empresa.getCodigoCiudad().getCiuCodigo()+"',EMP_NOMBRES='"+empresa.getEmpNombre()+"',EMP_RAZON_SOCIAL='"+empresa.getEmpRazon_Social()+"',EMP_TELEFONO='"+empresa.getEmpTelefono()+"',EMP_DIRECCION='"+empresa.getEmpDireccion()+"',"
                     + "EMP_CED_RUC='"+empresa.getEmpCed_Ruc()+"',EMP_CORREO='"+empresa.getEmpCorreo()+"',EMP_ESTADO="+empresa.getEmpEstado()+""
                     + " WHERE EMP_CODIGO = "+empresa.getEmpCodigo()+" ");
             
@@ -97,9 +105,17 @@ public class EmpresaDaoImpl implements EmpresaDao {
 
             while (rs.next()) {
                 AudEmpresa empresa = new AudEmpresa();
+                
                 empresa.setEmpCodigo(rs.getLong(1));
-                empresa.setEmpCed_Ruc(rs.getString(2));
-                empresa.setEmpEstado(rs.getInt(3));
+                empresa.setCodigoCiudad(new AudCiudad());
+                empresa.getCodigoCiudad().setCiuCodigo(rs.getBigDecimal(2));
+                empresa.setEmpNombre(rs.getString(3));
+                empresa.setEmpRazon_Social(rs.getString(4));
+                empresa.setEmpTelefono(rs.getString(5));
+                empresa.setEmpDireccion(rs.getString(6));
+                empresa.setEmpCed_Ruc(rs.getString(7));
+                empresa.setEmpCorreo(rs.getString(8));
+                empresa.setEmpEstado(rs.getInt(9));
                 empresas.add(empresa);
             }
         } catch (SQLException e) {

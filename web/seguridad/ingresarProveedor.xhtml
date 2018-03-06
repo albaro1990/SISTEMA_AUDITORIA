@@ -12,7 +12,7 @@
         <ui:composition template="./../WEB-INF/templates/cuerpo.xhtml">
 
             <ui:define name="page-title">
-                Ingresar Proveedor
+                Ingresar Estructura Asignacion
             </ui:define>
 
             <ui:define name="datos">
@@ -22,7 +22,7 @@
                     <p:growl id="growl" showDetail="true"  life="800" />
                     <center>
                         <h:panelGrid id="gridDatos" rendered="#{not empty request.getRemoteUser()}">
-                            <p:panel id="paneDatos" header="Ingresar Proveedor">
+                            <p:panel id="paneDatos" header="Ingresar Estructura Asignacion">
                                 <h:panelGrid columns="6">
                                     <p:outputLabel value="Cédula/Ruc:" for="cedula" />
                                     <p:inputText id="cedula" required="true" maxlength="10"

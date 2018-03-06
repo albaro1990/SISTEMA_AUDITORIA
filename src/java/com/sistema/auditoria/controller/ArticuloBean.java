@@ -7,7 +7,6 @@ package com.sistema.auditoria.controller;
 import com.sistema.auditoria.dao.ArticuloDao;
 import com.sistema.auditoria.dao.ArticuloDetalleDao;
 import com.sistema.auditoria.dao.ProveedorArticuloDao;
-import com.sistema.auditoria.dao.ProveedorDao;
 import com.sistema.auditoria.dao.impl.ArticuloDaoImpl;
 import com.sistema.auditoria.dao.impl.ArticuloDetalleDaoImpl;
 import com.sistema.auditoria.dao.impl.ProveedorArticuloDaoImpl;
@@ -26,6 +25,7 @@ import javax.faces.event.ActionEvent;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import com.sistema.auditoria.dao.ProveedorDao;
 
 /**
  * 
