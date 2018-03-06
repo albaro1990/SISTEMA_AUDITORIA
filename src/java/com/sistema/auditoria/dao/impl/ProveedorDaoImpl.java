@@ -1,7 +1,6 @@
 package com.sistema.auditoria.dao.impl;
 
 import com.sistema.auditoria.conexion.ConexionDB;
-import com.sistema.auditoria.dao.ProveedorDao;
 import com.sistema.auditoria.entity.AudCiudad;
 import com.sistema.auditoria.entity.FacProveedor;
 import java.sql.Connection;
@@ -11,12 +10,13 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
+import com.sistema.auditoria.dao.ProveedorDao;
 
 public class ProveedorDaoImpl implements ProveedorDao {
 
     private Connection conn;
     private ResultSet rs;
-    private PreparedStatement pstmt;
+    private PreparedStatement pstmt; 
 
     @Override
     public int save(FacProveedor proveedor) throws SQLException {
