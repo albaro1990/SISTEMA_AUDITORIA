@@ -79,8 +79,7 @@
                                                      required="true" requiredMessage="Campo requerido">
                                         <f:selectItem itemLabel="Seleccione..." noSelectionOption="true" />
                                         <f:selectItems value="#{usuarioBean.roles}" var="item" itemLabel="#{item.rolNombre}" itemValue="#{item.rolCodigo}" />
-                                       <p:ajax event="valueChange" update="idEspecialidad"
-                                                        listener="#{usuarioBean.cargarCombos()}" />
+                                       <p:ajax event="valueChange" listener="#{usuarioBean.cargarCombos()}" />
                                     </p:selectOneMenu>
                                     <p:tooltip for="rol"
                                                value="Campo requerido"
@@ -120,18 +119,6 @@
                                     <p:tooltip for="est"
                                                value="Campo requerido"
                                                showEffect="clip" hideEffect="explode" />  
-                                   
-                                    <h:panelGrid id="idEspecialidad">
-                                    <p:outputLabel for="especilidad" value="Especialidad:"  rendered="#{usuarioBean.mostrarEspecialidad}"/>
-                                    <p:selectOneMenu id="especilidad" label="especilidad" value="#{usuarioBean.codigoEsp}" 
-                                                     required="true" requiredMessage="Campo requerido" rendered="#{usuarioBean.mostrarEspecialidad}">
-                                        <f:selectItem itemLabel="Seleccione..." noSelectionOption="true" />
-                                        <f:selectItems value="#{usuarioBean.especialidades}" var="item" itemLabel="#{item.espDescripcion}" itemValue="#{item.espCodigo}" />
-                                    </p:selectOneMenu>
-                                    <p:tooltip for="especilidad"
-                                               value="Campo requerido"
-                                               showEffect="clip" hideEffect="explode" />
-                                    </h:panelGrid>
                                     
                                     <f:facet name="footer">
                                         <p:commandButton id="grabar" value="Guardar" validateClient="true" ajax="true" icon="ui-icon-disk"

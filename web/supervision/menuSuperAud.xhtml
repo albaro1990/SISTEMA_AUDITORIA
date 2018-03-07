@@ -1,0 +1,12 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns:p="http://primefaces.org/ui"
+                xmlns:ui="http://java.sun.com/jsf/facelets">
+
+    <p:submenu label="Auditorias" icon="ui-icon-locked" rendered="#{indexBean.subject.hasRole('SUPERVISOR')}">
+        <p:menuitem value="Asignar Tareas" icon="ui-icon-person" outcome="/supervision/ingresarCita"  />
+        <p:menuitem value="Estado Financiero" icon="ui-icon-person" outcome="/supervision/consultaReporte"  />
+        <p:menuitem value="Reportes" icon="ui-icon-person" outcome="/supervision/mantenimientoPaciente"  />
+    </p:submenu>
+</ui:composition>
