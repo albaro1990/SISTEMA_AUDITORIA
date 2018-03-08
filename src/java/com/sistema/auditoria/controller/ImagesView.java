@@ -19,7 +19,7 @@ public class ImagesView {
     @PostConstruct
     public void init() {
         images = new ArrayList<String>();
-        for (int i = 9; i <= 12; i++) {
+        for (int i = 9; i <= 10; i++) {
             images.add("page1_img" + i + ".jpg");
         }
     }

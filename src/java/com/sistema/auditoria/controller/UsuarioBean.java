@@ -52,7 +52,7 @@ public class UsuarioBean extends GenericBean {
     private Integer codigoEsp;
 
     /**
-     * Creates a new instance of JsfManejadorUsuarioBean
+     * Creaes a new instance of JsfManejadorUsuarioBean
      */
     public UsuarioBean() {
         usuario = new AudUsuario();

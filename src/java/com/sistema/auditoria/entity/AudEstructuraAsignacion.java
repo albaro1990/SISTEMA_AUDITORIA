@@ -6,7 +6,10 @@
 package com.sistema.auditoria.entity;
 
 import java.io.Serializable;
-import java.util.Date;
+import java.math.BigDecimal;
+import java.math.BigInteger;
+import java.util.List;
+
 
 /**
  *
@@ -18,57 +21,55 @@ public class AudEstructuraAsignacion implements Serializable {
     private static final long serialVersionUID = 1L;
     
     
-    private Long estCodigo;
-        
-   
-      
-    private String estDescripcion;
+    private Long estrCodigo;
+    private String estrDescripcion;
+    private Integer estrEstado;
     
-    private Integer estEstado;
     
     
     public AudEstructuraAsignacion() {
     }
 
-    public AudEstructuraAsignacion(Long estCodigo) {
-        this.estCodigo = estCodigo;
+    public AudEstructuraAsignacion(Long estrCodigo) {
+        this.estrCodigo = estrCodigo;
     }
 
-    public AudEstructuraAsignacion(Long estCodigo, String estDescripcion, Integer estEstado) {
-        this.estCodigo = estCodigo;
-        this.estDescripcion = estDescripcion;
-        this.estEstado = estEstado;
+    public AudEstructuraAsignacion(Long estrCodigo, String estrDescripcion, Integer estrEstado) {
+        this.estrCodigo = estrCodigo;
+        this.estrDescripcion = estrDescripcion;
+        this.estrEstado = estrEstado;
     }
 
-    public Long getEstCodigo() {
-        return estCodigo;
+    public Long getEstrCodigo() {
+        return estrCodigo;
     }
 
-    public void setEstCodigo(Long estCodigo) {
-        this.estCodigo = estCodigo;
+    public void setEstrCodigo(Long estrCodigo) {
+        this.estrCodigo = estrCodigo;
     }
 
-    public String getEstDescripcion() {
-        return estDescripcion;
+    public String getEstrDescripcion() {
+        return estrDescripcion;
     }
 
-    public void setEstDescripcion(String estDescripcion) {
-        this.estDescripcion = estDescripcion;
+    public void setEstrDescripcion(String estrDescripcion) {
+        this.estrDescripcion = estrDescripcion;
     }
 
-    public Integer getEstEstado() {
-        return estEstado;
+    public Integer getEstrEstado(){
+    return estrEstado;
     }
+    
 
-    public void setEstEstado(Integer estEstado) {
-        this.estEstado = estEstado;
+    public void setEstrEstado(Integer estrEstado) {
+        this.estrEstado = estrEstado;
     }
     
     
     @Override
     public int hashCode() {
         int hash = 0;
-        hash += (estCodigo != null ? estCodigo.hashCode() : 0);
+        hash += (estrCodigo != null ? estrCodigo.hashCode() : 0);
         return hash;
     }
 
@@ -79,7 +80,7 @@ public class AudEstructuraAsignacion implements Serializable {
             return false;
         }
         AudEstructuraAsignacion other = (AudEstructuraAsignacion) object;
-        if ((this.estCodigo == null && other.estCodigo != null) || (this.estCodigo != null && !this.estCodigo.equals(other.estCodigo))) {
+        if ((this.estrCodigo == null && other.estrCodigo != null) || (this.estrCodigo != null && !this.estrCodigo.equals(other.estrCodigo))) {
             return false;
         }
         return true;
@@ -87,7 +88,7 @@ public class AudEstructuraAsignacion implements Serializable {
 
     @Override
     public String toString() {
-        return "com.facturacion.entity.FacCabeceraFactura[ cabCodigo=" + estCodigo + " ]";
+        return "com.sistema.auditoria.entity.AudEstructuraAsignacion[ estrCodigo=" + estrCodigo + " ]";
     }
     
 }

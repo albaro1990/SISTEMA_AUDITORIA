@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 import com.sistema.auditoria.dao.EstructuraAsignacionDao;
 
+
 public class EstructuraAsignacionDaoImpl implements EstructuraAsignacionDao {
 
     private Connection conn;
@@ -24,13 +25,16 @@ public class EstructuraAsignacionDaoImpl implements EstructuraAsignacionDao {
         try {
             conn = new ConexionDB().getConexion();
            
-            pstmt = conn.prepareStatement("INSERT INTO AUD_ESTRUCTURA_ASIGNACION(ESTR_CODIGO,ESTR_DESCRIPCION,ESTR_ESTADO) "
-                    + "values (AUD_SEQ_ESTRUCTURA_ASIGNACION.NEXTVAL, '"+estructuraasignacion.getEstDescripcion()+"',"+estructuraasignacion.getEstEstado()+")", new String[]{"ESTR_CODIGO"});
+            pstmt = conn.prepareStatement("INSERT INTO AUD_ESTRUCTURA_ASIGNACION(ESTR_CODIGO,"
+                    + "ESTR_DESCRIPCION,"
+                    + "ESTR_ESTADO) "
+                    + "values (AUD_SEQ_ESTRUCTURA_ASIGNACION.NEXTVAL, '"+estructuraasignacion.getEstrDescripcion()
+                    +"',"+estructuraasignacion.getEstrEstado()+")", new String[]{"ESTR_CODIGO"});
             
             int affectedRows = pstmt.executeUpdate();
             
             if (affectedRows == 0) {
-                throw new SQLException("Error al crear el ciudad");
+                throw new SQLException("Error al crear la descripcion");
             }
             rs = pstmt.getGeneratedKeys();  
             if (rs.next()) {
@@ -52,8 +56,10 @@ public class EstructuraAsignacionDaoImpl implements EstructuraAsignacionDao {
         int nup = 0;
         try {
             conn = new ConexionDB().getConexion();
-            pstmt = conn.prepareStatement("UPDATE AUD_ESTRUCUTURA_ASIGNACION SET ESTR_DESCRIPCION='"+estructuraasignacion.getEstDescripcion()+"',ESTR_ESTADO="+estructuraasignacion.getEstEstado()+""
-                    + " WHERE ESTR_CODIGO = "+estructuraasignacion.getEstCodigo()+" ");
+            pstmt = conn.prepareStatement("UPDATE AUD_ESTRUCTURA_ASIGNACION SET "
+                    + "ESTR_DESCRIPCION='"+estructuraasignacion.getEstrDescripcion()+"',"
+                    + "ESTR_ESTADO="+estructuraasignacion.getEstrEstado()+""
+                    + " WHERE ESTR_CODIGO = "+estructuraasignacion.getEstrCodigo()+" ");
             
 
             nup = pstmt.executeUpdate();
@@ -83,56 +89,91 @@ public class EstructuraAsignacionDaoImpl implements EstructuraAsignacionDao {
     }
 
     @Override
-   public AudEstructuraAsignacion find(int id) throws SQLException {
+    public List<AudEstructuraAsignacion> findAll() throws SQLException {
+        List<AudEstructuraAsignacion> estructuraasignacion = new ArrayList<AudEstructuraAsignacion>();
 
-        AudEstructuraAsignacion estructuraasignacion = null;
         try {
             conn = new ConexionDB().getConexion();
-            pstmt = conn.prepareStatement("SELECT * FROM AUD_ESTRUCTURA_ASIGNACION WHERE ESTR_CODIGO = ? AND ESTR_ESTADO=1");
-             pstmt.setInt(1, id);
+            pstmt = conn.prepareStatement("SELECT * FROM AUD_ESTRUCTURA_ASIGNACION ");
             rs = pstmt.executeQuery();
 
             while (rs.next()) {
-                estructuraasignacion = new AudEstructuraAsignacion();
-                estructuraasignacion.setEstCodigo(rs.getLong(1));
-                estructuraasignacion.setEstDescripcion(rs.getString(2));
-                estructuraasignacion.setEstEstado(rs.getInt(3));
-              //  estructuraasignacion.(estructuraasignacion);
+                AudEstructuraAsignacion estructuraAsignacion = new AudEstructuraAsignacion();
+                
+                
+                estructuraAsignacion.setEstrCodigo(rs.getLong(1));
+                estructuraAsignacion.setEstrDescripcion(rs.getString(2));
+                estructuraAsignacion.setEstrEstado(rs.getInt(3));
+                estructuraasignacion.add(estructuraAsignacion);
+              
             }
         } catch (SQLException e) {
             e.printStackTrace();
+        
         }
 
         return estructuraasignacion;
     }
-   
-    
-   
-    @Override
-    public boolean existePorCampo(String descripcion) throws SQLException {
+
+   @Override
+    public boolean existePorCampo (String descripcion) throws SQLException {
+
         try {
             Integer rowCount = 0;
             conn = new ConexionDB().getConexion();
-            pstmt = conn.prepareStatement("SELECT COUNT(*) AS CONTADOR FROM AUD_ESTRUCTURA_ASIGNACION C WHERE C.ESTR_DESCRIPCION='" + descripcion + "'");
+            pstmt = conn.prepareStatement("SELECT COUNT (*) AS CONTADOR FROM AUD_ESTRUCTURA_ASIGNACION  C WHERE C.ESTR_DESCRIPCION ='" + descripcion +"'");
             rs = pstmt.executeQuery();
             while (rs.next()) {
-                rowCount = rs.getInt("CONTADOR"); 
+                rowCount = rs.getInt("CONTADOR");
             }
+            
             return rowCount > 0;
-        } catch (SQLException e) {
+        } catch (SQLException e){
             throw e;
-        }finally {
-            conn.close();
-            pstmt.close();
+        }  finally{
+                conn.close();
+                pstmt.close();
         }
     }
 
     @Override
+    public AudEstructuraAsignacion find(int id) throws SQLException {
+        
+       AudEstructuraAsignacion estructuraAsignacion = null;
+       
+       try {
+            
+           conn = new ConexionDB().getConexion();
+           pstmt = conn.prepareStatement("SELECT * FROM AUD_ESTRUCTURA_ASIGNACION  WHERE ESTR_CODIGO= ? AND ESTR_ESTADO=1");
+           pstmt.setInt(1, id);
+           rs = pstmt.executeQuery();
+           
+            while (rs.next()) {
+                estructuraAsignacion = new AudEstructuraAsignacion();
+                estructuraAsignacion.setEstrCodigo(rs.getLong(1));
+                estructuraAsignacion.setEstrDescripcion(rs.getString(2));
+                estructuraAsignacion.setEstrEstado(rs.getInt(3));
+               
+           }
+      
+        } catch (SQLException e) {
+            e.printStackTrace();
+       }finally {
+           conn.close();
+            pstmt.close();
+        }
+        return estructuraAsignacion;
+    
+    }
+    
+
+    @Override
     public Long nuevoCodigo() throws SQLException {
+ 
         try {
             Long max = Long.valueOf(0);
             conn = new ConexionDB().getConexion();
-            pstmt = conn.prepareStatement("SELECT MAX(C.CIU_CODIGO)+1 FROM AUD_CIUDAD C");
+            pstmt = conn.prepareStatement("SELECT MAX(C.ESTR_CODIGO)+1 FROM AUD_ESTRUCTURA_ASIGNACION C");
             rs = pstmt.executeQuery();
             if (rs.next()) {
                 max = rs.getLong(1);
@@ -140,16 +181,10 @@ public class EstructuraAsignacionDaoImpl implements EstructuraAsignacionDao {
             return max;
         } catch (SQLException e) {
             throw e;
-        }finally {
+        }
+           finally {
             conn.close();
             pstmt.close();
         }
     }
-
-    @Override
-    public List<AudEstructuraAsignacion> findAll() throws SQLException {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-   
 }

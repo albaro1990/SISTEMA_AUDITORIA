@@ -22,14 +22,14 @@ import com.sistema.auditoria.dao.EstructuraAsignacionDao;
 /**
  * @author 
  */
-@ManagedBean(name = "EstructuraAsignacionBean")
+@ManagedBean(name = "estructuraAsignacionBean")
 @ViewScoped
 public class EstructuraAsignacionBean extends GenericBean {
 
     private static final long serialVersionUID = 1L;
     private final Logger LOG = LoggerFactory.getLogger(EstructuraAsignacionBean.class);
     private EstructuraAsignacionDao estructuraasignacionDAO = new EstructuraAsignacionDaoImpl();
-    private List<AudEstructuraAsignacion> listaEstructuraAsignacion = new ArrayList<>();
+    private List<AudEstructuraAsignacion> listaEstructuraAsignacion = new ArrayList<AudEstructuraAsignacion>();
     private AudEstructuraAsignacion estructuraasignacion = new AudEstructuraAsignacion();
     private Integer codigoEstado;
 
@@ -51,23 +51,24 @@ public class EstructuraAsignacionBean extends GenericBean {
     private void cargarDependencias() {
         try{
         listaEstructuraAsignacion = estructuraasignacionDAO.findAll();
-        } catch (SQLException ex) {
+        } 
+        catch (SQLException ex) {
             LOG.error(ex.getMessage(), ex);
         }
     }
 
     public void create(ActionEvent actionEvent) {
         try {
-            if (estructuraasignacion.getEstCodigo()== null) {
-                if (!estructuraasignacionDAO.existePorCampo(estructuraasignacion.getEstDescripcion())) {
-                            int idEstructuraAsignacion = estructuraasignacionDAO.save(estructuraasignacion);
+            if (estructuraasignacion.getEstrCodigo()== null) {
+                if (!estructuraasignacionDAO.existePorCampo(estructuraasignacion.getEstrDescripcion())) {
+                            int idestructuraasignacion = estructuraasignacionDAO.save(estructuraasignacion);
                             cargarDependencias();
-                            saveMessageInfoDetail("EstructuraAsignacion", "EstructuraAsignacion " + estructuraasignacion.getEstDescripcion() + " creada correctamente");
+                            saveMessageInfoDetail("Descripcion", "Descripcion " + estructuraasignacion.getEstrDescripcion() + " creada correctamente");
                             this.inicializar(actionEvent);
                 } else {
-                    saveMessageErrorDetail("EstructuraAsignacion", "EstructuraAsignacion " + estructuraasignacion.getEstDescripcion()+ " ya existe");
+                    saveMessageErrorDetail("Descripcion", "Descripcion " + estructuraasignacion.getEstrDescripcion()+ " ya existe");
                 }
-            } else if(estructuraasignacion.getEstCodigo() != null){
+            } else if(estructuraasignacion.getEstrCodigo() != null){
                 estructuraasignacionDAO.update(estructuraasignacion);
                 cargarDependencias();
                 this.inicializar(actionEvent);
@@ -75,7 +76,7 @@ public class EstructuraAsignacionBean extends GenericBean {
             
                 cargarDependencias();
         } catch (SQLException e) {
-            saveMessageErrorDetail("Usuario", e.getMessage());
+            saveMessageErrorDetail("EstructuraAsignacion", e.getMessage());
             LOG.error(e.getMessage(), e);
         }
 
@@ -94,32 +95,45 @@ public class EstructuraAsignacionBean extends GenericBean {
     public void remove(ActionEvent event) {
         try {
             estructuraasignacion = (AudEstructuraAsignacion) event.getComponent().getAttributes().get("objetoEliminar");
-            estructuraasignacionDAO.delete(estructuraasignacion.getEstCodigo().intValue());
+            estructuraasignacionDAO.delete(estructuraasignacion.getEstrCodigo().intValue());
              cargarDependencias();
              this.inicializar(event);
         } catch (Exception e) {
         }
     }
 
-    public EstructuraAsignacionDao getEstructuraAsignacionDAO() {
+  
+    
+    public EstructuraAsignacionDao getEstructuraAsignacionDAO (){
         return estructuraasignacionDAO;
     }
-
-    public void setEstructuraAsignacionDAO(EstructuraAsignacionDao estructuraasignacionDAO) {
+    
+    public void setEstructuraAsignacionDAO(EstructuraAsignacionDao estructuraasignacionDAO){
         this.estructuraasignacionDAO = estructuraasignacionDAO;
     }
 
     
-
+    public List<AudEstructuraAsignacion> getListaEstructuraAsignacion() {
+        return listaEstructuraAsignacion;
+    }
     
+    public void setListaEstructuraAsignacion(List<AudEstructuraAsignacion> listaEstructuraAsignacion){
+        this.listaEstructuraAsignacion = listaEstructuraAsignacion;
+    }
+    
+    public AudEstructuraAsignacion getestructuraAsignacion(){
+       return estructuraasignacion;
+    }
+    
+    public void setestructuraAsignacion(AudEstructuraAsignacion estructuraasignacion){
+        this.estructuraasignacion = estructuraasignacion;
+    }
 
-    public Integer getEstrEstado() {
+    public Integer getCodigoEstado() {
         return codigoEstado;
     }
-
-    public void setEstrEstado(Integer EstrEstado) {
+    
+    public void setCodigoEstado(Integer codigoEstado) {
         this.codigoEstado = codigoEstado; 
     }
-
-
 }

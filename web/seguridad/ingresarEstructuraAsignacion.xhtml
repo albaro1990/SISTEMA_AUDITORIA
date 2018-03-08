@@ -30,17 +30,14 @@
                                     <p:inputText id="descripcion" required="true"
                                                       requiredMessage="Campo requerido"
                                                                                                      
-                                                 value="#{estructuraasignacionBean.estructuraasignacion.estrDescripcion}" />                             
+                                                      value="#{estructuraAsignacionBean.estructuraAsignacion.estrDescripcion}" />                             
                                     <p:tooltip for="descripcion"
                                                value="Campo requerido"
                                                showEffect="clip" hideEffect="explode" />
-                                   
-                                    
-                                    
-                                    
+                                                                     
                                     
                                     <p:outputLabel for="est" value="Estado:"  />
-                                    <p:selectOneMenu id="est" label="est" required="true" requiredMessage="Campo requerido" value="#{empresaBean.empresa.empEstado}">
+                                    <p:selectOneMenu id="est" label="est" required="true" requiredMessage="Campo requerido" value="#{estructuraAsignacionBean.estructuraAsignacion.estrEstado}">
                                         <f:selectItem itemLabel="Seleccione..." noSelectionOption="true" />
                                         <f:selectItem itemLabel="ACTIVO" itemValue="1"/>
                                         <f:selectItem itemLabel="INACTIVO" itemValue="0"/>
@@ -51,10 +48,10 @@
 
                                     <f:facet name="footer">
                                         <p:commandButton id="grabar" value="Guardar" validateClient="true" ajax="true" icon="ui-icon-disk"
-                                                         actionListener="#{estructuraasignacionBean.create}"
+                                                         actionListener="#{estructuraAsignacionBean.create}"
                                                          update=":formLista,formDatos, growl" process=":formDatos" />
                                         <p:commandButton value="Nuevo" validateClient="true" ajax="true" icon="ui-icon-document"
-                                                         actionListener="#{estructuraasignacionBean.inicializar}" immediate="true"
+                                                         actionListener="#{estructuraAsignacionBean.inicializar}" immediate="true"
                                                          update=":formLista,formDatos, growl" process=":formDatos"  />
                                     </f:facet>                             
                                 </h:panelGrid>                          
@@ -69,7 +66,7 @@
                 <center>
                     <h:panelGrid id="gridLista" rendered="#{not empty request.getRemoteUser()}">
                         <h:form id="formLista">
-                            <p:dataTable id="listaSimple" value="#{estructuraasignacionBean.listaEstructuraasignacion}"
+                            <p:dataTable id="listaSimple" value="#{estructuraAsignacionBean.listaEstructuraAsignacion}"
                                          var="item" paginator="true" rows="10" paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink}
                                          {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
                                          rowsPerPageTemplate="5,10,15" emptyMessage="Registro no encontrado.">
@@ -79,7 +76,7 @@
                                 
                                   <p:column headerText="Editar" style="text-align: center">
                                     <p:commandButton id="btnEditar" ajax="true" icon="ui-icon-pencil"
-                                                     actionListener="#{estructuraasignacionBean.edit}" update=":formDatos"                                                    
+                                                     actionListener="#{estructuraAsignacionBean.edit}" update=":formDatos"                                                    
                                                      title="Editar">
                                         <f:attribute name="objetoEditar" value="#{item}" />
                                     </p:commandButton>
@@ -87,7 +84,7 @@
 
                                 <p:column headerText="Eliminar" style="text-align: center">                                          
                                     <p:commandButton id="btnEliminar" ajax="true" icon="ui-icon-trash"
-                                                     actionListener="#{estructuraasignacionBean.remove}"
+                                                     actionListener="#{estructuraAsignacionBean.remove}"
                                                      title="Eliminar"
                                                      update="listaSimple :formDatos:growl">
                                         <p:confirm header="Eliminar"
