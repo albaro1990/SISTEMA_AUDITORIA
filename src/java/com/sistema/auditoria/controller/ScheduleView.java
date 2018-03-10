@@ -17,7 +17,6 @@ import com.sistema.auditoria.entity.AudEmpresa;
 import com.sistema.auditoria.entity.CitPaciente;
 import com.sistema.auditoria.entity.AudCiudad;
 import com.sistema.auditoria.entity.AudUsuario;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -25,32 +24,38 @@ import java.util.List;
 
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
-import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
 import org.primefaces.context.RequestContext;
 import org.primefaces.event.SelectEvent;
-import org.primefaces.event.UnselectEvent;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import com.sistema.auditoria.dao.CitaDao;
 import java.util.Calendar;
-import java.util.logging.Level;
 import javax.annotation.PostConstruct;
-import javax.faces.bean.RequestScoped;
-import javax.faces.bean.SessionScoped;
 import org.primefaces.event.ScheduleEntryMoveEvent;
 import org.primefaces.event.ScheduleEntryResizeEvent;
 import org.primefaces.model.DefaultScheduleEvent;
-import org.primefaces.model.DefaultScheduleModel;
-import org.primefaces.model.LazyScheduleModel;
 import org.primefaces.model.ScheduleEvent;
 import org.primefaces.model.ScheduleModel;
 import com.sistema.auditoria.dao.EmpresaDao;
+import java.io.ByteArrayInputStream;
+import java.io.FileInputStream;
+import java.util.Iterator;
+import javax.faces.bean.ViewScoped;
+import jxl.Cell;
+import jxl.Sheet;
+import jxl.Workbook;
+import org.apache.poi.xssf.usermodel.XSSFCell;
+import org.apache.poi.xssf.usermodel.XSSFRow;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+
+import org.primefaces.event.FileUploadEvent;
 
 @ManagedBean(name = "scheduleView")
-@SessionScoped
+@ViewScoped
 public class ScheduleView extends GenericBean {
     
     private static final long serialVersionUID = 1L;
@@ -60,7 +65,7 @@ public class ScheduleView extends GenericBean {
     
      private CitaDao citaDao = new CitaDaoImpl();
     
-    private ScheduleModel eventModel;
+    
      
     private ScheduleModel lazyEventModel;
  
@@ -78,6 +83,9 @@ public class ScheduleView extends GenericBean {
     private List<AudEmpresa> especialidades = new ArrayList<AudEmpresa>();
     private ClienteDao clienteDao = new ClienteDaoImpl();
     private CiudadDao ciudadDAO = new CiudadDaoImpl();
+    private List<List<String>> dataList;
+    private String tipoExtension;
+    private String nombreArchivo;
 
     private UsuarioDao usuarioDao = new UsuarioDaoImpl();
     private EmpresaDao especilidadDAO = new EmpresaDaoImpl();
@@ -94,55 +102,97 @@ public class ScheduleView extends GenericBean {
     }
     @PostConstruct
     public void init() {
-        eventModel = new DefaultScheduleModel();
-        try {
-          listaCitas=   citaDao.findAllXMedico();
-            for (CitCita listaCita : listaCitas) {                
-                 eventModel.addEvent(new DefaultScheduleEvent("CHEQUEO DE RUTINA",listaCita.getCitFechaCita(),listaCita.getHoraCita(),listaCita));
-                 
-            }
-            
-        } catch (SQLException ex) {
-            java.util.logging.Logger.getLogger(ScheduleView.class.getName()).log(Level.SEVERE, null, ex);
-        }
-         
-        lazyEventModel = new LazyScheduleModel() {
-             
-            @Override
-            public void loadEvents(Date start, Date end) {
-                Date random = getRandomDate(start);
-                addEvent(new DefaultScheduleEvent("Lazy Event 1", random, random));
-                 
-                random = getRandomDate(start);
-                addEvent(new DefaultScheduleEvent("Lazy Event 2", random, random));
-            }   
-        };
-    }
-     
-    public void addAntPersonales(ActionEvent actionEvent) {
-       
-        RequestContext requestContext = RequestContext.getCurrentInstance();
-        try {
-          
-                requestContext.execute("PF('dlAntPersonales').show()");
-            
-        } catch (Exception ex) {
-            LOG.error(ex.getMessage(), ex);
-        }
+  
+    }  
+    
+    @SuppressWarnings("rawtypes")
+	public void handleFileUpload(FileUploadEvent event) {
+		try {
+			// Date currentDate = new Date(); PARA LA COMPARACION
+			if (null == null) {
+				// configuramos fecha de entrega
+				// fechaEntregaString = sdf.format(fechaEntrega);
+
+				dataList = new ArrayList<List<String>>();
+				List<String> cellTempList = new ArrayList<String>();
+				setTipoExtension("");
+				
+				
+
+				if (event.getFile() != null) {
+					System.out.println("Nombre Archivo Pedido Manual: "+event.getFile().getFileName());
+					nombreArchivo = event.getFile().getFileName();
+					if (event.getFile().getFileName().endsWith("xls")) {
+						// LEER VALORES DE ARCHIVO XLS
+						setTipoExtension("XLS");
+						FileInputStream fileInputStream = (FileInputStream) event.getFile().getInputstream();
+						Workbook workbook = Workbook.getWorkbook(fileInputStream);
+						Sheet sheet = workbook.getSheet(0);
+						Cell[] row = null;
+						Cell cell = null;
+
+						for (int rowIndex = 0; rowIndex < sheet.getRows(); rowIndex++) {
+							row = sheet.getRow(rowIndex);
+							for (int colIndex = 0; colIndex < sheet.getRow(rowIndex).length; colIndex++) {
+								cell = row[colIndex];
+								if (!cell.getContents().isEmpty()) {
+									cellTempList.add(cell.getContents().toString());
+								} else {
+									cellTempList.add("");
+								}
+							}
+							dataList.add(cellTempList);
+							cellTempList = new ArrayList<String>();
+						}
+						fileInputStream.close();
+						workbook.close();
+					} else if (event.getFile().getFileName().endsWith("xlsx")) {
+						// LEER VALORES DE ARCHIVO XLSX
+						setTipoExtension("XLSX");
+						byte[] b = event.getFile().getContents();
+						ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(b);
+						XSSFWorkbook wb = new XSSFWorkbook(byteArrayInputStream);
+						XSSFSheet sheet = wb.getSheetAt(0);
+						Iterator rowIterator = sheet.rowIterator();
+
+						while (rowIterator.hasNext()) {
+							XSSFRow xSSFRow = (XSSFRow) rowIterator.next();
+							Iterator iterator = xSSFRow.cellIterator();
+
+							while (iterator.hasNext()) {
+								XSSFCell xSSFCell = (XSSFCell) iterator.next();
+								if(xSSFCell!=null && (xSSFCell.getCellType()==0)){
+									cellTempList.add(String.valueOf(Double.valueOf(xSSFCell.toString()).intValue()));
+								}else{
+									cellTempList.add(xSSFCell.toString());
+								}
+							}
+							dataList.add(cellTempList);
+							cellTempList = new ArrayList<String>();
+						}
+						wb.close();
+					}
+				} else {
+					saveMessageFatalDetail("app.fatal", "carga.archivos.llenar.formato");
+				}
+			} else {
+				saveMessageInfoDetail("app.fatal", "error.fecha.invalida");
+			}
+		} catch (Exception e) {
+			saveMessageFatalDetail("app.fatal","common.fatal.general");
+			LOG.error("handleFileUpload () {}", e);
+
+		}
+		validarInfoArchivo();
+
+	}
+    
+    public void validarInfoArchivo(){
     }
     
     
-    public void addAntFamiliares(ActionEvent actionEvent) {
-        RequestContext requestContext = RequestContext.getCurrentInstance();
-        try {
-            
-                requestContext.execute("PF('dlAntFamiliares').show()");
-         
-        } catch (Exception ex) {
-            LOG.error(ex.getMessage(), ex);
-        }
-    }
-    public Date getRandomDate(Date base) {
+        
+        public Date getRandomDate(Date base) {
         Calendar date = Calendar.getInstance();
         date.setTime(base);
         date.add(Calendar.DATE, ((int) (Math.random()*30)) + 1);    //set random day of month
@@ -157,9 +207,7 @@ public class ScheduleView extends GenericBean {
         return calendar.getTime();
     }
      
-    public ScheduleModel getEventModel() {
-        return eventModel;
-    }
+   
      
     public ScheduleModel getLazyEventModel() {
         return lazyEventModel;
@@ -248,17 +296,7 @@ public class ScheduleView extends GenericBean {
  
     public void setEvent(ScheduleEvent event) {
         this.event = event;
-    }
-     
-    public void addEvent(ActionEvent actionEvent) {
-        if(event.getId() == null)
-            eventModel.addEvent(event);
-        else
-            eventModel.updateEvent(event);
-         
-        event = new DefaultScheduleEvent();
-    }
-     
+    }     
     public void onEventSelect(SelectEvent selectEvent) {
         event = (ScheduleEvent) selectEvent.getObject();
         setCita((CitCita) event.getData());
@@ -468,6 +506,30 @@ public class ScheduleView extends GenericBean {
 
     public void setCodigoCita(Integer codigoCita) {
         this.codigoCita = codigoCita;
+    }
+
+    public List<List<String>> getDataList() {
+        return dataList;
+    }
+
+    public void setDataList(List<List<String>> dataList) {
+        this.dataList = dataList;
+    }
+
+    public String getTipoExtension() {
+        return tipoExtension;
+    }
+
+    public void setTipoExtension(String tipoExtension) {
+        this.tipoExtension = tipoExtension;
+    }
+
+    public String getNombreArchivo() {
+        return nombreArchivo;
+    }
+
+    public void setNombreArchivo(String nombreArchivo) {
+        this.nombreArchivo = nombreArchivo;
     }
     
     
