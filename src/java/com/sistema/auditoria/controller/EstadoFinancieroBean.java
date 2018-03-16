@@ -40,8 +40,11 @@ import org.primefaces.model.DefaultScheduleEvent;
 import org.primefaces.model.ScheduleEvent;
 import org.primefaces.model.ScheduleModel;
 import com.sistema.auditoria.dao.EmpresaDao;
+import com.sistema.auditoria.entity.AudDetEstadoFinan;
+import com.sistema.auditoria.entity.AudEstadoFinanciero;
 import java.io.ByteArrayInputStream;
 import java.io.FileInputStream;
+import java.sql.SQLException;
 import java.util.Iterator;
 import javax.faces.bean.ViewScoped;
 import jxl.Cell;
@@ -54,19 +57,18 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import org.primefaces.event.FileUploadEvent;
 
-@ManagedBean(name = "scheduleView")
+@ManagedBean(name = "estadoFinancieroBean")
 @ViewScoped
-public class ScheduleView extends GenericBean {
+public class EstadoFinancieroBean extends GenericBean {
     
     private static final long serialVersionUID = 1L;
     private final Logger LOG = LoggerFactory.getLogger(CitaBean.class);
     
     private List<CitCita> listaCitas;
     
-     private CitaDao citaDao = new CitaDaoImpl();
-    
-    
-     
+    private CitaDao citaDao = new CitaDaoImpl();
+    private List<String> listaErrores; 
+    private List<AudDetEstadoFinan> listaDetallesPantalla;
     private ScheduleModel lazyEventModel;
  
     private ScheduleEvent event = new DefaultScheduleEvent();
@@ -80,15 +82,15 @@ public class ScheduleView extends GenericBean {
 
     private List<AudUsuario> listaUsuMedicos;
     private List<AudCiudad> ciudades = new ArrayList<AudCiudad>();
-    private List<AudEmpresa> especialidades = new ArrayList<AudEmpresa>();
+    private List<AudEmpresa> empresas = new ArrayList<AudEmpresa>();
     private ClienteDao clienteDao = new ClienteDaoImpl();
     private CiudadDao ciudadDAO = new CiudadDaoImpl();
+    private EmpresaDao empresaDAO = new EmpresaDaoImpl();
     private List<List<String>> dataList;
     private String tipoExtension;
     private String nombreArchivo;
 
     private UsuarioDao usuarioDao = new UsuarioDaoImpl();
-    private EmpresaDao especilidadDAO = new EmpresaDaoImpl();
     private Integer codigoCiudad;
     private Integer codigoEmp;
     private Integer codigoMedico;
@@ -96,14 +98,27 @@ public class ScheduleView extends GenericBean {
     private Integer codigoCita;
     
  
-     public ScheduleView() {
-            
+     public EstadoFinancieroBean() {
+         empresas = new ArrayList<AudEmpresa>();
+         cargarDependencias();   
         
     }
     @PostConstruct
     public void init() {
   
     }  
+    
+    
+    private void cargarDependencias() {
+        try{
+           
+        empresas = empresaDAO.findAll();
+        
+        
+        } catch (SQLException ex) {
+            LOG.error(ex.getMessage(), ex);
+        }
+    }
     
     @SuppressWarnings("rawtypes")
 	public void handleFileUpload(FileUploadEvent event) {
@@ -187,8 +202,214 @@ public class ScheduleView extends GenericBean {
 
 	}
     
-    public void validarInfoArchivo(){
-    }
+   private void validarInfoArchivo() {
+		try {
+			if (dataList != null && !dataList.isEmpty()) {
+				listaErrores = new ArrayList<String>();
+				listaDetallesPantalla = new ArrayList<AudDetEstadoFinan>();
+				
+				// PROCESAR PEDIDOS DEL DATA LIST
+				Integer contadorLinea=1;
+				for (int i = 1; i < dataList.size(); i++) {
+					AudDetEstadoFinan pedidoArchivoDet = new AudDetEstadoFinan();
+					AudEstadoFinanciero pedidoArchivoCap = new AudEstadoFinanciero();
+					for (int j = 0; j < dataList.get(i).size(); j++) {
+						// Secuencial(nuemro de orden)
+						if (dataList.get(i).get(1 - 1) != null) {
+							try {
+								//pedidoArchivoCap.setSecuencial(Integer.valueOf((int) Double.parseDouble(dataList.get(i).get(formatoPedidoManual.getSecuencial() - 1))));
+							} catch (Exception e) {
+								listaErrores.add("FILA: " + i + " --> EL SECUENCIAL TIENE UN DATO INVÁLIDO");
+								//pedidoArchivoCap.setErrorCabecera(true);
+
+								//saveMessageFatalDetail(getStringResourceBundle("app.fatal"), getStringResourceBundle("common.fatal.general"));
+								LOG.error("validarInfoArchivo() {}", e);
+								break;
+							}
+						} else {
+							listaErrores.add("FILA: " + i + " --> EL SECUENCIAL NO EXISTE");
+							//pedidoArchivoCap.setErrorCabecera(true);
+							break;
+						}
+						// CodigoCliente
+						if (dataList.get(i).get(2 - 1) != null) {
+							try {
+								
+								//se valida si el cleinte existe o esta ectivo
+								
+							/*	if(clienteDir!=null && clienteDir.getEstado().equalsIgnoreCase(Constantes.ESTADO_ACTIVO)){
+								   autoservicioCliente.setCodigoCliente(dataList.get(i).get(formatoPedidoManual.getCodigoCliente() - 1));
+								   pedidoArchivoCap.setAutoservicioCliente(autoservicioCliente);
+								}else if(clienteDir!=null && clienteDir.getEstado().equalsIgnoreCase(Constantes.ESTADO_INACTIVO)){
+									 autoservicioCliente.setCodigoCliente(dataList.get(i).get(formatoPedidoManual.getCodigoCliente() - 1));
+									   pedidoArchivoCap.setAutoservicioCliente(autoservicioCliente);
+								}else{
+									listaErrores.add("FILA: " + i + " --> EL CODIGO CLIENTE NO EXISTE");
+									pedidoArchivoCap.setErrorCabecera(true);
+									break;
+								}*/
+								
+							} catch (Exception e) {
+								//saveMessageFatalDetail(getStringResourceBundle("app.fatal"), getStringResourceBundle("common.fatal.general"));
+								LOG.error("validarInfoArchivo() {}", e);
+								break;
+							}
+						} else {
+							listaErrores.add("FILA: " + i + " --> EL CAMPO CLIENTE NO ESTA LLENO");
+							//pedidoArchivoCap.setErrorCabecera(true);
+							break;
+						}
+						// CodigoItem
+						if (dataList.get(i).get(3 - 1) != null) {
+							try {
+								//se valida si el item existe o esta activo
+//								Producto item = productoService.findArticulo(dataList.get(i).get(formatoPedidoManual.getCodigoItem() - 1).trim().toUpperCase());
+//								if(item!=null&&item.getEstado().equalsIgnoreCase(Constantes.ESTADO_ACT)){
+//									pedidoArchivoDet.setItemCodigo(dataList.get(i).get(formatoPedidoManual.getCodigoItem() - 1).trim().toUpperCase());
+//								}else if(item!=null&&item.getEstado().equalsIgnoreCase(Constantes.ESTADO_INA)){
+//									pedidoArchivoDet.setItemCodigo(dataList.get(i).get(formatoPedidoManual.getCodigoItem() - 1).trim().toUpperCase());
+//								}else {
+//								listaErrores.add("FILA: " + i + " --> EL CODIGO DE ITEM NO EXISTE");
+//								pedidoArchivoDet.setError(true);
+//								break;
+//								}
+							} catch (Exception e) {
+								//saveMessageFatalDetail(getStringResourceBundle("app.fatal"), getStringResourceBundle("common.fatal.general"));
+								LOG.error("validarInfoArchivo() {}", e);
+								break;
+							}
+						} else {
+							listaErrores.add("FILA: " + i + " --> EL CAPO ITEM NO ESTA LLENO");
+							//pedidoArchivoDet.setError(true);
+							break;
+						}
+						// CodigoVendedor
+//						if (dataList.get(i).get(formatoPedidoManual.getCodigoVendedor() - 1) != null) {
+//							try {
+//								pedidoArchivoCap.setCodigoVendedor(String.valueOf((int) Double.parseDouble(dataList.get(i).get(formatoPedidoManual.getCodigoVendedor() - 1).trim().toUpperCase())));
+//							} catch (Exception e) {
+//								listaErrores.add("FILA: " + i + " --> EL CODIGO DE VENDEDOR TIENE UN DATO INVÁLIDO");
+//								pedidoArchivoCap.setErrorCabecera(true);
+//
+//								saveMessageFatalDetail(getStringResourceBundle("app.fatal"), getStringResourceBundle("common.fatal.general"));
+//								LOG.error("validarInfoArchivo() {}", e);
+//								break;
+//							}
+//						} else {
+//							listaErrores.add("FILA: " + i + " --> EL CODIGO DE VENDEDOR NO EXISTE");
+//							pedidoArchivoCap.setErrorCabecera(true);
+//							break;
+//						}
+						// Numero Orden Compra
+//						if (dataList.get(i).get(formatoPedidoManual.getObservacion() - 1) != null) {
+//							try {
+//								pedidoArchivoCap.setNumeroOrdenCompra(dataList.get(i).get(formatoPedidoManual.getObservacion() - 1));
+//							} catch (Exception e) {
+//								listaErrores.add("FILA: " + i + " --> EL NUMERO DE ORDEN TIENE UN DATO INVÁLIDO");
+//								pedidoArchivoCap.setErrorCabecera(true);
+//
+//								saveMessageFatalDetail(getStringResourceBundle("app.fatal"), getStringResourceBundle("common.fatal.general"));
+//								LOG.error("validarInfoArchivo() {}", e);
+//								break;
+//							}
+//						} else {
+//							listaErrores.add("FILA: " + i + " --> EL NUMERO DE ORDEN NO EXISTE");
+//							pedidoArchivoCap.setErrorCabecera(true);
+//							break;
+//						}
+						// Cantidad
+//						if (dataList.get(i).get(formatoPedidoManual.getCantidad() - 1) != null) {
+//							try {
+//								pedidoArchivoDet.setItemCantidad(String.valueOf((int) Double.parseDouble(dataList.get(i).get(formatoPedidoManual.getCantidad() - 1))));
+//							} catch (Exception e) {
+//								listaErrores.add("FILA: " + i + " --> LA CANTIDAD TIENE UN DATO INVÁLIDO");
+//								pedidoArchivoDet.setError(true);
+//
+//								saveMessageFatalDetail(getStringResourceBundle("app.fatal"), getStringResourceBundle("common.fatal.general"));
+//								LOG.error("validarInfoArchivo() {}", e);
+//								break;
+//							}
+//						} else {
+//							listaErrores.add("FILA: " + i + " --> LA CANTIDAD NO EXISTE");
+//							pedidoArchivoDet.setError(true);
+//							break;
+//						}
+						// direccion
+//						if (dataList.get(i).get(formatoPedidoManual.getDireccion() - 1) != null) {
+//							try {
+//								pedidoArchivoCap.setDireccionCliente(String.valueOf(dataList.get(i).get(formatoPedidoManual.getDireccion() - 1)));
+//							} catch (Exception e) {
+//								listaErrores.add("FILA: " + i + " --> LA DIRECCION DE CLIENTE TIENE UN DATO INVÁLIDO");
+//								pedidoArchivoCap.setErrorCabecera(true);
+//
+//								saveMessageFatalDetail(getStringResourceBundle("app.fatal"), getStringResourceBundle("common.fatal.general"));
+//								LOG.error("validarInfoArchivo() {}", e);
+//								break;
+//							}
+//						} else {
+//							listaErrores.add("FILA: " + i + " --> LA DIRECCION DE CLIENTE NO EXISTE");
+//							pedidoArchivoCap.setErrorCabecera(true);
+//							break;
+//						}
+						// tipoOrden
+//						if (dataList.get(i).get(formatoPedidoManual.getTipoOrden() - 1) != null) {
+//							try {
+//								pedidoArchivoCap.setTipoOrden(String.valueOf(dataList.get(i).get(formatoPedidoManual.getTipoOrden() - 1)));
+//							} catch (Exception e) {
+//								listaErrores.add("FILA: " + i + " --> EL TIPO DE ORDEN TIENE UN DATO INVÁLIDO");
+//								pedidoArchivoCap.setErrorCabecera(true);
+//
+//								saveMessageFatalDetail(getStringResourceBundle("app.fatal"), getStringResourceBundle("common.fatal.general"));
+//								LOG.error("validarInfoArchivo() {}", e);
+//								break;
+//							}
+//						} else {
+//							listaErrores.add("FILA: " + i + " --> EL TIPO DE ORDEN NO EXISTE");
+//							pedidoArchivoCap.setErrorCabecera(true);
+//							break;
+//						}
+						// contrato
+//						if (dataList.get(i).get(formatoPedidoManual.getContrato() - 1) != null && !dataList.get(i).get(formatoPedidoManual.getContrato() - 1).equalsIgnoreCase("")) {
+//							try {
+//								pedidoArchivoCap.setContratoVenta(String.valueOf(dataList.get(i).get(formatoPedidoManual.getContrato() - 1)));
+//							} catch (Exception e) {
+//								listaErrores.add("FILA: " + i + " --> EL CONTRATO TIENE UN DATO INVÁLIDO");
+//								pedidoArchivoCap.setErrorCabecera(true);
+//
+//								saveMessageFatalDetail(getStringResourceBundle("app.fatal"), getStringResourceBundle("common.fatal.general"));
+//								LOG.error("validarInfoArchivo() {}", e);
+//								break;
+//							}
+//						} else {
+//							if(pedidoArchivoCap.getTipoOrden()!=null && pedidoArchivoCap.getTipoOrden().trim().contains(Constantes.TIPO_PEDIDO_CONTRATO)){
+//							listaErrores.add("FILA: " + i + " --> EL CONTRATO NO EXISTE");
+//							pedidoArchivoCap.setErrorCabecera(true);
+//							break;
+//						  }
+//						}
+					 }
+//					if (!pedidoArchivoCap.isErrorCabecera() && !pedidoArchivoDet.isError()) {
+//						contadorLinea++;
+//						// seteamos fecha entrega
+//						pedidoArchivoCap.setFechaEntrega(fechaEntregaString);
+//						// seteamos la cabecera en el detalle
+//						pedidoArchivoDet.setPedidoCab(pedidoArchivoCap);
+//						pedidoArchivoDet.setLineaDetalle(contadorLinea);
+//						listaDetallesPantalla.add(pedidoArchivoDet);
+//					}
+//					System.out.println("Contador registro= " + contadotPruebReg++ );
+				}
+
+			}
+		} catch (Exception e) {
+			if(e.getMessage().contains("Index:") || e.getMessage().contains("Size:")){
+				saveMessageFatalDetail("app.fatal", "FORMATO DE ARCHIVO INCORRECTO.");
+			}else{
+			saveMessageFatalDetail("app.fatal", "common.fatal.general");
+			}
+			LOG.error("validarInfoArchivo() {}", e);
+		}
+	}
     
     
         
@@ -428,12 +649,12 @@ public class ScheduleView extends GenericBean {
         this.ciudades = ciudades;
     }
 
-    public List<AudEmpresa> getEspecialidades() {
-        return especialidades;
+    public List<AudEmpresa> getEmpresas() {
+        return empresas;
     }
 
-    public void setEspecialidades(List<AudEmpresa> especialidades) {
-        this.especialidades = especialidades;
+    public void setEmpresas(List<AudEmpresa> empresas) {
+        this.empresas = empresas;
     }
 
     public ClienteDao getClienteDao() {
@@ -458,14 +679,6 @@ public class ScheduleView extends GenericBean {
 
     public void setUsuarioDao(UsuarioDao usuarioDao) {
         this.usuarioDao = usuarioDao;
-    }
-
-    public EmpresaDao getEspecilidadDAO() {
-        return especilidadDAO;
-    }
-
-    public void setEspecilidadDAO(EmpresaDao especilidadDAO) {
-        this.especilidadDAO = especilidadDAO;
     }
 
     public Integer getCodigoCiudad() {
@@ -530,6 +743,22 @@ public class ScheduleView extends GenericBean {
 
     public void setNombreArchivo(String nombreArchivo) {
         this.nombreArchivo = nombreArchivo;
+    }
+
+    public List<String> getListaErrores() {
+        return listaErrores;
+    }
+
+    public void setListaErrores(List<String> listaErrores) {
+        this.listaErrores = listaErrores;
+    }
+
+    public List<AudDetEstadoFinan> getListaDetallesPantalla() {
+        return listaDetallesPantalla;
+    }
+
+    public void setListaDetallesPantalla(List<AudDetEstadoFinan> listaDetallesPantalla) {
+        this.listaDetallesPantalla = listaDetallesPantalla;
     }
     
     

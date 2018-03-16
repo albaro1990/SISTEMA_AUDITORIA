@@ -19,7 +19,7 @@
         <ui:composition template="./../WEB-INF/templates/cuerpo.xhtml">
 
             <ui:define name="page-title">
-                Agenda
+                Estado Financiero
             </ui:define>
 
             <ui:define name="datos">
@@ -27,12 +27,17 @@
                     <p:focus context="formDatos" />                    
                     <p:growl id="msg" showDetail="true"  life="5000" />
                     <center>
-
+                          <p:outputLabel for="ciudad" value="Empresa:"  />
+                            <p:selectOneMenu id="ciudad" label="ciudad" value="#{estadoFinancieroBean.codigoEmp}" required="true" requiredMessage="Campo requerido">
+                             <f:selectItem itemLabel="Seleccione..." noSelectionOption="true" />
+                             <f:selectItems value="#{estadoFinancieroBean.empresas}" var="item" itemLabel="#{item.empNombre}" itemValue="#{item.empCodigo}" />
+                            </p:selectOneMenu>
+                            <p:tooltip for="ciudad"  value="Campo requerido" showEffect="clip" hideEffect="explode" />
 
                         <h:panelGrid columns="2" cellpadding="5">
 				<p:outputLabel for="fileUp" value="Seleccionar" />
 				<p:fileUpload id="fileUp" update=":formDatos" onstart="PF('statusDialog').show()" oncomplete="PF('statusDialog').hide()"
-					sizeLimit="1000000000" fileUploadListener="#{scheduleView.handleFileUpload}" mode="advanced" required="true"
+					sizeLimit="1000000000" fileUploadListener="#{estadoFinancieroBean.handleFileUpload}" mode="advanced" required="true"
 					dragDropSupport="true" process=":formDatos" invalidFileMessage="Archivo no valido" cancelLabel="Cancelar"
 					uploadLabel="Subir" label="Elejir" allowTypes="/(\.|\/)(csv|xlsx|xls|txt)$/" fileLimit="5" />
 				<p:tooltip for="fileUp" value="Subir Archivo" showEffect="clip" hideEffect="explode" />
