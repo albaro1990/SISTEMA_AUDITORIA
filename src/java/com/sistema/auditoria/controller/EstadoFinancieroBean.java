@@ -68,6 +68,8 @@ public class EstadoFinancieroBean extends GenericBean {
     
     private CitaDao citaDao = new CitaDaoImpl();
     private List<String> listaErrores; 
+    private List<String> columnas;
+    private String[] selectedColumnas;
     private List<AudDetEstadoFinan> listaDetallesPantalla;
     private ScheduleModel lazyEventModel;
  
@@ -105,7 +107,12 @@ public class EstadoFinancieroBean extends GenericBean {
     }
     @PostConstruct
     public void init() {
-  
+        columnas = new ArrayList<String>();
+        columnas.add("N° Cuenta");
+        columnas.add("Saldo Inicial");
+        columnas.add("Debe");
+        columnas.add("Haber");
+        columnas.add("Saldo Final");
     }  
     
     
@@ -205,7 +212,7 @@ public class EstadoFinancieroBean extends GenericBean {
    private void validarInfoArchivo() {
 		try {
 			if (dataList != null && !dataList.isEmpty()) {
-				listaErrores = new ArrayList<String>();
+				
 				listaDetallesPantalla = new ArrayList<AudDetEstadoFinan>();
 				
 				// PROCESAR PEDIDOS DEL DATA LIST
@@ -760,6 +767,24 @@ public class EstadoFinancieroBean extends GenericBean {
     public void setListaDetallesPantalla(List<AudDetEstadoFinan> listaDetallesPantalla) {
         this.listaDetallesPantalla = listaDetallesPantalla;
     }
+
+    public List<String> getColumnas() {
+        return columnas;
+    }
+
+    public void setColumnas(List<String> columnas) {
+        this.columnas = columnas;
+    }
+
+    public String[] getSelectedColumnas() {
+        return selectedColumnas;
+    }
+
+    public void setSelectedColumnas(String[] selectedColumnas) {
+        this.selectedColumnas = selectedColumnas;
+    }
+
+ 
     
     
 }

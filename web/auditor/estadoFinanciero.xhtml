@@ -8,7 +8,7 @@
       xmlns:f="http://java.sun.com/jsf/core">
 
     <h:head>
-        
+
         <style type="text/css">
             .value {
                 width: 1000px;
@@ -27,21 +27,27 @@
                     <p:focus context="formDatos" />                    
                     <p:growl id="msg" showDetail="true"  life="5000" />
                     <center>
-                          <p:outputLabel for="ciudad" value="Empresa:"  />
-                            <p:selectOneMenu id="ciudad" label="ciudad" value="#{estadoFinancieroBean.codigoEmp}" required="true" requiredMessage="Campo requerido">
-                             <f:selectItem itemLabel="Seleccione..." noSelectionOption="true" />
-                             <f:selectItems value="#{estadoFinancieroBean.empresas}" var="item" itemLabel="#{item.empNombre}" itemValue="#{item.empCodigo}" />
-                            </p:selectOneMenu>
-                            <p:tooltip for="ciudad"  value="Campo requerido" showEffect="clip" hideEffect="explode" />
-
-                        <h:panelGrid columns="2" cellpadding="5">
-				<p:outputLabel for="fileUp" value="Seleccionar" />
-				<p:fileUpload id="fileUp" update=":formDatos" onstart="PF('statusDialog').show()" oncomplete="PF('statusDialog').hide()"
-					sizeLimit="1000000000" fileUploadListener="#{estadoFinancieroBean.handleFileUpload}" mode="advanced" required="true"
-					dragDropSupport="true" process=":formDatos" invalidFileMessage="Archivo no valido" cancelLabel="Cancelar"
-					uploadLabel="Subir" label="Elejir" allowTypes="/(\.|\/)(csv|xlsx|xls|txt)$/" fileLimit="5" />
-				<p:tooltip for="fileUp" value="Subir Archivo" showEffect="clip" hideEffect="explode" />
-			</h:panelGrid>
+                     <h:panelGrid columns="3" cellpadding="5">
+                        <p:outputLabel for="ciudad" value="Empresa:"  />
+                        <p:selectOneMenu id="ciudad" label="ciudad" value="#{estadoFinancieroBean.codigoEmp}" required="true" requiredMessage="Campo requerido">
+                            <f:selectItem itemLabel="Seleccione..." noSelectionOption="true" />
+                            <f:selectItems value="#{estadoFinancieroBean.empresas}" var="item" itemLabel="#{item.empNombre}" itemValue="#{item.empCodigo}" />
+                        </p:selectOneMenu>
+                        <p:tooltip for="ciudad"  value="Campo requerido" showEffect="clip" hideEffect="explode" />
+                        
+                        <!--<p:outputLabel for="grid" value="Seleccionar Columnas a Leer"  />
+                        <p:selectManyCheckbox id="grid" value="#{estadoFinancieroBean.selectedColumnas}" layout="grid" columns="3">
+                            <f:selectItems value="#{estadoFinancieroBean.columnas}" var="city" itemLabel="#{city}" itemValue="#{city}" />
+                        </p:selectManyCheckbox>
+                        <p:tooltip for="grid"  value="Campo requerido" showEffect="clip" hideEffect="explode" />-->
+                        
+                            <p:outputLabel for="fileUp" value="Seleccionar" />
+                            <p:fileUpload id="fileUp" update=":formDatos" onstart="PF('statusDialog').show()" oncomplete="PF('statusDialog').hide()"
+                                          sizeLimit="1000000000" fileUploadListener="#{estadoFinancieroBean.handleFileUpload}" mode="advanced" required="true"
+                                          dragDropSupport="true" process=":formDatos" invalidFileMessage="Archivo no valido" cancelLabel="Cancelar"
+                                          uploadLabel="Subir" label="Elejir" allowTypes="/(\.|\/)(csv|xlsx|xls|txt)$/" fileLimit="5" />
+                            <p:tooltip for="fileUp" value="Subir Archivo" showEffect="clip" hideEffect="explode" />
+                        </h:panelGrid>
                     </center>
                 </h:form>
             </ui:define>
