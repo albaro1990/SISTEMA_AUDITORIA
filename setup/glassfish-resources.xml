@@ -8,6 +8,7 @@
                           pool-resize-quantity="2"
                           max-pool-size="1000">
         <property name="ServerName" value="localhost"/>
+        
         <property name="PortNumber" value="1521"/>
         <property name="DatabaseName" value="SISTEMA_AUDITORIA"/>
         <property name="User" value="SISTEMA_AUDITORIA"/>
