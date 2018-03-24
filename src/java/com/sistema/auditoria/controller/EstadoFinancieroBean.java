@@ -4,18 +4,14 @@
  */
 package com.sistema.auditoria.controller;
 
-import com.sistema.auditoria.dao.CiudadDao;
 import com.sistema.auditoria.dao.ClienteDao;
 import com.sistema.auditoria.dao.UsuarioDao;
-import com.sistema.auditoria.dao.impl.CitaDaoImpl;
-import com.sistema.auditoria.dao.impl.CiudadDaoImpl;
 import com.sistema.auditoria.dao.impl.ClienteDaoImpl;
 import com.sistema.auditoria.dao.impl.EmpresaDaoImpl;
 import com.sistema.auditoria.dao.impl.UsuarioDaoImpl;
 import com.sistema.auditoria.entity.CitCita;
 import com.sistema.auditoria.entity.AudEmpresa;
 import com.sistema.auditoria.entity.CitPaciente;
-import com.sistema.auditoria.entity.AudCiudad;
 import com.sistema.auditoria.entity.AudUsuario;
 import java.util.ArrayList;
 import java.util.Date;
@@ -26,12 +22,10 @@ import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
-import org.primefaces.context.RequestContext;
 import org.primefaces.event.SelectEvent;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import com.sistema.auditoria.dao.CitaDao;
 import java.util.Calendar;
 import javax.annotation.PostConstruct;
 import org.primefaces.event.ScheduleEntryMoveEvent;
@@ -40,13 +34,13 @@ import org.primefaces.model.DefaultScheduleEvent;
 import org.primefaces.model.ScheduleEvent;
 import org.primefaces.model.ScheduleModel;
 import com.sistema.auditoria.dao.EmpresaDao;
+import com.sistema.auditoria.dto.AudEstadoFinancieroDTO;
 import com.sistema.auditoria.entity.AudDetEstadoFinan;
-import com.sistema.auditoria.entity.AudEstadoFinanciero;
 import java.io.ByteArrayInputStream;
 import java.io.FileInputStream;
 import java.sql.SQLException;
 import java.util.Iterator;
-import javax.faces.bean.ViewScoped;
+import javax.faces.bean.SessionScoped;
 import jxl.Cell;
 import jxl.Sheet;
 import jxl.Workbook;
@@ -58,19 +52,16 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.primefaces.event.FileUploadEvent;
 
 @ManagedBean(name = "estadoFinancieroBean")
-@ViewScoped
+@SessionScoped
 public class EstadoFinancieroBean extends GenericBean {
     
     private static final long serialVersionUID = 1L;
     private final Logger LOG = LoggerFactory.getLogger(CitaBean.class);
-    
-    private List<CitCita> listaCitas;
-    
-    private CitaDao citaDao = new CitaDaoImpl();
+  
     private List<String> listaErrores; 
     private List<String> columnas;
     private String[] selectedColumnas;
-    private List<AudDetEstadoFinan> listaDetallesPantalla;
+    private List<AudEstadoFinancieroDTO> listaDetallesPantalla;
     private ScheduleModel lazyEventModel;
  
     private ScheduleEvent event = new DefaultScheduleEvent();
@@ -83,10 +74,8 @@ public class EstadoFinancieroBean extends GenericBean {
 
 
     private List<AudUsuario> listaUsuMedicos;
-    private List<AudCiudad> ciudades = new ArrayList<AudCiudad>();
     private List<AudEmpresa> empresas = new ArrayList<AudEmpresa>();
     private ClienteDao clienteDao = new ClienteDaoImpl();
-    private CiudadDao ciudadDAO = new CiudadDaoImpl();
     private EmpresaDao empresaDAO = new EmpresaDaoImpl();
     private List<List<String>> dataList;
     private String tipoExtension;
@@ -131,6 +120,7 @@ public class EstadoFinancieroBean extends GenericBean {
 	public void handleFileUpload(FileUploadEvent event) {
 		try {
 			// Date currentDate = new Date(); PARA LA COMPARACION
+                        System.out.print(": "+ getCodigoEmp() +  " : " + codigoEmp);
 			if (null == null) {
 				// configuramos fecha de entrega
 				// fechaEntregaString = sdf.format(fechaEntrega);
@@ -211,20 +201,20 @@ public class EstadoFinancieroBean extends GenericBean {
     
    private void validarInfoArchivo() {
 		try {
+                    System.out.print("cod empresa: "+codigoEmp);
 			if (dataList != null && !dataList.isEmpty()) {
 				
-				listaDetallesPantalla = new ArrayList<AudDetEstadoFinan>();
+				listaDetallesPantalla = new ArrayList<AudEstadoFinancieroDTO>();
 				
 				// PROCESAR PEDIDOS DEL DATA LIST
 				Integer contadorLinea=1;
 				for (int i = 1; i < dataList.size(); i++) {
 					AudDetEstadoFinan pedidoArchivoDet = new AudDetEstadoFinan();
-					AudEstadoFinanciero pedidoArchivoCap = new AudEstadoFinanciero();
-					for (int j = 0; j < dataList.get(i).size(); j++) {
+					AudEstadoFinancieroDTO pedidoArchivoCap = new AudEstadoFinancieroDTO();
 						// Secuencial(nuemro de orden)
-						if (dataList.get(i).get(1 - 1) != null) {
+						if (dataList.get(i).get(1) != null) {
 							try {
-								//pedidoArchivoCap.setSecuencial(Integer.valueOf((int) Double.parseDouble(dataList.get(i).get(formatoPedidoManual.getSecuencial() - 1))));
+								pedidoArchivoCap.setNumeroCuenta(dataList.get(i).get(1));
 							} catch (Exception e) {
 								listaErrores.add("FILA: " + i + " --> EL SECUENCIAL TIENE UN DATO INVÁLIDO");
 								//pedidoArchivoCap.setErrorCabecera(true);
@@ -239,22 +229,10 @@ public class EstadoFinancieroBean extends GenericBean {
 							break;
 						}
 						// CodigoCliente
-						if (dataList.get(i).get(2 - 1) != null) {
+						if (dataList.get(i).get(2) != null) {
 							try {
-								
+								pedidoArchivoCap.setDescCuenta(dataList.get(i).get(2));
 								//se valida si el cleinte existe o esta ectivo
-								
-							/*	if(clienteDir!=null && clienteDir.getEstado().equalsIgnoreCase(Constantes.ESTADO_ACTIVO)){
-								   autoservicioCliente.setCodigoCliente(dataList.get(i).get(formatoPedidoManual.getCodigoCliente() - 1));
-								   pedidoArchivoCap.setAutoservicioCliente(autoservicioCliente);
-								}else if(clienteDir!=null && clienteDir.getEstado().equalsIgnoreCase(Constantes.ESTADO_INACTIVO)){
-									 autoservicioCliente.setCodigoCliente(dataList.get(i).get(formatoPedidoManual.getCodigoCliente() - 1));
-									   pedidoArchivoCap.setAutoservicioCliente(autoservicioCliente);
-								}else{
-									listaErrores.add("FILA: " + i + " --> EL CODIGO CLIENTE NO EXISTE");
-									pedidoArchivoCap.setErrorCabecera(true);
-									break;
-								}*/
 								
 							} catch (Exception e) {
 								//saveMessageFatalDetail(getStringResourceBundle("app.fatal"), getStringResourceBundle("common.fatal.general"));
@@ -267,9 +245,10 @@ public class EstadoFinancieroBean extends GenericBean {
 							break;
 						}
 						// CodigoItem
-						if (dataList.get(i).get(3 - 1) != null) {
+						if (dataList.get(i).get(3) != null) {
 							try {
 								//se valida si el item existe o esta activo
+                                                                pedidoArchivoCap.setSaldoInicial(Double.valueOf(dataList.get(i).get(3)));
 //								Producto item = productoService.findArticulo(dataList.get(i).get(formatoPedidoManual.getCodigoItem() - 1).trim().toUpperCase());
 //								if(item!=null&&item.getEstado().equalsIgnoreCase(Constantes.ESTADO_ACT)){
 //									pedidoArchivoDet.setItemCodigo(dataList.get(i).get(formatoPedidoManual.getCodigoItem() - 1).trim().toUpperCase());
@@ -291,119 +270,48 @@ public class EstadoFinancieroBean extends GenericBean {
 							break;
 						}
 						// CodigoVendedor
-//						if (dataList.get(i).get(formatoPedidoManual.getCodigoVendedor() - 1) != null) {
-//							try {
-//								pedidoArchivoCap.setCodigoVendedor(String.valueOf((int) Double.parseDouble(dataList.get(i).get(formatoPedidoManual.getCodigoVendedor() - 1).trim().toUpperCase())));
-//							} catch (Exception e) {
-//								listaErrores.add("FILA: " + i + " --> EL CODIGO DE VENDEDOR TIENE UN DATO INVÁLIDO");
-//								pedidoArchivoCap.setErrorCabecera(true);
-//
-//								saveMessageFatalDetail(getStringResourceBundle("app.fatal"), getStringResourceBundle("common.fatal.general"));
-//								LOG.error("validarInfoArchivo() {}", e);
-//								break;
-//							}
-//						} else {
-//							listaErrores.add("FILA: " + i + " --> EL CODIGO DE VENDEDOR NO EXISTE");
-//							pedidoArchivoCap.setErrorCabecera(true);
-//							break;
-//						}
+						if (dataList.get(i).get(4) != null) {
+							try {
+								pedidoArchivoCap.setDebe(Double.valueOf(dataList.get(i).get(4)));
+							} catch (Exception e) {
+								listaErrores.add("FILA: " + i + " --> EL CODIGO DE VENDEDOR TIENE UN DATO INVÁLIDO");
+								//pedidoArchivoCap.setErrorCabecera(true);
+
+								//saveMessageFatalDetail(getStringResourceBundle("app.fatal"), getStringResourceBundle("common.fatal.general"));
+								LOG.error("validarInfoArchivo() {}", e);
+								break;
+							}
+						} else {
+							listaErrores.add("FILA: " + i + " --> EL CODIGO DE VENDEDOR NO EXISTE");
+							//pedidoArchivoCap.setErrorCabecera(true);
+							break;
+						}
 						// Numero Orden Compra
-//						if (dataList.get(i).get(formatoPedidoManual.getObservacion() - 1) != null) {
-//							try {
-//								pedidoArchivoCap.setNumeroOrdenCompra(dataList.get(i).get(formatoPedidoManual.getObservacion() - 1));
-//							} catch (Exception e) {
-//								listaErrores.add("FILA: " + i + " --> EL NUMERO DE ORDEN TIENE UN DATO INVÁLIDO");
-//								pedidoArchivoCap.setErrorCabecera(true);
-//
-//								saveMessageFatalDetail(getStringResourceBundle("app.fatal"), getStringResourceBundle("common.fatal.general"));
-//								LOG.error("validarInfoArchivo() {}", e);
-//								break;
-//							}
-//						} else {
-//							listaErrores.add("FILA: " + i + " --> EL NUMERO DE ORDEN NO EXISTE");
-//							pedidoArchivoCap.setErrorCabecera(true);
-//							break;
-//						}
-						// Cantidad
-//						if (dataList.get(i).get(formatoPedidoManual.getCantidad() - 1) != null) {
-//							try {
-//								pedidoArchivoDet.setItemCantidad(String.valueOf((int) Double.parseDouble(dataList.get(i).get(formatoPedidoManual.getCantidad() - 1))));
-//							} catch (Exception e) {
-//								listaErrores.add("FILA: " + i + " --> LA CANTIDAD TIENE UN DATO INVÁLIDO");
-//								pedidoArchivoDet.setError(true);
-//
-//								saveMessageFatalDetail(getStringResourceBundle("app.fatal"), getStringResourceBundle("common.fatal.general"));
-//								LOG.error("validarInfoArchivo() {}", e);
-//								break;
-//							}
-//						} else {
-//							listaErrores.add("FILA: " + i + " --> LA CANTIDAD NO EXISTE");
-//							pedidoArchivoDet.setError(true);
-//							break;
-//						}
-						// direccion
-//						if (dataList.get(i).get(formatoPedidoManual.getDireccion() - 1) != null) {
-//							try {
-//								pedidoArchivoCap.setDireccionCliente(String.valueOf(dataList.get(i).get(formatoPedidoManual.getDireccion() - 1)));
-//							} catch (Exception e) {
-//								listaErrores.add("FILA: " + i + " --> LA DIRECCION DE CLIENTE TIENE UN DATO INVÁLIDO");
-//								pedidoArchivoCap.setErrorCabecera(true);
-//
-//								saveMessageFatalDetail(getStringResourceBundle("app.fatal"), getStringResourceBundle("common.fatal.general"));
-//								LOG.error("validarInfoArchivo() {}", e);
-//								break;
-//							}
-//						} else {
-//							listaErrores.add("FILA: " + i + " --> LA DIRECCION DE CLIENTE NO EXISTE");
-//							pedidoArchivoCap.setErrorCabecera(true);
-//							break;
-//						}
-						// tipoOrden
-//						if (dataList.get(i).get(formatoPedidoManual.getTipoOrden() - 1) != null) {
-//							try {
-//								pedidoArchivoCap.setTipoOrden(String.valueOf(dataList.get(i).get(formatoPedidoManual.getTipoOrden() - 1)));
-//							} catch (Exception e) {
-//								listaErrores.add("FILA: " + i + " --> EL TIPO DE ORDEN TIENE UN DATO INVÁLIDO");
-//								pedidoArchivoCap.setErrorCabecera(true);
-//
-//								saveMessageFatalDetail(getStringResourceBundle("app.fatal"), getStringResourceBundle("common.fatal.general"));
-//								LOG.error("validarInfoArchivo() {}", e);
-//								break;
-//							}
-//						} else {
-//							listaErrores.add("FILA: " + i + " --> EL TIPO DE ORDEN NO EXISTE");
-//							pedidoArchivoCap.setErrorCabecera(true);
-//							break;
-//						}
-						// contrato
-//						if (dataList.get(i).get(formatoPedidoManual.getContrato() - 1) != null && !dataList.get(i).get(formatoPedidoManual.getContrato() - 1).equalsIgnoreCase("")) {
-//							try {
-//								pedidoArchivoCap.setContratoVenta(String.valueOf(dataList.get(i).get(formatoPedidoManual.getContrato() - 1)));
-//							} catch (Exception e) {
-//								listaErrores.add("FILA: " + i + " --> EL CONTRATO TIENE UN DATO INVÁLIDO");
-//								pedidoArchivoCap.setErrorCabecera(true);
-//
-//								saveMessageFatalDetail(getStringResourceBundle("app.fatal"), getStringResourceBundle("common.fatal.general"));
-//								LOG.error("validarInfoArchivo() {}", e);
-//								break;
-//							}
-//						} else {
-//							if(pedidoArchivoCap.getTipoOrden()!=null && pedidoArchivoCap.getTipoOrden().trim().contains(Constantes.TIPO_PEDIDO_CONTRATO)){
-//							listaErrores.add("FILA: " + i + " --> EL CONTRATO NO EXISTE");
-//							pedidoArchivoCap.setErrorCabecera(true);
-//							break;
-//						  }
-//						}
-					 }
-//					if (!pedidoArchivoCap.isErrorCabecera() && !pedidoArchivoDet.isError()) {
+						if (dataList.get(i).get(5) != null) {
+							try {
+								pedidoArchivoCap.setHaber(Double.valueOf(dataList.get(i).get(5)));
+							} catch (Exception e) {
+								listaErrores.add("FILA: " + i + " --> EL NUMERO DE ORDEN TIENE UN DATO INVÁLIDO");
+								//pedidoArchivoCap.setErrorCabecera(true);
+
+								//saveMessageFatalDetail(getStringResourceBundle("app.fatal"), getStringResourceBundle("common.fatal.general"));
+								LOG.error("validarInfoArchivo() {}", e);
+								break;
+							}
+						} else {
+							listaErrores.add("FILA: " + i + " --> EL NUMERO DE ORDEN NO EXISTE");
+							//pedidoArchivoCap.setErrorCabecera(true);
+							break;
+						}
+					if(pedidoArchivoCap!=null&&pedidoArchivoCap.getNumeroCuenta()!=null) {
 //						contadorLinea++;
 //						// seteamos fecha entrega
 //						pedidoArchivoCap.setFechaEntrega(fechaEntregaString);
 //						// seteamos la cabecera en el detalle
 //						pedidoArchivoDet.setPedidoCab(pedidoArchivoCap);
 //						pedidoArchivoDet.setLineaDetalle(contadorLinea);
-//						listaDetallesPantalla.add(pedidoArchivoDet);
-//					}
+						listaDetallesPantalla.add(pedidoArchivoCap);
+					}
 //					System.out.println("Contador registro= " + contadotPruebReg++ );
 				}
 
@@ -582,7 +490,7 @@ public class EstadoFinancieroBean extends GenericBean {
         cita = new CitCita();
         try {
             cita = (CitCita) event.getComponent().getAttributes().get("objetoRemover");
-           int ndel = citaDao.cacelar(cita.getCitCodigo().intValue());
+           
 //            if (detalleFactura != null) {
 //              //  listaDetalleFacturas.remove(detalleFactura);
 //                procesarArticulo();
@@ -590,22 +498,6 @@ public class EstadoFinancieroBean extends GenericBean {
         } catch (Exception e) {
         }
 
-    }
-
-    public List<CitCita> getListaCitas() {
-        return listaCitas;
-    }
-
-    public void setListaCitas(List<CitCita> listaCitas) {
-        this.listaCitas = listaCitas;
-    }
-
-    public CitaDao getCitaDao() {
-        return citaDao;
-    }
-
-    public void setCitaDao(CitaDao citaDao) {
-        this.citaDao = citaDao;
     }
 
     public CitPaciente getPaciente() {
@@ -648,14 +540,6 @@ public class EstadoFinancieroBean extends GenericBean {
         this.listaUsuMedicos = listaUsuMedicos;
     }
 
-    public List<AudCiudad> getCiudades() {
-        return ciudades;
-    }
-
-    public void setCiudades(List<AudCiudad> ciudades) {
-        this.ciudades = ciudades;
-    }
-
     public List<AudEmpresa> getEmpresas() {
         return empresas;
     }
@@ -670,14 +554,6 @@ public class EstadoFinancieroBean extends GenericBean {
 
     public void setClienteDao(ClienteDao clienteDao) {
         this.clienteDao = clienteDao;
-    }
-
-    public CiudadDao getCiudadDAO() {
-        return ciudadDAO;
-    }
-
-    public void setCiudadDAO(CiudadDao ciudadDAO) {
-        this.ciudadDAO = ciudadDAO;
     }
 
     public UsuarioDao getUsuarioDao() {
@@ -700,7 +576,7 @@ public class EstadoFinancieroBean extends GenericBean {
         return codigoEmp;
     }
 
-    public void setCodigoEsp(Integer codigoEmp) {
+    public void setCodigoEmp(Integer codigoEmp) {
         this.codigoEmp = codigoEmp;
     }
 
@@ -760,11 +636,11 @@ public class EstadoFinancieroBean extends GenericBean {
         this.listaErrores = listaErrores;
     }
 
-    public List<AudDetEstadoFinan> getListaDetallesPantalla() {
+    public List<AudEstadoFinancieroDTO> getListaDetallesPantalla() {
         return listaDetallesPantalla;
     }
 
-    public void setListaDetallesPantalla(List<AudDetEstadoFinan> listaDetallesPantalla) {
+    public void setListaDetallesPantalla(List<AudEstadoFinancieroDTO> listaDetallesPantalla) {
         this.listaDetallesPantalla = listaDetallesPantalla;
     }
 

@@ -32,14 +32,11 @@
                         <p:selectOneMenu id="ciudad" label="ciudad" value="#{estadoFinancieroBean.codigoEmp}" required="true" requiredMessage="Campo requerido">
                             <f:selectItem itemLabel="Seleccione..." noSelectionOption="true" />
                             <f:selectItems value="#{estadoFinancieroBean.empresas}" var="item" itemLabel="#{item.empNombre}" itemValue="#{item.empCodigo}" />
+                            
                         </p:selectOneMenu>
                         <p:tooltip for="ciudad"  value="Campo requerido" showEffect="clip" hideEffect="explode" />
                         
-                        <!--<p:outputLabel for="grid" value="Seleccionar Columnas a Leer"  />
-                        <p:selectManyCheckbox id="grid" value="#{estadoFinancieroBean.selectedColumnas}" layout="grid" columns="3">
-                            <f:selectItems value="#{estadoFinancieroBean.columnas}" var="city" itemLabel="#{city}" itemValue="#{city}" />
-                        </p:selectManyCheckbox>
-                        <p:tooltip for="grid"  value="Campo requerido" showEffect="clip" hideEffect="explode" />-->
+                        
                         
                             <p:outputLabel for="fileUp" value="Seleccionar" />
                             <p:fileUpload id="fileUp" update=":formDatos" onstart="PF('statusDialog').show()" oncomplete="PF('statusDialog').hide()"
@@ -47,7 +44,55 @@
                                           dragDropSupport="true" process=":formDatos" invalidFileMessage="Archivo no valido" cancelLabel="Cancelar"
                                           uploadLabel="Subir" label="Elejir" allowTypes="/(\.|\/)(csv|xlsx|xls|txt)$/" fileLimit="5" />
                             <p:tooltip for="fileUp" value="Subir Archivo" showEffect="clip" hideEffect="explode" />
-                        </h:panelGrid>
+                     </h:panelGrid>
+                        <h:panelGrid columns="2" cellpadding="5">
+                        <p:fieldset legend="Detalle Esatdo Financiero" toggleable="true" toggleSpeed="500" rendered="#{not empty estadoFinancieroBean.listaDetallesPantalla}">
+				<p:dataTable id="listaCorrectos" filterEvent="enter" value="#{estadoFinancieroBean.listaDetallesPantalla}" var="item"
+					paginator="true" rows="10" paginatorPosition="bottom" sortOrder="ascending" tableStyleClass="table table-striped"
+					rowsPerPageTemplate="10,20,50,100"
+					paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+					currentPageReportTemplate="{totalRecords} Registros ( P\u00E1gina {currentPage} de {totalPages})" paginatorAlwaysVisible="true" rowIndexVar="rowIndex"
+					
+					emptyMessage="Lista Bacia">
+
+					<f:facet name="header">					
+						"Estado Financiero"
+					</f:facet>
+
+					<p:column headerText="Numero Cuenta" sortBy="#{item.numeroCuenta}"
+						filterBy="#{item.numeroCuenta}" filterMatchMode="contains" style="text-align: left">
+						<h:outputText value="#{item.numeroCuenta}" />
+					</p:column>
+                                        <p:column headerText="Descripcion Cuenta" sortBy="#{item.descCuenta}"
+						filterBy="#{item.descCuenta}" filterMatchMode="contains" style="text-align: left">
+						<h:outputText value="#{item.descCuenta}" />
+					</p:column>
+                                        <p:column headerText="Saldo Inicial" sortBy="#{item.saldoInicial}"
+						filterBy="#{item.saldoInicial}" filterMatchMode="contains" style="text-align: left">
+						<h:outputText value="#{item.saldoInicial}" />
+					</p:column>
+                                        <p:column headerText="Debe" sortBy="#{item.debe}"
+                                                  filterBy="#{item.debe}" filterMatchMode="contains" style="text-align: left">
+                                            <h:outputText value="#{item.debe}" />
+					</p:column>
+                                        <p:column headerText="Haber" sortBy="#{item.haber}"
+						filterBy="#{item.haber}" filterMatchMode="contains" style="text-align: left">
+						<h:outputText value="#{item.haber}" />
+					</p:column>
+                                        <p:column headerText="Saldo Final" sortBy="#{item.saldoFinal}"
+                                                  filterBy="#{item.saldoFinal}" filterMatchMode="contains" style="text-align: left">
+                                            <h:outputText value="#{item.saldoFinal}" />
+					</p:column>
+				</p:dataTable>
+			</p:fieldset>
+                            <p:fieldset>
+                                <p:tree>
+                                    
+                                </p:tree>
+                                
+                            </p:fieldset>
+                            
+                    </h:panelGrid>   
                     </center>
                 </h:form>
             </ui:define>

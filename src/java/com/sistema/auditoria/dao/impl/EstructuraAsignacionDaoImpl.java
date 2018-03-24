@@ -94,7 +94,7 @@ public class EstructuraAsignacionDaoImpl implements EstructuraAsignacionDao {
 
         try {
             conn = new ConexionDB().getConexion();
-            pstmt = conn.prepareStatement("SELECT * FROM AUD_ESTRUCTURA_ASIGNACION ");
+            pstmt = conn.prepareStatement("SELECT * FROM AUD_ESTRUCTURA_ASIGNACION WHERE ESTR_ESTADO=1 ");
             rs = pstmt.executeQuery();
 
             while (rs.next()) {
