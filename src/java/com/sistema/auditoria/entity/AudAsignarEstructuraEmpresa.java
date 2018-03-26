@@ -19,9 +19,9 @@ public class AudAsignarEstructuraEmpresa implements Serializable {
 
     private Integer codigo;
     
-    private List<AudPlanCuentas> planCuentas;
+    private AudPlanCuentas planCuentas;
 
-    private List<AudEstructuraAsignacion> estructuraAsig;
+    private AudEstructuraAsignacion estructuraAsig;
     
     private Long codigoEmpresa;
 
@@ -37,7 +37,7 @@ public class AudAsignarEstructuraEmpresa implements Serializable {
         this.codigo = codigo;
     }
 
-    public AudAsignarEstructuraEmpresa(Integer codigo, List<AudPlanCuentas> planCuentas, List<AudEstructuraAsignacion> estructuraAsig, Long codigoEmpresa, String descCta) {
+    public AudAsignarEstructuraEmpresa(Integer codigo, AudPlanCuentas planCuentas, AudEstructuraAsignacion estructuraAsig, Long codigoEmpresa, String descCta) {
         this.codigo = codigo;
         this.planCuentas = planCuentas;
         this.estructuraAsig = estructuraAsig;
@@ -54,20 +54,19 @@ public class AudAsignarEstructuraEmpresa implements Serializable {
     public void setCodigo(Integer codigo) {
         this.codigo = codigo;
     }
-
-    public List<AudPlanCuentas> getPlanCuentas() {
-        return planCuentas;
-    }
-
-    public void setPlanCuentas(List<AudPlanCuentas> planCuentas) {
-        this.planCuentas = planCuentas;
-    }
-
-    public List<AudEstructuraAsignacion> getEstructuraAsig() {
+    public AudEstructuraAsignacion getEstructuraAsig() {
         return estructuraAsig;
     }
 
-    public void setEstructuraAsig(List<AudEstructuraAsignacion> estructuraAsig) {
+    public AudPlanCuentas getPlanCuentas() {
+        return planCuentas;
+    }
+
+    public void setPlanCuentas(AudPlanCuentas planCuentas) {
+        this.planCuentas = planCuentas;
+    }
+
+    public void setEstructuraAsig(AudEstructuraAsignacion estructuraAsig) {
         this.estructuraAsig = estructuraAsig;
     }
 

@@ -22,7 +22,6 @@ import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
-import org.primefaces.event.SelectEvent;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,17 +29,23 @@ import java.util.Calendar;
 import javax.annotation.PostConstruct;
 import org.primefaces.event.ScheduleEntryMoveEvent;
 import org.primefaces.event.ScheduleEntryResizeEvent;
-import org.primefaces.model.DefaultScheduleEvent;
-import org.primefaces.model.ScheduleEvent;
-import org.primefaces.model.ScheduleModel;
 import com.sistema.auditoria.dao.EmpresaDao;
+import com.sistema.auditoria.dao.EstructuraAsignacionDao;
+import com.sistema.auditoria.dao.EstructuraAsignacionEmpresaDao;
+import com.sistema.auditoria.dao.PlandeCuentasDao;
+import com.sistema.auditoria.dao.impl.EstructuraAsignacionDaoImpl;
+import com.sistema.auditoria.dao.impl.EstructuraAsignacionEmpresaDaoImpl;
+import com.sistema.auditoria.dao.impl.PlandeCuentasDaoImpl;
 import com.sistema.auditoria.dto.AudEstadoFinancieroDTO;
+import com.sistema.auditoria.entity.AudAsignarEstructuraEmpresa;
 import com.sistema.auditoria.entity.AudDetEstadoFinan;
+import com.sistema.auditoria.entity.AudEstructuraAsignacion;
+import com.sistema.auditoria.entity.AudPlanCuentas;
 import java.io.ByteArrayInputStream;
 import java.io.FileInputStream;
 import java.sql.SQLException;
 import java.util.Iterator;
-import javax.faces.bean.SessionScoped;
+import javax.faces.bean.ViewScoped;
 import jxl.Cell;
 import jxl.Sheet;
 import jxl.Workbook;
@@ -50,58 +55,60 @@ import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import org.primefaces.event.FileUploadEvent;
+import org.primefaces.model.DefaultTreeNode;
+import org.primefaces.model.TreeNode;
 
 @ManagedBean(name = "estadoFinancieroBean")
-@SessionScoped
+@ViewScoped
 public class EstadoFinancieroBean extends GenericBean {
     
     private static final long serialVersionUID = 1L;
-    private final Logger LOG = LoggerFactory.getLogger(CitaBean.class);
+    private final Logger LOG = LoggerFactory.getLogger(EstadoFinancieroBean.class);
   
-    private List<String> listaErrores; 
-    private List<String> columnas;
+
     private String[] selectedColumnas;
-    private List<AudEstadoFinancieroDTO> listaDetallesPantalla;
-    private ScheduleModel lazyEventModel;
- 
-    private ScheduleEvent event = new DefaultScheduleEvent();
+    
     
     private CitPaciente paciente;
     private CitPaciente clienteNuevo;
-
     private CitCita cita;
     private AudEmpresa especialidad;
+    private TreeNode nodoTreView;
 
-
+    private List<AudEstadoFinancieroDTO> listaDetallesPantalla;
     private List<AudUsuario> listaUsuMedicos;
     private List<AudEmpresa> empresas = new ArrayList<AudEmpresa>();
+    List<AudEstructuraAsignacion> listEstructuraAsig = new ArrayList<AudEstructuraAsignacion>();
+    
+    private List<List<String>> dataList;
+    private List<String> listaErrores; 
+    private List<String> columnas;
+    
     private ClienteDao clienteDao = new ClienteDaoImpl();
     private EmpresaDao empresaDAO = new EmpresaDaoImpl();
-    private List<List<String>> dataList;
+    private UsuarioDao usuarioDao = new UsuarioDaoImpl();
+    private EstructuraAsignacionDao estructuraAsignacionDAO = new EstructuraAsignacionDaoImpl();
+    private PlandeCuentasDao plandeCuentasDao= new PlandeCuentasDaoImpl();
+    private AudEstadoFinancieroDTO ctaSeleccionado = new AudEstadoFinancieroDTO();
+    private EstructuraAsignacionEmpresaDao estructuraAsignacionEmpresaDao = new EstructuraAsignacionEmpresaDaoImpl();
+    
     private String tipoExtension;
     private String nombreArchivo;
-
-    private UsuarioDao usuarioDao = new UsuarioDaoImpl();
-    private Integer codigoCiudad;
-    private Integer codigoEmp;
-    private Integer codigoMedico;
-    private Integer codigoPaciente;
-    private Integer codigoCita;
     
- 
+    private Integer codigoEmp;
+    private Integer estrCodigo;
+
+     
      public EstadoFinancieroBean() {
          empresas = new ArrayList<AudEmpresa>();
+         listEstructuraAsig = new ArrayList<AudEstructuraAsignacion>();
+         nodoTreView = new DefaultTreeNode("Root",null);
          cargarDependencias();   
         
     }
     @PostConstruct
     public void init() {
-        columnas = new ArrayList<String>();
-        columnas.add("N° Cuenta");
-        columnas.add("Saldo Inicial");
-        columnas.add("Debe");
-        columnas.add("Haber");
-        columnas.add("Saldo Final");
+        
     }  
     
     
@@ -109,6 +116,7 @@ public class EstadoFinancieroBean extends GenericBean {
         try{
            
         empresas = empresaDAO.findAll();
+        listEstructuraAsig = estructuraAsignacionDAO.findAll();
         
         
         } catch (SQLException ex) {
@@ -116,11 +124,18 @@ public class EstadoFinancieroBean extends GenericBean {
         }
     }
     
+     public void asignarEstructura(ActionEvent event) {
+        ctaSeleccionado = (AudEstadoFinancieroDTO) event.getComponent().getAttributes().get("objetoAsignar");
+    }
+    
+     public void getCodEmpresa(){
+         setCodigoEmp(codigoEmp);
+     }
     @SuppressWarnings("rawtypes")
 	public void handleFileUpload(FileUploadEvent event) {
 		try {
 			// Date currentDate = new Date(); PARA LA COMPARACION
-                        System.out.print(": "+ getCodigoEmp() +  " : " + codigoEmp);
+                        System.out.print(": " + codigoEmp);
 			if (null == null) {
 				// configuramos fecha de entrega
 				// fechaEntregaString = sdf.format(fechaEntrega);
@@ -128,8 +143,6 @@ public class EstadoFinancieroBean extends GenericBean {
 				dataList = new ArrayList<List<String>>();
 				List<String> cellTempList = new ArrayList<String>();
 				setTipoExtension("");
-				
-				
 
 				if (event.getFile() != null) {
 					System.out.println("Nombre Archivo Pedido Manual: "+event.getFile().getFileName());
@@ -304,12 +317,6 @@ public class EstadoFinancieroBean extends GenericBean {
 							break;
 						}
 					if(pedidoArchivoCap!=null&&pedidoArchivoCap.getNumeroCuenta()!=null) {
-//						contadorLinea++;
-//						// seteamos fecha entrega
-//						pedidoArchivoCap.setFechaEntrega(fechaEntregaString);
-//						// seteamos la cabecera en el detalle
-//						pedidoArchivoDet.setPedidoCab(pedidoArchivoCap);
-//						pedidoArchivoDet.setLineaDetalle(contadorLinea);
 						listaDetallesPantalla.add(pedidoArchivoCap);
 					}
 //					System.out.println("Contador registro= " + contadotPruebReg++ );
@@ -326,15 +333,45 @@ public class EstadoFinancieroBean extends GenericBean {
 		}
 	}
     
-    
+public void crearEstructuraAsignacion(ActionEvent event){
+    try {
+        AudPlanCuentas planSave = new AudPlanCuentas();
+        AudAsignarEstructuraEmpresa audAsignarEstructuraEmpresa = new AudAsignarEstructuraEmpresa();
+        planSave.setNumeroCta(ctaSeleccionado.getNumeroCuenta()); 
+        planSave.setDescCta(ctaSeleccionado.getDescCuenta());
+        planSave.setEmpresa(empresaDAO.find(codigoEmp));
+        planSave.setEstado(1);
+        Integer codigoCta = plandeCuentasDao.save(planSave);
+        planSave.setCodPlanCta(Long.valueOf(codigoCta));
+        audAsignarEstructuraEmpresa.setCodigoEmpresa(Long.valueOf(codigoEmp));
+        audAsignarEstructuraEmpresa.setDescCta(ctaSeleccionado.getDescCuenta());
+        audAsignarEstructuraEmpresa.setEstructuraAsig(estructuraAsignacionDAO.find(estrCodigo));
+        audAsignarEstructuraEmpresa.setPlanCuentas(planSave);
+        estructuraAsignacionEmpresaDao.save(audAsignarEstructuraEmpresa);
+        List<AudEstructuraAsignacion> listEstructuraAsignada = estructuraAsignacionEmpresaDao.findByEmp(codigoEmp);
+        TreeNode nodo1 = new DefaultTreeNode("",null);
+        TreeNode node00 = new DefaultTreeNode("",null);
+        new DefaultTreeNode("Root",null);
+        Integer cont=0;
+        if(listEstructuraAsignada!=null&&listEstructuraAsignada.size()>0){
+            for (AudEstructuraAsignacion audEstructuraAsignacion : listEstructuraAsignada) {
+                 nodo1 = new DefaultTreeNode(audEstructuraAsignacion.getEstrDescripcion(), nodoTreView);   
+                List<AudAsignarEstructuraEmpresa> listAsig= estructuraAsignacionEmpresaDao.findByEmpYEst(codigoEmp, audEstructuraAsignacion.getEstrCodigo());
+                for (AudAsignarEstructuraEmpresa audAsignarEstructuraEmpresa1 : listAsig) {
+                     if(Long.valueOf(estrCodigo)==audEstructuraAsignacion.getEstrCodigo()){
+                        node00 = new DefaultTreeNode(ctaSeleccionado.getDescCuenta(), nodo1);
+                       }
+                }
+              
+            }
+        }
+        cont++;
         
-        public Date getRandomDate(Date base) {
-        Calendar date = Calendar.getInstance();
-        date.setTime(base);
-        date.add(Calendar.DATE, ((int) (Math.random()*30)) + 1);    //set random day of month
-         
-        return date.getTime();
+        
+        listaDetallesPantalla.remove(ctaSeleccionado);
+    } catch (Exception e) {
     }
+}
      
     public Date getInitialDate() {
         Calendar calendar = Calendar.getInstance();
@@ -343,129 +380,17 @@ public class EstadoFinancieroBean extends GenericBean {
         return calendar.getTime();
     }
      
-   
-     
-    public ScheduleModel getLazyEventModel() {
-        return lazyEventModel;
-    }
+  
  
-    private Calendar today() {
-        Calendar calendar = Calendar.getInstance();
-        calendar.set(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DATE), 0, 0, 0);
+
+     
  
-        return calendar;
-    }
-     
-    private Date previousDay8Pm() {
-        Calendar t = (Calendar) today().clone();
-        t.set(Calendar.AM_PM, Calendar.PM);
-        t.set(Calendar.DATE, t.get(Calendar.DATE) - 1);
-        t.set(Calendar.HOUR, 8);
-         
-        return t.getTime();
-    }
-     
-    private Date previousDay11Pm() {
-        Calendar t = (Calendar) today().clone();
-        t.set(Calendar.AM_PM, Calendar.PM);
-        t.set(Calendar.DATE, t.get(Calendar.DATE) - 1);
-        t.set(Calendar.HOUR, 11);
-         
-        return t.getTime();
-    }
-     
-    private Date today1Pm() {
-        Calendar t = (Calendar) today().clone();
-        t.set(Calendar.AM_PM, Calendar.PM);
-        t.set(Calendar.HOUR, 1);
-         
-        return t.getTime();
-    }
-     
-    private Date theDayAfter3Pm() {
-        Calendar t = (Calendar) today().clone();
-        t.set(Calendar.DATE, t.get(Calendar.DATE) + 2);     
-        t.set(Calendar.AM_PM, Calendar.PM);
-        t.set(Calendar.HOUR, 3);
-         
-        return t.getTime();
-    }
  
-    private Date today6Pm() {
-        Calendar t = (Calendar) today().clone(); 
-        t.set(Calendar.AM_PM, Calendar.PM);
-        t.set(Calendar.HOUR, 6);
-         
-        return t.getTime();
-    }
+  
      
-    private Date nextDay9Am() {
-        Calendar t = (Calendar) today().clone();
-        t.set(Calendar.AM_PM, Calendar.AM);
-        t.set(Calendar.DATE, t.get(Calendar.DATE) + 1);
-        t.set(Calendar.HOUR, 9);
-         
-        return t.getTime();
-    }
+
      
-    private Date nextDay11Am() {
-        Calendar t = (Calendar) today().clone();
-        t.set(Calendar.AM_PM, Calendar.AM);
-        t.set(Calendar.DATE, t.get(Calendar.DATE) + 1);
-        t.set(Calendar.HOUR, 11);
-         
-        return t.getTime();
-    }
-     
-    private Date fourDaysLater3pm() {
-        Calendar t = (Calendar) today().clone(); 
-        t.set(Calendar.AM_PM, Calendar.PM);
-        t.set(Calendar.DATE, t.get(Calendar.DATE) + 4);
-        t.set(Calendar.HOUR, 3);
-         
-        return t.getTime();
-    }
-     
-    public ScheduleEvent getEvent() {
-        return event;
-    }
- 
-    public void setEvent(ScheduleEvent event) {
-        this.event = event;
-    }     
-    public void onEventSelect(SelectEvent selectEvent) {
-        event = (ScheduleEvent) selectEvent.getObject();
-        setCita((CitCita) event.getData());
-        codigoPaciente = getCita().getCliCodigo().getPacCodigo().intValue();
-        try {
-           paciente =  clienteDao.findXId(codigoPaciente); 
-        } catch (Exception e) {
-        }
-        
-    }
-    
-     public void onEventIngresar(SelectEvent selectEvent) {
-        event = (ScheduleEvent) selectEvent.getObject();
-        FacesContext context = FacesContext.getCurrentInstance();
-        HistoriaClinicaBean historiaBean= context.getApplication().evaluateExpressionGet(context, "#{historiaClinicaBean}", HistoriaClinicaBean.class);
-        historiaBean.setCita((CitCita) event.getData());
-    }
-     
-    public void onDateSelect(SelectEvent selectEvent) {
-        event = new DefaultScheduleEvent("", (Date) selectEvent.getObject(), (Date) selectEvent.getObject(), (CitCita) selectEvent.getObject());
-    }
-     
-    public void onEventMove(ScheduleEntryMoveEvent event) {
-        FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_INFO, "Event moved", "Day delta:" + event.getDayDelta() + ", Minute delta:" + event.getMinuteDelta());
-         
-        addMessage(message);
-    }
-     
-    public void onEventResize(ScheduleEntryResizeEvent event) {
-        FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_INFO, "Event resized", "Day delta:" + event.getDayDelta() + ", Minute delta:" + event.getMinuteDelta());
-         
-        addMessage(message);
-    }
+  
      
     private void addMessage(FacesMessage message) {
         FacesContext.getCurrentInstance().addMessage(null, message);
@@ -477,8 +402,8 @@ public class EstadoFinancieroBean extends GenericBean {
         try {
             cita = (CitCita) event.getComponent().getAttributes().get("objetoEditar");
             especialidad = cita.getUsuario().getCitEspecialidad();
-            codigoEmp = cita.getUsuario().getCitEspecialidad().getEmpCodigo().intValue();
-            codigoMedico = cita.getUsuario().getUsuCodigo().intValue();
+          
+            
             paciente = clienteDao.findXId(cita.getCliCodigo().getPacCodigo().intValue());
         } catch (Exception e) {
             LOG.error(e.getMessage(), e);
@@ -564,45 +489,7 @@ public class EstadoFinancieroBean extends GenericBean {
         this.usuarioDao = usuarioDao;
     }
 
-    public Integer getCodigoCiudad() {
-        return codigoCiudad;
-    }
-
-    public void setCodigoCiudad(Integer codigoCiudad) {
-        this.codigoCiudad = codigoCiudad;
-    }
-
-    public Integer getCodigoEmp() {
-        return codigoEmp;
-    }
-
-    public void setCodigoEmp(Integer codigoEmp) {
-        this.codigoEmp = codigoEmp;
-    }
-
-    public Integer getCodigoMedico() {
-        return codigoMedico;
-    }
-
-    public void setCodigoMedico(Integer codigoMedico) {
-        this.codigoMedico = codigoMedico;
-    }
-
-    public Integer getCodigoPaciente() {
-        return codigoPaciente;
-    }
-
-    public void setCodigoPaciente(Integer codigoPaciente) {
-        this.codigoPaciente = codigoPaciente;
-    }
-
-    public Integer getCodigoCita() {
-        return codigoCita;
-    }
-
-    public void setCodigoCita(Integer codigoCita) {
-        this.codigoCita = codigoCita;
-    }
+  
 
     public List<List<String>> getDataList() {
         return dataList;
@@ -660,7 +547,53 @@ public class EstadoFinancieroBean extends GenericBean {
         this.selectedColumnas = selectedColumnas;
     }
 
- 
+    public List<AudEstructuraAsignacion> getListEstructuraAsig() {
+        return listEstructuraAsig;
+    }
+
+    public void setListEstructuraAsig(List<AudEstructuraAsignacion> listEstructuraAsig) {
+        this.listEstructuraAsig = listEstructuraAsig;
+    }
+
+    public Integer getEstrCodigo() {
+        return estrCodigo;
+    }
+
+    public void setEstrCodigo(Integer estrCodigo) {
+        this.estrCodigo = estrCodigo;
+    }
+
+    public Integer getCodigoEmp() {
+        return codigoEmp;
+    }
+
+    public void setCodigoEmp(Integer codigoEmp) {
+        this.codigoEmp = codigoEmp;
+    }
+
+    public EmpresaDao getEmpresaDAO() {
+        return empresaDAO;
+    }
+
+    public void setEmpresaDAO(EmpresaDao empresaDAO) {
+        this.empresaDAO = empresaDAO;
+    }
+
+    public EstructuraAsignacionDao getEstructuraAsignacionDAO() {
+        return estructuraAsignacionDAO;
+    }
+
+    public void setEstructuraAsignacionDAO(EstructuraAsignacionDao estructuraAsignacionDAO) {
+        this.estructuraAsignacionDAO = estructuraAsignacionDAO;
+    }
+
+    public TreeNode getNodoTreView() {
+        return nodoTreView;
+    }
+
+    public void setNodoTreView(TreeNode nodoTreView) {
+        this.nodoTreView = nodoTreView;
+    }
     
     
 }

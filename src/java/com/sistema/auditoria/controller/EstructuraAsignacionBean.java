@@ -56,6 +56,8 @@ public class EstructuraAsignacionBean extends GenericBean {
             LOG.error(ex.getMessage(), ex);
         }
     }
+    
+   
 
     public void create(ActionEvent actionEvent) {
         try {

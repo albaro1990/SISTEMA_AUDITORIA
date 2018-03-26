@@ -6,9 +6,6 @@
 package com.sistema.auditoria.entity;
 
 import java.io.Serializable;
-import java.math.BigDecimal;
-import java.util.Date;
-import java.util.List;
 
 /**
  *
@@ -20,99 +17,72 @@ public class AudPlanCuentas implements Serializable {
     private static final long serialVersionUID = 1L;
     
     
-    private Long hisCodigo;
+    private Long codPlanCta;
     
-    private AudUsuario usuario;
+    private AudEmpresa empresa;
     
-    private CitPaciente cliCodigo;
+    private String numeroCta;
     
-    private Date citFechaCita;
+    private String descCta;
     
-    private Date horaCita;
+    private Integer estado;
     
-    private Integer citEstado;
-      
-    private String citMotivo;
+  
     
 
     public AudPlanCuentas() {
     }
 
-    public AudPlanCuentas(Long hisCodigo) {
-        this.hisCodigo = hisCodigo;
+    public AudPlanCuentas(Long codPlanCta) {
+        this.codPlanCta = codPlanCta;
     }
 
-    public AudPlanCuentas(Long hisCodigo, Date citFechaCita, Integer citEstado, String citMotivo) {
-        this.hisCodigo = hisCodigo;
-        this.citFechaCita = citFechaCita;
-        this.citEstado = citEstado;
-        this.citMotivo = citMotivo;
-
+    public Long getCodPlanCta() {
+        return codPlanCta;
     }
 
-    public Long getHisCodigo() {
-        return hisCodigo;
+    public void setCodPlanCta(Long codPlanCta) {
+        this.codPlanCta = codPlanCta;
     }
 
-    public void setHisCodigo(Long hisCodigo) {
-        this.hisCodigo = hisCodigo;
+    public AudEmpresa getEmpresa() {
+        return empresa;
     }
 
-    public AudUsuario getUsuario() {
-        return usuario;
+    public void setEmpresa(AudEmpresa empresa) {
+        this.empresa = empresa;
     }
 
-    public void setUsuario(AudUsuario usuario) {
-        this.usuario = usuario;
+    public String getNumeroCta() {
+        return numeroCta;
     }
 
-    public Date getCitFechaCita() {
-        return citFechaCita;
+    public void setNumeroCta(String numeroCta) {
+        this.numeroCta = numeroCta;
     }
 
-    public void setCitFechaCita(Date citFechaCita) {
-        this.citFechaCita = citFechaCita;
+    public String getDescCta() {
+        return descCta;
     }
 
-    public Date getHoraCita() {
-        return horaCita;
+    public void setDescCta(String descCta) {
+        this.descCta = descCta;
     }
 
-    public void setHoraCita(Date horaCita) {
-        this.horaCita = horaCita;
+    public Integer getEstado() {
+        return estado;
     }
 
-    public Integer getCitEstado() {
-        return citEstado;
+    public void setEstado(Integer estado) {
+        this.estado = estado;
     }
 
-    public void setCitEstado(Integer citEstado) {
-        this.citEstado = citEstado;
-    }
-
-    public String getCitMotivo() {
-        return citMotivo;
-    }
-
-    public void setCitMotivo(String citMotivo) {
-        this.citMotivo = citMotivo;
-    }
-
-
-    public CitPaciente getCliCodigo() {
-        return cliCodigo;
-    }
-
-    public void setCliCodigo(CitPaciente cliCodigo) {
-        this.cliCodigo = cliCodigo;
-    }
-
-
+    
 
     @Override
     public int hashCode() {
         int hash = 0;
-        hash += (hisCodigo != null ? hisCodigo.hashCode() : 0);
+        hash += (codPlanCta != null ? codPlanCta.hashCode() : 0);
         return hash;
     }
 
@@ -123,7 +93,7 @@ public class AudPlanCuentas implements Serializable {
             return false;
         }
         AudPlanCuentas other = (AudPlanCuentas) object;
-        if ((this.hisCodigo == null && other.hisCodigo != null) || (this.hisCodigo != null && !this.hisCodigo.equals(other.hisCodigo))) {
+        if ((this.codPlanCta == null && other.codPlanCta != null) || (this.codPlanCta != null && !this.codPlanCta.equals(other.codPlanCta))) {
             return false;
         }
         return true;
@@ -131,7 +101,7 @@ public class AudPlanCuentas implements Serializable {
 
     @Override
     public String toString() {
-        return "com.facturacion.entity.FacCabeceraFactura[ cabCodigo=" + hisCodigo + " ]";
+        return "com.facturacion.entity.FacCabeceraFactura[ codPlanCta=" + codPlanCta + " ]";
     }
     
 }

@@ -27,72 +27,95 @@
                     <p:focus context="formDatos" />                    
                     <p:growl id="msg" showDetail="true"  life="5000" />
                     <center>
-                     <h:panelGrid columns="3" cellpadding="5">
-                        <p:outputLabel for="ciudad" value="Empresa:"  />
-                        <p:selectOneMenu id="ciudad" label="ciudad" value="#{estadoFinancieroBean.codigoEmp}" required="true" requiredMessage="Campo requerido">
-                            <f:selectItem itemLabel="Seleccione..." noSelectionOption="true" />
-                            <f:selectItems value="#{estadoFinancieroBean.empresas}" var="item" itemLabel="#{item.empNombre}" itemValue="#{item.empCodigo}" />
-                            
-                        </p:selectOneMenu>
-                        <p:tooltip for="ciudad"  value="Campo requerido" showEffect="clip" hideEffect="explode" />
-                        
-                        
-                        
+                        <h:panelGrid columns="3" cellpadding="5" rendered="#{not empty request.getRemoteUser()}">
+                            <p:outputLabel for="empresa" value="Empresa:"  />
+                            <p:selectOneMenu id="empresa" label="empresa" value="#{estadoFinancieroBean.codigoEmp}" required="true" requiredMessage="Empresa requerido">
+                                <f:selectItem itemLabel="Seleccione..." noSelectionOption="true" />
+                                <f:selectItems value="#{estadoFinancieroBean.empresas}" var="item" itemLabel="#{item.empNombre}" itemValue="#{item.empCodigo}" />
+                                <p:ajax event="change" listener="#{estadoFinancieroBean.getCodEmpresa}" process="@this"/>
+                            </p:selectOneMenu>
+                            <p:tooltip for="empresa"  value="Campo requerido" showEffect="clip" hideEffect="explode" />
+
                             <p:outputLabel for="fileUp" value="Seleccionar" />
                             <p:fileUpload id="fileUp" update=":formDatos" onstart="PF('statusDialog').show()" oncomplete="PF('statusDialog').hide()"
                                           sizeLimit="1000000000" fileUploadListener="#{estadoFinancieroBean.handleFileUpload}" mode="advanced" required="true"
-                                          dragDropSupport="true" process=":formDatos" invalidFileMessage="Archivo no valido" cancelLabel="Cancelar"
+                                          dragDropSupport="true" process=":formDatos" cancelLabel="Cancelar"
                                           uploadLabel="Subir" label="Elejir" allowTypes="/(\.|\/)(csv|xlsx|xls|txt)$/" fileLimit="5" />
                             <p:tooltip for="fileUp" value="Subir Archivo" showEffect="clip" hideEffect="explode" />
-                     </h:panelGrid>
-                        <h:panelGrid columns="2" cellpadding="5">
-                        <p:fieldset legend="Detalle Esatdo Financiero" toggleable="true" toggleSpeed="500" rendered="#{not empty estadoFinancieroBean.listaDetallesPantalla}">
-				<p:dataTable id="listaCorrectos" filterEvent="enter" value="#{estadoFinancieroBean.listaDetallesPantalla}" var="item"
-					paginator="true" rows="10" paginatorPosition="bottom" sortOrder="ascending" tableStyleClass="table table-striped"
-					rowsPerPageTemplate="10,20,50,100"
-					paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
-					currentPageReportTemplate="{totalRecords} Registros ( P\u00E1gina {currentPage} de {totalPages})" paginatorAlwaysVisible="true" rowIndexVar="rowIndex"
-					
-					emptyMessage="Lista Bacia">
+                        </h:panelGrid>
+                        <h:panelGrid columns="2" cellpadding="5" rendered="#{not empty request.getRemoteUser()}">
+                            <p:fieldset legend="Detalle Esatdo Financiero" toggleable="true" toggleSpeed="500" rendered="#{not empty estadoFinancieroBean.listaDetallesPantalla}">
+                                <p:dataTable id="listaCorrectos" filterEvent="enter" value="#{estadoFinancieroBean.listaDetallesPantalla}" var="item"
+                                             paginator="true" rows="10" paginatorPosition="bottom" sortOrder="ascending" tableStyleClass="table table-striped"
+                                             rowsPerPageTemplate="10,20,50,100"
+                                             paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                                             currentPageReportTemplate="{totalRecords} Registros ( P\u00E1gina {currentPage} de {totalPages})" paginatorAlwaysVisible="true" rowIndexVar="rowIndex"
 
-					<f:facet name="header">					
-						"Estado Financiero"
-					</f:facet>
+                                             emptyMessage="Lista Bacia">
 
-					<p:column headerText="Numero Cuenta" sortBy="#{item.numeroCuenta}"
-						filterBy="#{item.numeroCuenta}" filterMatchMode="contains" style="text-align: left">
-						<h:outputText value="#{item.numeroCuenta}" />
-					</p:column>
-                                        <p:column headerText="Descripcion Cuenta" sortBy="#{item.descCuenta}"
-						filterBy="#{item.descCuenta}" filterMatchMode="contains" style="text-align: left">
-						<h:outputText value="#{item.descCuenta}" />
-					</p:column>
-                                        <p:column headerText="Saldo Inicial" sortBy="#{item.saldoInicial}"
-						filterBy="#{item.saldoInicial}" filterMatchMode="contains" style="text-align: left">
-						<h:outputText value="#{item.saldoInicial}" />
-					</p:column>
-                                        <p:column headerText="Debe" sortBy="#{item.debe}"
-                                                  filterBy="#{item.debe}" filterMatchMode="contains" style="text-align: left">
-                                            <h:outputText value="#{item.debe}" />
-					</p:column>
-                                        <p:column headerText="Haber" sortBy="#{item.haber}"
-						filterBy="#{item.haber}" filterMatchMode="contains" style="text-align: left">
-						<h:outputText value="#{item.haber}" />
-					</p:column>
-                                        <p:column headerText="Saldo Final" sortBy="#{item.saldoFinal}"
-                                                  filterBy="#{item.saldoFinal}" filterMatchMode="contains" style="text-align: left">
-                                            <h:outputText value="#{item.saldoFinal}" />
-					</p:column>
-				</p:dataTable>
-			</p:fieldset>
-                            <p:fieldset>
-                                <p:tree>
-                                    
-                                </p:tree>
-                                
+                                    <f:facet name="header">					
+                                        Estado Financiero
+                                    </f:facet>
+                                    <p:column style="width:32px;text-align: center">
+                                        <p:commandButton ajax="true" update=":formDatos:estDetail" 
+                                                         oncomplete="PF('estDialog').show()" icon="ui-icon-search" title="View"
+                                                         actionListener="#{estadoFinancieroBean.asignarEstructura}">
+                                           <f:attribute name="objetoAsignar" value="#{item}" />
+                                        </p:commandButton>
+                                    </p:column>
+                                    <p:column headerText="Numero Cuenta" sortBy="#{item.numeroCuenta}"
+                                              filterBy="#{item.numeroCuenta}" filterMatchMode="contains" style="text-align: left">
+                                        <h:outputText value="#{item.numeroCuenta}" />
+                                    </p:column>
+                                    <p:column headerText="Descripcion Cuenta" sortBy="#{item.descCuenta}"
+                                              filterBy="#{item.descCuenta}" filterMatchMode="contains" style="text-align: left">
+                                        <h:outputText value="#{item.descCuenta}" />
+                                    </p:column>
+                                    <p:column headerText="Saldo Inicial" sortBy="#{item.saldoInicial}"
+                                              filterBy="#{item.saldoInicial}" filterMatchMode="contains" style="text-align: left">
+                                        <h:outputText value="#{item.saldoInicial}" />
+                                    </p:column>
+                                    <p:column headerText="Debe" sortBy="#{item.debe}"
+                                              filterBy="#{item.debe}" filterMatchMode="contains" style="text-align: left">
+                                        <h:outputText value="#{item.debe}" />
+                                    </p:column>
+                                    <p:column headerText="Haber" sortBy="#{item.haber}"
+                                              filterBy="#{item.haber}" filterMatchMode="contains" style="text-align: left">
+                                        <h:outputText value="#{item.haber}" />
+                                    </p:column>
+                                    <p:column headerText="Saldo Final" sortBy="#{item.saldoFinal}"
+                                              filterBy="#{item.saldoFinal}" filterMatchMode="contains" style="text-align: left">
+                                        <h:outputText value="#{item.saldoFinal}" />
+                                    </p:column>
+                                </p:dataTable>
                             </p:fieldset>
-                            
-                    </h:panelGrid>   
+                            <p:fieldset rendered="#{not empty estadoFinancieroBean.listaDetallesPantalla}">
+                                <p:tree value="#{estadoFinancieroBean.nodoTreView}" var="node">
+                                    <p:treeNode>
+                                        <h:outputText value="#{node}" />
+                                    </p:treeNode>
+                                </p:tree>
+
+                            </p:fieldset>
+                        </h:panelGrid>   
+                        <p:dialog header="Estructura" widgetVar="estDialog" modal="true" showEffect="fade" hideEffect="fade" resizable="false" >
+                            <p:outputPanel id="estDetail" style="text-align:center;">
+                                <p:panelGrid  columns="2" rendered="true" columnClasses="label,value">
+                               
+                                 <h:outputText value="Estructura:" />
+                                  <p:selectOneMenu id="cbmEst" label="ciudad" value="#{estadoFinancieroBean.estrCodigo}">
+                                    <f:selectItem itemLabel="Seleccione..." noSelectionOption="true" />
+                                    <f:selectItems value="#{estadoFinancieroBean.listEstructuraAsig}" var="item" itemLabel="#{item.estrDescripcion}" itemValue="#{item.estrCodigo}" />
+                                   </p:selectOneMenu>
+                                    
+                                  <f:facet name="footer">
+                                        <p:commandButton id="grabar" value="Asignar" validateClient="true" ajax="true" icon="ui-icon-disk"
+                                                         actionListener="#{estadoFinancieroBean.crearEstructuraAsignacion}"
+                                                         update=":formDatos" process=":formDatos" />
+                                    </f:facet>  
+                                </p:panelGrid>
+                            </p:outputPanel>
+                        </p:dialog>
                     </center>
                 </h:form>
             </ui:define>
