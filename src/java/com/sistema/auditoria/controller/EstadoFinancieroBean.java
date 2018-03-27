@@ -351,16 +351,15 @@ public void crearEstructuraAsignacion(ActionEvent event){
         List<AudEstructuraAsignacion> listEstructuraAsignada = estructuraAsignacionEmpresaDao.findByEmp(codigoEmp);
         TreeNode nodo1 = new DefaultTreeNode("",null);
         TreeNode node00 = new DefaultTreeNode("",null);
-        new DefaultTreeNode("Root",null);
+        nodoTreView = new DefaultTreeNode("Root",null);
         Integer cont=0;
         if(listEstructuraAsignada!=null&&listEstructuraAsignada.size()>0){
             for (AudEstructuraAsignacion audEstructuraAsignacion : listEstructuraAsignada) {
                  nodo1 = new DefaultTreeNode(audEstructuraAsignacion.getEstrDescripcion(), nodoTreView);   
                 List<AudAsignarEstructuraEmpresa> listAsig= estructuraAsignacionEmpresaDao.findByEmpYEst(codigoEmp, audEstructuraAsignacion.getEstrCodigo());
                 for (AudAsignarEstructuraEmpresa audAsignarEstructuraEmpresa1 : listAsig) {
-                     if(Long.valueOf(estrCodigo)==audEstructuraAsignacion.getEstrCodigo()){
-                        node00 = new DefaultTreeNode(ctaSeleccionado.getDescCuenta(), nodo1);
-                       }
+                        AudPlanCuentas plan= plandeCuentasDao.find(audAsignarEstructuraEmpresa1.getPlanCuentas().getCodPlanCta().intValue());
+                         nodo1.getChildren().add(new DefaultTreeNode(plan.getNumeroCta()+"-"+plan.getDescCta()));
                 }
               
             }

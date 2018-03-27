@@ -9,6 +9,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import com.sistema.auditoria.dao.PlandeCuentasDao;
+import com.sistema.auditoria.entity.AudEmpresa;
 import com.sistema.auditoria.entity.AudPlanCuentas;
 
 
@@ -145,15 +146,18 @@ public class PlandeCuentasDaoImpl implements PlandeCuentasDao {
        try {
             
            conn = new ConexionDB().getConexion();
-           pstmt = conn.prepareStatement("SELECT * FROM AUD_ESTRUCTURA_ASIGNACION  WHERE ESTR_CODIGO= ? AND ESTR_ESTADO=1");
+           pstmt = conn.prepareStatement("SELECT * FROM AUD_PLAN_CUENTA  WHERE PLAN_CODIGO= ? AND PLAN_ESTADO=1");
            pstmt.setInt(1, id);
            rs = pstmt.executeQuery();
            
             while (rs.next()) {
                 estructuraAsignacion = new AudPlanCuentas();
-              //  estructuraAsignacion.setEstrDescripcion(rs.getString(2));
-              //  estructuraAsignacion.setEstrEstado(rs.getInt(3));
-               
+                estructuraAsignacion.setCodPlanCta(rs.getLong(1));
+                AudEmpresa empresa = new AudEmpresa();
+                empresa.setEmpCodigo(rs.getLong(2));
+                estructuraAsignacion.setEmpresa(empresa);
+                estructuraAsignacion.setNumeroCta(rs.getString(3));
+                estructuraAsignacion.setDescCta(rs.getString(4));
            }
       
         } catch (SQLException e) {
