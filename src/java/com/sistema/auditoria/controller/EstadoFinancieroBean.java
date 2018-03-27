@@ -220,7 +220,27 @@ public class EstadoFinancieroBean extends GenericBean {
 				
 				// PROCESAR PEDIDOS DEL DATA LIST
 				Integer contadorLinea=1;
+                                Integer cont = 0;
 				for (int i = 1; i < dataList.size(); i++) {
+                                         //mostramos informacion guardadan anteriormente
+                                         if(cont==0){
+                                    List<AudEstructuraAsignacion> listEstructuraAsignada = estructuraAsignacionEmpresaDao.findByEmp(codigoEmp);
+                                    TreeNode nodo1 = new DefaultTreeNode("", null);
+                                    TreeNode node00 = new DefaultTreeNode("", null);
+                                    nodoTreView = new DefaultTreeNode("Root", null);
+                                        if (listEstructuraAsignada != null && listEstructuraAsignada.size() > 0) {
+                                            for (AudEstructuraAsignacion audEstructuraAsignacion : listEstructuraAsignada) {
+                                                nodo1 = new DefaultTreeNode(audEstructuraAsignacion.getEstrDescripcion(), nodoTreView);
+                                                List<AudAsignarEstructuraEmpresa> listAsig = estructuraAsignacionEmpresaDao.findByEmpYEst(codigoEmp, audEstructuraAsignacion.getEstrCodigo());
+                                                for (AudAsignarEstructuraEmpresa audAsignarEstructuraEmpresa1 : listAsig) {
+                                                    AudPlanCuentas plan = plandeCuentasDao.find(audAsignarEstructuraEmpresa1.getPlanCuentas().getCodPlanCta().intValue());
+                                                    nodo1.getChildren().add(new DefaultTreeNode(plan.getNumeroCta() + "-" + plan.getDescCta()));
+                                                }
+
+                                            }
+                                        }
+                                    }
+                                    cont++;
 					AudDetEstadoFinan pedidoArchivoDet = new AudDetEstadoFinan();
 					AudEstadoFinancieroDTO pedidoArchivoCap = new AudEstadoFinancieroDTO();
 						// Secuencial(nuemro de orden)
