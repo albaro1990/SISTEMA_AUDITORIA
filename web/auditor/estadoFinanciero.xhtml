@@ -57,7 +57,7 @@
                                         Estado Financiero
                                     </f:facet>
                                     <p:column style="width:32px;text-align: center">
-                                        <p:commandButton ajax="true" update=":formDatos:estDetail" 
+                                        <p:commandButton ajax="true" update=":formDatos:estDetail" disabled="#{item.habilitarAsignar}" 
                                                          oncomplete="PF('estDialog').show()" icon="ui-icon-search" title="View"
                                                          actionListener="#{estadoFinancieroBean.asignarEstructura}">
                                            <f:attribute name="objetoAsignar" value="#{item}" />

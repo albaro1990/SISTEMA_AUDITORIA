@@ -170,6 +170,39 @@ public class PlandeCuentasDaoImpl implements PlandeCuentasDao {
     
     }
     
+     @Override
+    public AudPlanCuentas findByEmpNumCta(Integer codEmpresa, String numCta) throws SQLException {
+        
+       AudPlanCuentas estructuraAsignacion = null;
+       
+       try {
+           
+           conn = new ConexionDB().getConexion();
+           pstmt = conn.prepareStatement("SELECT * FROM AUD_PLAN_CUENTA WHERE EMP_CODIGO = ?AND PLAN_NUMERO_CUENTA=?");
+           pstmt.setInt(1, codEmpresa);
+           pstmt.setString(2, numCta);
+           rs = pstmt.executeQuery();
+           
+            while (rs.next()) {
+                estructuraAsignacion = new AudPlanCuentas();
+                estructuraAsignacion.setCodPlanCta(rs.getLong(1));
+                AudEmpresa empresa = new AudEmpresa();
+                empresa.setEmpCodigo(rs.getLong(2));
+                estructuraAsignacion.setEmpresa(empresa);
+                estructuraAsignacion.setNumeroCta(rs.getString(3));
+                estructuraAsignacion.setDescCta(rs.getString(4));
+           }
+      
+        } catch (SQLException e) {
+            e.printStackTrace();
+       }finally {
+           conn.close();
+            pstmt.close();
+        }
+        return estructuraAsignacion;
+    
+    }
+    
 
     @Override
     public Long nuevoCodigo() throws SQLException {

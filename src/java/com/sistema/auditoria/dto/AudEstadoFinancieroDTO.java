@@ -37,6 +37,8 @@ public class AudEstadoFinancieroDTO implements Serializable {
     
     private Double saldoFinal;
     
+    private Boolean habilitarAsignar;
+    
 
     public AudEstadoFinancieroDTO() {
     }
@@ -128,6 +130,14 @@ public class AudEstadoFinancieroDTO implements Serializable {
     public void setSaldoFinal(Double saldoFinal) {
         this.saldoFinal = saldoFinal;
     }    
+
+    public Boolean getHabilitarAsignar() {
+        return habilitarAsignar;
+    }
+
+    public void setHabilitarAsignar(Boolean habilitarAsignar) {
+        this.habilitarAsignar = habilitarAsignar;
+    }
 
 
     @Override

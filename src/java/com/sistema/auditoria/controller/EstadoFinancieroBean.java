@@ -214,7 +214,6 @@ public class EstadoFinancieroBean extends GenericBean {
     
    private void validarInfoArchivo() {
 		try {
-                    System.out.print("cod empresa: "+codigoEmp);
 			if (dataList != null && !dataList.isEmpty()) {
 				
 				listaDetallesPantalla = new ArrayList<AudEstadoFinancieroDTO>();
@@ -227,12 +226,16 @@ public class EstadoFinancieroBean extends GenericBean {
 						// Secuencial(nuemro de orden)
 						if (dataList.get(i).get(1) != null) {
 							try {
-								pedidoArchivoCap.setNumeroCuenta(dataList.get(i).get(1));
+                                                            AudPlanCuentas ctaExiste = plandeCuentasDao.findByEmpNumCta(codigoEmp, dataList.get(i).get(1).trim());
+                                                            if(ctaExiste!=null && ctaExiste.getNumeroCta()!=null){
+                                                                pedidoArchivoCap.setHabilitarAsignar(true);
+                                                            }else {
+                                                                pedidoArchivoCap.setHabilitarAsignar(false);
+                                                            }
+								pedidoArchivoCap.setNumeroCuenta(dataList.get(i).get(1).trim());
 							} catch (Exception e) {
 								listaErrores.add("FILA: " + i + " --> EL SECUENCIAL TIENE UN DATO INVÁLIDO");
-								//pedidoArchivoCap.setErrorCabecera(true);
-
-								//saveMessageFatalDetail(getStringResourceBundle("app.fatal"), getStringResourceBundle("common.fatal.general"));
+								
 								LOG.error("validarInfoArchivo() {}", e);
 								break;
 							}
@@ -262,16 +265,7 @@ public class EstadoFinancieroBean extends GenericBean {
 							try {
 								//se valida si el item existe o esta activo
                                                                 pedidoArchivoCap.setSaldoInicial(Double.valueOf(dataList.get(i).get(3)));
-//								Producto item = productoService.findArticulo(dataList.get(i).get(formatoPedidoManual.getCodigoItem() - 1).trim().toUpperCase());
-//								if(item!=null&&item.getEstado().equalsIgnoreCase(Constantes.ESTADO_ACT)){
-//									pedidoArchivoDet.setItemCodigo(dataList.get(i).get(formatoPedidoManual.getCodigoItem() - 1).trim().toUpperCase());
-//								}else if(item!=null&&item.getEstado().equalsIgnoreCase(Constantes.ESTADO_INA)){
-//									pedidoArchivoDet.setItemCodigo(dataList.get(i).get(formatoPedidoManual.getCodigoItem() - 1).trim().toUpperCase());
-//								}else {
-//								listaErrores.add("FILA: " + i + " --> EL CODIGO DE ITEM NO EXISTE");
-//								pedidoArchivoDet.setError(true);
-//								break;
-//								}
+
 							} catch (Exception e) {
 								//saveMessageFatalDetail(getStringResourceBundle("app.fatal"), getStringResourceBundle("common.fatal.general"));
 								LOG.error("validarInfoArchivo() {}", e);

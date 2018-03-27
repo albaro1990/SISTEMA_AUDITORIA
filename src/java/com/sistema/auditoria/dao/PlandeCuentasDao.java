@@ -18,5 +18,7 @@ public interface PlandeCuentasDao {
     
     public boolean existePorCampo(String username) throws SQLException;
     
+    public AudPlanCuentas findByEmpNumCta(Integer codEmpresa, String numCta) throws SQLException;
+    
     public Long nuevoCodigo() throws SQLException;
 }
