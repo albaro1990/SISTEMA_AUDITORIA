@@ -30,9 +30,11 @@ import javax.annotation.PostConstruct;
 import org.primefaces.event.ScheduleEntryMoveEvent;
 import org.primefaces.event.ScheduleEntryResizeEvent;
 import com.sistema.auditoria.dao.EmpresaDao;
+import com.sistema.auditoria.dao.EstadoFinancieroDao;
 import com.sistema.auditoria.dao.EstructuraAsignacionDao;
 import com.sistema.auditoria.dao.EstructuraAsignacionEmpresaDao;
 import com.sistema.auditoria.dao.PlandeCuentasDao;
+import com.sistema.auditoria.dao.impl.EstadoFinancieroDaoImpl;
 import com.sistema.auditoria.dao.impl.EstructuraAsignacionDaoImpl;
 import com.sistema.auditoria.dao.impl.EstructuraAsignacionEmpresaDaoImpl;
 import com.sistema.auditoria.dao.impl.PlandeCuentasDaoImpl;
@@ -91,6 +93,7 @@ public class EstadoFinancieroBean extends GenericBean {
     private PlandeCuentasDao plandeCuentasDao= new PlandeCuentasDaoImpl();
     private AudEstadoFinancieroDTO ctaSeleccionado = new AudEstadoFinancieroDTO();
     private EstructuraAsignacionEmpresaDao estructuraAsignacionEmpresaDao = new EstructuraAsignacionEmpresaDaoImpl();
+    private EstadoFinancieroDao estadoFinancieroDao= new EstadoFinancieroDaoImpl();
     
     private String tipoExtension;
     private String nombreArchivo;
@@ -331,6 +334,7 @@ public class EstadoFinancieroBean extends GenericBean {
 							break;
 						}
 					if(pedidoArchivoCap!=null&&pedidoArchivoCap.getNumeroCuenta()!=null) {
+                                               pedidoArchivoCap.setNombreArchivo(nombreArchivo);
 						listaDetallesPantalla.add(pedidoArchivoCap);
 					}
 //					System.out.println("Contador registro= " + contadotPruebReg++ );
@@ -392,23 +396,23 @@ public void crearEstructuraAsignacion(ActionEvent event){
          
         return calendar.getTime();
     }
-     
-  
- 
-
-     
- 
- 
-  
-     
-
-     
-  
-     
+    
     private void addMessage(FacesMessage message) {
         FacesContext.getCurrentInstance().addMessage(null, message);
     }
-    
+    public void guardarEstadoFinanciero(ActionEvent event){
+        try {
+            if(codigoEmp!=null&&codigoEmp>0){
+                
+                        
+                //estadoFinancieroDao.save()
+            }else{
+                
+            }
+        } catch (Exception e) {
+        }
+        
+    }
     public void edit(ActionEvent event) {
         cita = new CitCita();
         especialidad = new AudEmpresa();

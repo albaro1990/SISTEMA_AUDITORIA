@@ -39,6 +39,8 @@ public class AudEstadoFinancieroDTO implements Serializable {
     
     private Boolean habilitarAsignar;
     
+    private String nombreArchivo;
+    
 
     public AudEstadoFinancieroDTO() {
     }
@@ -137,6 +139,14 @@ public class AudEstadoFinancieroDTO implements Serializable {
 
     public void setHabilitarAsignar(Boolean habilitarAsignar) {
         this.habilitarAsignar = habilitarAsignar;
+    }
+
+    public String getNombreArchivo() {
+        return nombreArchivo;
+    }
+
+    public void setNombreArchivo(String nombreArchivo) {
+        this.nombreArchivo = nombreArchivo;
     }
 
 

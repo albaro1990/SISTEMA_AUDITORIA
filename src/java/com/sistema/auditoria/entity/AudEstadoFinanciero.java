@@ -7,6 +7,7 @@ package com.sistema.auditoria.entity;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 
 /**
  *
@@ -25,6 +26,8 @@ public class AudEstadoFinanciero implements Serializable {
     private String nombreArchivo;
     
     private Date fechaSubida;
+    
+    private List<AudDetEstadoFinan> detalleFinanciero;
     
    
 
@@ -72,6 +75,14 @@ public class AudEstadoFinanciero implements Serializable {
 
     public void setFechaSubida(Date fechaSubida) {
         this.fechaSubida = fechaSubida;
+    }
+
+    public List<AudDetEstadoFinan> getDetalleFinanciero() {
+        return detalleFinanciero;
+    }
+
+    public void setDetalleFinanciero(List<AudDetEstadoFinan> detalleFinanciero) {
+        this.detalleFinanciero = detalleFinanciero;
     }
 
     
