@@ -44,14 +44,14 @@
                             <p:tooltip for="fileUp" value="Subir Archivo" showEffect="clip" hideEffect="explode" />
                         </h:panelGrid>
 
-			<p:commandButton ajax="true" validateClient="true" value="Exportar" icon="ui-icon-transferthick-e-w"
+			<p:commandButton ajax="true" validateClient="true" value="Exportar" rendered="#{not empty estadoFinancieroBean.listaDetallesPantalla}" icon="ui-icon-transferthick-e-w"
                                          actionListener="#{estadoFinancieroBean.guardarEstadoFinanciero()}" update=":formDatos" title="Guardar">
 			</p:commandButton>
 
 
                         
                         <h:panelGrid columns="2" cellpadding="5" rendered="#{not empty request.getRemoteUser()}">
-                            <p:commandButton
+                            
                             <p:fieldset legend="Detalle Esatdo Financiero" toggleable="true" toggleSpeed="500" rendered="#{not empty estadoFinancieroBean.listaDetallesPantalla}">
                                 <p:dataTable id="listaCorrectos" filterEvent="enter" value="#{estadoFinancieroBean.listaDetallesPantalla}" var="item"
                                              paginator="true" rows="10" paginatorPosition="bottom" sortOrder="ascending" tableStyleClass="table table-striped"
